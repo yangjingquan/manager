@@ -1,0 +1,91 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/bis/css/common.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/bis/css/page.css"/>
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>财务明细</title>
+</head>
+<body class="pos-r">
+<div>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 财务管理 <span class="c-gray en">&gt;</span> 财务明细 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="page-container">
+		<form action="{:url('account/finance_records')}" method="get">
+			<div class=""> 类型：
+				<input type="radio" name="type" value="0" id="all" {if condition="$type eq 0"} checked {/if} ><label for="all" style="margin-left: 0.5%;margin-right: 0.5%;">全部</label>
+				<input type="radio" name="type" value="1" id="chongzhi" {if condition="$type eq 1"} checked {/if}><label for="chongzhi" style="margin-left: 0.5%;margin-right: 0.5%;">充值</label>
+				<input type="radio" name="type" value="2" id="koukuan" {if condition="$type eq 2"} checked {/if} ><label for="koukuan" style="margin-left: 0.5%;margin-right: 0.5%;">扣款</label>
+				<input type="radio" name="type" value="3" id="tixian" {if condition="$type eq 3"} checked {/if} ><label for="tixian" style="margin-left: 0.5%;margin-right: 0.5%;">提现</label>
+				<input type="radio" name="type" value="4" id="dongjie" {if condition="$type eq 4"} checked {/if} ><label for="dongjie" style="margin-left: 0.5%;margin-right: 0.5%;">订单收入(冻结)</label>
+				<input type="radio" name="type" value="5" id="jiedong" {if condition="$type eq 5"} checked {/if} ><label for="jiedong" style="margin-left: 0.5%;margin-right: 0.5%;">订单收入(解冻)</label>
+				<button name="" id="" class="btn btn-success radius" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+			</div>
+		</form>
+		<div class="mt-20">
+			<table class="table table-border table-bordered table-bg table-hover table-sort">
+				<thead>
+					<tr class="text-c">
+						<th width="40">序号</th>
+						<th width="40">用户名</th>
+						<th width="40">收支类型</th>
+						<th width="40">金额</th>
+						<th width="40">操作</th>
+						<th width="40">IP</th>
+						<th width="40">时间</th>
+						<th width="80">备注</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="res" id="vo"}
+						<tr class="text-c va-m">
+							<td>{$vo.fr_id}</td>
+							<td>{$vo.username}</td>
+							<td>{$vo.type|finance_type}</td>
+							<td>{$vo.amount}</td>
+							<td>{$vo.operator}</td>
+							<td>{$vo.ip}</td>
+							<td>{$vo.create_time}</td>
+							<td>{$vo.remarks}</td>
+						</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="zxf_pagediv"></div>
+</div>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+</body>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="__STATIC__/bis/js/zxf_page.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	current_page = $('.current').html();
+	$(".zxf_pagediv").createPage({
+		pageNum: {$pages},//总页码
+		current : {$current_page},//当前页码
+		backfun: function(e) {
+			var temp = parseInt($('.current').html());
+			if(!temp){
+				choose_page = {$pages};
+			}else{
+				choose_page = temp;
+			}
+			var type = $('input[name="type"]:checked').val();
+			location.href = "finance_records?current_page="+choose_page+"&type="+type;
+		}
+	});
+</script>
+</html>

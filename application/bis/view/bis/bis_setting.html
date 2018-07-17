@@ -1,0 +1,276 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<LINK rel="Bookmark" href="/favicon.ico" >
+	<LINK rel="Shortcut Icon" href="/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+	<style>
+		label.intro {
+			color: red;
+		}
+
+		#acode_c,#thumb_c{
+			width: 15%;
+			max-height: 150px;
+		}
+
+		.display_none{
+			display: none;
+		}
+
+	</style>
+	<script>
+		function checkParams(){
+//			var appid = document.getElementById('appid');
+//			var mchid = document.getElementById('mchid');
+//			var key = document.getElementById('key');
+			var fahuo_template_id = document.getElementById('fahuo_template_id');
+
+//			if(!appid.value || appid.value == ''){
+//				alert('请填写小程序id(appid)!');
+//				return false;
+//			}
+//			if(!mchid.value || mchid.value == ''){
+//				alert('请填写商户号!');
+//				return false;
+//			}
+//
+//			if(!key.value || key.value == ''){
+//				alert('请填写支付密钥!');
+				return false;
+			}
+
+			var logistics_status = $("input[name='logistics_status']:checked").val();
+			if(logistics_status == 1){
+				if(!fahuo_template_id.value || fahuo_template_id.value == ''){
+					alert('请填写发货模板id!');
+					return false;
+				}
+			}
+
+			return true;
+		}
+	</script>
+</head>
+<body>
+<div class="page-container">
+	<form action="{:url('bis/save')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
+		<input type="hidden" name="id" value="{$bis_res.id}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">登录账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$mem_res.username}" disabled>&nbsp;&nbsp;&nbsp;
+				密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd"  value="{$mem_res.password}">
+				<button class="btn radius editPwd" type="button"  style="margin-top: -1%;"  onclick="editPwd({$mem_res.id})">修改密码</button><br>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.bis_name}" id="bis_name" name="bis_name">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户积分：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.jifen}" id="jifen" name="jifen">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">经营品牌：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.brand}" id="brand" name="brand">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">负责人：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.leader}" id="leader" name="leader">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">联系电话：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.link_tel}" id="link_tel" name="link_tel">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商家分类：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span class="select-box" style="width: 15%;">
+					<select name="category" class="select">
+						{volist name="cat_res" id="vo"}
+						<option value="{$vo.id}" {if condition="$bis_res.cat_id eq $vo.id"} selected="selected" {/if}>{$vo.cat_name}</option>
+						{/volist}
+					</select>
+				</span>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">规格类型：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="1" {if condition="$bis_res.config_type eq 1"} checked {/if} id="config_type1" name="config_type">
+				<label for="config_type1">一维规格</label>
+				<input type="radio" value="2" {if condition="$bis_res.config_type eq 2"} checked {/if} id="config_type2" name="config_type">
+				<label for="config_type2">二维规格</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">是否拼团：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="0" {if condition="$bis_res.is_pintuan eq 0"} checked {/if} id="org_type" name="group_type">
+				<label for="org_type">普通模式</label>
+				<input type="radio" value="1" {if condition="$bis_res.is_pintuan eq 1"} checked {/if} id="pintuan_type" name="group_type">
+				<label for="pintuan_type">拼团模式</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">需要物流：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="0" {if condition="$bis_res.logistics_status eq 0"} checked {/if} id="no_logistics" name="logistics_status">
+				<label for="no_logistics">不需要</label>
+				<input type="radio" value="1" {if condition="$bis_res.logistics_status eq 1"} checked {/if} id="logistics" name="logistics_status">
+				<label for="logistics">需要</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小程序id(Appid)：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.appid}" id="appid" name="appid">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">secret：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.secret}" id="secret" name="secret">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.mchid}" id="mchid" name="mchid">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">支付密钥：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.key}" id="key" name="key">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl fahuo_template_id">
+			<label class="form-label col-xs-4 col-sm-2">发货模板id：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.fahuo_template_id}" id="fahuo_template_id" name="fahuo_template_id">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">店铺logo: </label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="file" class="input-text1 "  id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='http://mall.dxshuju.com:8000/uploads/other/no_img.png'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl {$bis_res.is_ind_version == 1 ? 'display_none' : ''}">
+			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<img src="" class="img_bottom" onerror="javascript:this.src='http://mall.dxshuju.com:8000/uploads/other/no_img.png'"  id="acode_c" >
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit" style="margin-left: 10%;">更&nbsp;新&nbsp;设&nbsp;置</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		var logistics_status = {$bis_res.logistics_status};
+		if(logistics_status != 1){
+			$('.fahuo_template_id').css('display','none');
+		}
+
+		//设置图片
+		$('#thumb').css('display','none');
+		$('#thumb_c').attr('src','../../{$bis_res.thumb}');
+
+		$('#acode_c').attr('src','../../{$bis_res.acode}');
+		$('.pwd').attr("disabled","disabled");
+	});
+
+	function F_Open(id1,id2){
+		$('#'+id1).css('display','none');
+		$('#'+id2).css('display','block');
+		document.getElementById(id2).click();
+	}
+
+	function editPwd(user_id){
+		var text = $('.editPwd').text();
+		if(text == '修改密码'){
+			$('.pwd').removeAttr('disabled');
+			$('.pwd').val('');
+			$('.pwd').focus();
+			$('.editPwd').text('确认修改');
+		}else{
+			var url = "{:url('bis/bis/editPwd')}";
+			var password = $('.pwd').val();
+			if(password == '' || !password){
+				alert('请输入新密码!');
+			}else{
+				var postData = {
+					'user_id'  : user_id,
+					'password'  : password
+				};
+
+				$.post(url,postData,function(result){
+					if(result.status == 1){
+						alert('修改成功!');
+						//刷新当前页面
+						location.reload();
+					}else{
+						alert('修改失败!');
+						//刷新当前页面
+						location.reload();
+					}
+				},'json');
+			}
+
+		}
+	}
+
+	$('input:radio[name="logistics_status"]').change(function(){
+		var logistics_status = $("input[name='logistics_status']:checked").val();
+		if(logistics_status != 1){
+			$('.fahuo_template_id').css('display','none');
+		}else{
+			$('.fahuo_template_id').css('display','block');
+		}
+	})
+</script>
+</body>
+</html>

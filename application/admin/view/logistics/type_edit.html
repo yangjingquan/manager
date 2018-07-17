@@ -1,0 +1,28 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<body>
+<div class="page-container">
+	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" method="post" action="{:url('logistics/changeTransportType')}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>运费模式：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" {if condition="$res.transport_type eq 1"} checked {/if} class="transport_type" id="original" name="transport_type" value="1" style="margin-top: 0.01%;"><label for="original" style="margin-left: 1%;margin-right: 2%;">模板模式</label>
+				<input type="radio" {if condition="$res.transport_type eq 2"} checked {/if} class="transport_type" id="yikoujia" name="transport_type" value="2" style="margin-top: 0.01%;"><label for="yikoujia" style="margin-left: 1%;margin-right: 2%;">一口价模式</label>
+				<input type="text" id="yikoujia_input" name="ykj_price" value="{$res.ykj_price}"  style="width:15%" class="input-text">
+			</div>
+		</div>
+
+		<div class="row cl">
+			<input type="hidden" name="bis_id" value="{$res.id}">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button  type="submit" class="btn btn-primary radius" ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+
+<!--包含头部文件-->
+{include file="public/footer" /}

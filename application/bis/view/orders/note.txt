@@ -1,0 +1,9 @@
+//详情页面(detail.html)"下单日期"下面添加如下代码
+<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">首单责任人：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				{volist name="operate_res" id="vo"}
+					<label style="margin-left: 1%;">第{$vo.num_id}次修改订单状态：</label><label>{$vo.username} 更新订单状态为 {$vo.state} ---- {$vo.create_time}</label><br>
+				{/volist}
+			</div>
+		</div>

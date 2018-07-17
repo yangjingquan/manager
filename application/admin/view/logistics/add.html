@@ -1,0 +1,82 @@
+{include file="public/header" /}
+<body>
+<div class="page-container">
+	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" method="post" action="{:url('logistics/save')}" onsubmit="return checkParams();">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择店铺：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 25%;" class="select-box">
+					<select name="bis_id" class="select bis_id">
+						<option value="0">--请选择--</option>
+						{volist name="bis_res" id="vo"}
+							<option value="{$vo.bis_id}">{$vo.bis_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>物流种类：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 25%;" class="select-box">
+					<select name="post_mode" class="select post_mode">
+						<option value="0">物流种类</option>
+						{volist name="post_mode_res" id="vo"}
+						<option value="{$vo.id}">{$vo.post_mode}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>省(直辖市)：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 25%;" class="select-box">
+					<select name="province" class="select province">
+						<option value="0">省(直辖市)</option>
+						{volist name="province_res" id="vo"}
+							<option value="{$vo.p_name}">{$vo.p_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>首重价格：</label>
+			<div style="width: 25%;" class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="first_heavy" name="first_heavy">
+			</div>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>续重价格：</label>
+			<div style="width: 25%;" class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="continue_heavy" name="continue_heavy">
+			</div>
+		</div>
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button  type="submit" class="btn btn-primary radius" ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+<script>
+	function checkParams(){
+		var post_mode = $('.post_mode').val();
+		var p_name = $('.province').val();
+		var first_heavy = $('#first_heavy').val();
+		var continue_heavy = $('#continue_heavy').val();
+
+		if(post_mode == 0 || !p_name || !first_heavy || !continue_heavy){
+			alert('请完善必要信息!');
+			return false;
+		}
+
+		return true;
+	}
+</script>
+<!--包含头部文件-->
+{include file="public/footer" /}

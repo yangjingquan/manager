@@ -1,0 +1,131 @@
+<!--包含头部文件-->
+{include file="public/header" /}
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 会员管理 <span class="c-gray en">&gt;</span> 团队管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+	<div class="side">
+		<div class="floor1">
+			<input readonly class="input1" value="ID:{$res.a}">
+		</div>
+		<div class="floor1">
+			<input readonly class="input1" value="{$res.a_name}">
+		</div>
+		<div class="floor2">
+			<img class="floor2_img" src="/other/001.png">
+		</div>
+		<div class="floor3">
+			<input readonly class="input3_1" value="ID:{$res.b1}">
+			<input readonly class="input3_2" value="ID:{$res.b2}">
+		</div>
+		<div class="floor3">
+			<input readonly class="input3_1" value="{$res.b1_name}">
+			<input readonly class="input3_2" value="{$res.b2_name}">
+		</div>
+		<div class="floor4">
+			<img class="floor4_1_img" src="/other/001.png">
+			<img class="floor4_2_img" src="/other/001.png">
+		</div>
+		<div class="floor5">
+			<input readonly class="input5_1" value="ID:{$res.c1}">
+			<input readonly class="input5_2" value="ID:{$res.c2}">
+			<input readonly class="input5_3" value="ID:{$res.c3}">
+			<input readonly class="input5_4" value="ID:{$res.c4}">
+		</div>
+		<div class="floor5">
+			<input readonly class="input5_1" value="{$res.c1_name}">
+			<input readonly class="input5_2" value="{$res.c2_name}">
+			<input readonly class="input5_3" value="{$res.c3_name}">
+			<input readonly class="input5_4" value="{$res.c4_name}">
+		</div>
+	</div>
+</div>
+
+</body>
+<style>
+	.side{
+		width:60%;
+		height:400px;
+		margin-left:20%;
+	}
+
+	.floor1{
+		text-align: center;
+		width:100%;
+		height:30px;
+	}
+
+	.input1,.input3_1,.input3_2,.input5_1,.input5_2,.input5_3,.input5_4{
+		text-align: center;
+		width: 13%;
+		height: 30px;
+		margin-top:7px;
+	}
+
+	.input1{
+		/*text-align: center;*/
+
+	}
+
+	.floor2,.floor4{
+		width:100%;
+		height:60px;
+	}
+
+	.floor3,.floor5{
+		white-space: nowrap;
+		font-size:0;
+		width:100%;
+		height:30px;
+	}
+
+	.input3_1{
+		margin-left:15%;
+	}
+
+	.input3_2{
+		margin-left:43%;
+	}
+
+	.input5_1,.input5_2,.input5_3,.input5_4{
+		/*text-align: center;*/
+	}
+
+	.input5_1{
+		margin-left:2%;
+	}
+
+	.input5_2{
+		margin-left:13%;
+	}
+
+	.input5_3{
+		margin-left:17%;
+	}
+
+	.input5_4{
+		margin-left:13%;
+	}
+
+	.floor2_img{
+		width: 61%;
+		height: 80%;
+		margin-left: 19.5%;
+		margin-top: 2%;
+	}
+
+	.floor4_1_img{
+		width: 29%;
+		height: 80%;
+		margin-left: 6.5%;
+		margin-top: 2%;
+	}
+
+	.floor4_2_img{
+		width: 29%;
+		height: 80%;
+		margin-left: 27.5%;
+		margin-top: 2%;
+	}
+</style>
+
+</html>

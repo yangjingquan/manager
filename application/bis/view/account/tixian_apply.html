@@ -1,0 +1,113 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<LINK rel="Bookmark" href="/favicon.ico" >
+	<LINK rel="Shortcut Icon" href="/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+	<style>
+		.input-text1-15 {
+			width: 15%;
+		}
+
+		.input-text1-25 {
+			width: 25%;
+		}
+		label.intro {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div class="page-container">
+	<form action="{:url('account/apply_tixian')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkTixianAmount();">
+		<input type="hidden" name="id" value="{$res.id}">
+		<input type="hidden" name="cur_tixian_money" value="{$res.tixian_money}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">可用金额：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" id="available_money" name="available_money" value="{$res.available_money}" readonly>
+				<label style="margin-left: 1%;" class="intro">元</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">交易中金额：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.indeal_money}" readonly>
+				<label style="margin-left: 1%;" class="intro">元</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">提现金额：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" id="tixian_account" value="" name="tixian_account">
+				<label style="margin-left: 1%;" class="">元</label>
+				<label style="margin-left: 1%;" class="intro">*（申请金额不能超过可用余额，冻结金额无法提现。）</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"></label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<label style="margin-left: 1%;" class="intro">注意：申请提现到以下银行账户，请确保信息正确，一旦提交成功无法修改！如以下账户信息，请在申请前及时修改！</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">银行名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.bank_name}" readonly>
+				<label style="margin-left: 1%;" class="intro">* 如：工商银行、农业银行等</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$res.account}" readonly>
+				<label style="margin-left: 1%;" class="intro">* 如：9558800000008888</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">户名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.account_name}"readonly>
+				<label style="margin-left: 1%;" class="intro">* 如：张三、李四</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">开户行：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-25" value="{$res.kaihuhang}" readonly>
+				<label style="margin-left: 1%;" class="intro">* 如：北京分行</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit" style="margin-left: 25%;">提交申请</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+<script>
+	function checkTixianAmount(){
+		var available_money = $('#available_money').val();
+		var tixian_account = $('#tixian_account').val();
+		if(parseFloat(available_money) < parseFloat(tixian_account)){
+			alert('提现金额不能大于可用金额!');
+			$('#tixian_account').val('');
+			return false;
+		}
+		return true;
+	}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{include file="public/header" /}
+<body>
+<div class="page-container">
+	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" enctype="multipart/form-data" method="post" action="{:url('recommend/save')}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择商铺：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 30%;" class="select-box">
+					<select name="bis_id" class="select bis_id">
+						<option value="0">--请选择--</option>
+						{volist name="bis_res" id="vo"}
+							<option value="{$vo.bis_id}">{$vo.bis_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>推荐位图片：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="file" value="" id="name" name="image">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>跳转链接：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input style="width: 30%;" type="text" class="input-text"  id="redirect_url" name="redirect_url">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>推荐位栏目：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 30%;" class="select-box">
+				<select name="type" class="select type">
+					<option value="">--请选择--</option>
+					<option value="1">首页banner</option>
+					<!--<option value="2">其他位置</option>-->
+				</select>
+				</span>
+			</div>
+		</div>
+		
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button  type="submit" class="btn btn-primary radius" ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+<!--包含头部文件-->
+{include file="public/footer" /}

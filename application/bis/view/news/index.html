@@ -1,0 +1,101 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/bis/css/common.css" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/bis/css/page.css"/>
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>商品列表</title>
+</head>
+<body class="pos-r">
+<div>
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 新闻管理 <span class="c-gray en">&gt;</span> 新闻列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+	<div class="page-container">
+		<form action="{:url('news/index')}" method="get">
+			<div class=""> 新闻查询：
+				<span class="select-box" style="width: 15%;">
+					<select name="select_type" class="select select_type">
+						<option value="">--请选择--</option>
+						<option value="id" {if condition="$type eq 'id'"} selected="selected" {/if}>按新闻序号</option>
+						<option value="theme" {if condition="$type eq 'theme'"} selected="selected" {/if}>按新闻标题</option>
+						<option value="content" {if condition="$type eq 'content'"} selected="selected" {/if}>按新闻内容</option>
+					</select>
+				</span>
+				<input type="text" name="keyword" id="keyword" value="{$keyword}" placeholder="请输入关键字" style="width:250px" class="input-text">
+				<button name="" id="" class="btn btn-success radius" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+			</div>
+		</form>
+		<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
+
+			</span> <span class="r">共有数据：<strong>{$count}</strong> 条</span> </div>
+		<div class="mt-20">
+			<table class="table table-border table-bordered table-bg table-hover table-sort">
+				<thead>
+					<tr class="text-c">
+						<th width="20"><input name="" type="checkbox" value=""></th>
+						<th width="20">序号</th>
+						<th width="200">新闻主题</th>
+						<th width="40">发布人</th>
+						<th width="40">发布时间</th>
+						<th width="40">是否置顶</th>
+						<th width="40">是否推荐</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="res" id="vo"}
+						<tr class="text-c va-m">
+							<td><input name="" type="checkbox" value=""></td>
+							<td>{$vo.news_id}</td>
+							<td><a href="{:url('news/edit',['news_id'=>$vo.news_id])}" style="color:red;">{$vo.theme}</a></td>
+							<td>{$vo.username}</td>
+							<td>{$vo.update_time}</td>
+							<td class="td-status"><a href="{:url('news/updateIsTop',['id'=>$vo.news_id,'is_top' => $vo.is_top == 1 ? 0 : 1])}" title="点击修改指定状态">{$vo.is_top|news_top}</a></td>
+							<td class="td-status"><a href="{:url('news/updateIsRecommend',['id'=>$vo.news_id,'is_recommend' => $vo.is_recommend == 1 ? 0 : 1])}" title="点击修改推荐设置">{$vo.is_recommend|news_recommend}</a></td>
+						</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<div class="zxf_pagediv"></div>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/common.js"></script>
+
+</body>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="__STATIC__/bis/js/zxf_page.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(".zxf_pagediv").createPage({
+		pageNum: {$pages},//总页码
+		current : {$current_page},//当前页码
+		activepage: "current",
+		activepaf: "nextpage",
+		backfun: function(e) {
+			var temp = parseInt($('.current').html());
+			if(!temp){
+				choose_page = {$pages};
+			}else{
+				choose_page = temp;
+			}
+			var type = $('.select_type').val();
+			var keyword = $('#keyword').val();
+			location.href = "index?current_page="+choose_page+"&select_type="+type+"&keyword="+keyword;
+
+
+		}
+	});
+</script>
+</html>

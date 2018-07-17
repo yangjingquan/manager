@@ -1,0 +1,75 @@
+{include file="public/header" /}
+<body>
+<div class="page-container">
+	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" method="post" action="{:url('category/save')}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择商铺：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 30%;" class="select-box">
+					<select name="bis_id" class="select bis_id">
+						<option value="0">--请选择--</option>
+						{volist name="bis_res" id="vo"}
+							<option value="{$vo.bis_id}">{$vo.bis_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类栏目：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 30%;" class="select-box">
+					<select name="parent_id" class="select category_select">
+						<option value="0">一级分类</option>
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>分类名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input style="width: 30%;" type="text" class="input-text" value="" placeholder="" id="name" name="cat_name">
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button  type="submit" class="btn btn-primary radius" ><i class="Hui-iconfont">&#xe632;</i> 保存</button>
+				
+				<button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+			</div>
+		</div>
+	</form>
+</div>
+</div>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script>
+	var SCOPE = {
+		'cat_url'  : "{:url('category/getCategorysInfo')}"
+	}
+
+	$('.bis_id').change(function () {
+		var bis_id = this.value;
+
+		url = "{:url('category/getNormalFirstCategory')}";
+		postData = {
+			'bis_id'  : bis_id
+		};
+
+		$.post(url,postData,function(result){
+			if(result.status == 1){
+				//将信息填充到html
+				data = result.data;
+				city_html = '<option value="0">一级分类</option>';
+				$(data).each(function(i){
+					city_html += "<option value='"+this.id+"'>"+this.cat_name+"</option>";
+				});
+				$('.category_select').html(city_html);
+			}else{
+				$('.category_select').html('<option value="0">一级分类</option>');
+			}
+		},'json');
+
+	})
+</script>
+<!--包含头部文件-->
+{include file="public/footer" /}

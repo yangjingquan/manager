@@ -1,0 +1,95 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<LINK rel="Bookmark" href="/favicon.ico" >
+	<LINK rel="Shortcut Icon" href="/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+	<style>
+		.input-text1-15 {
+			width: 15%;
+		}
+
+		.input-text1-25 {
+			width: 25%;
+		}
+		label.intro {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+<div class="page-container">
+	<form action="{:url('account/save')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkCode();">
+		<input type="hidden" name="id" value="{$res.id}">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">银行名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.bank_name}" id="" name="bank_name">
+				<label style="margin-left: 1%;" class="intro">* 如：工商银行、农业银行等</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$res.account}"  id="" name="account">
+				<label style="margin-left: 1%;" class="intro">* 如：9558800000008888</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">户名：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.account_name}" id="" name="account_name">
+				<label style="margin-left: 1%;" class="intro">* 如：张三、李四</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">开户行：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-25" value="{$res.kaihuhang}" id="" name="kaihuhang">
+				<label style="margin-left: 1%;" class="intro">* 如：北京分行</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商家财务手机号码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value="{$res.mobile}" {if condition="$res.mobile neq '' "} readonly {/if} id="" name="mobile">
+			</div>
+		</div>
+		<div class="row cl v_code" style="display: none;">
+			<label class="form-label col-xs-4 col-sm-2">短信验证码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1 input-text1-15" value=""  id="" name="code">
+				<label style="margin-left: 1%;" class="intro">*</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="submit" style="margin-left: 25%;">验证财务手机号码</button>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript">
+	function checkCode(){
+		if($('.btn').html() == '验证财务手机号码'){
+			$('.v_code').css('display','block');
+			$('.btn').html('保存');
+			return false;
+		}else{
+			return true;
+		}
+	}
+</script>
+</body>
+</html>
