@@ -11,8 +11,11 @@
 	.wrap1{position:absolute; top:0; right:0; bottom:0; left:0; margin:auto }/*把整个屏幕真正撑开--而且能自己实现居中*/
 	.main_content{background:url(__STATIC__/bis/login/images/main_bg.png) repeat; margin-left:auto; margin-right:auto; text-align:left; float:none; border-radius:8px;}
 	.form-group{position:relative;}
-	.login_btn{display:block; background:#3872f6; color:#fff; font-size:15px; width:100%; line-height:50px; border-radius:3px; border:none; }
-	.login_input{width:100%; border:1px solid #3872f6; border-radius:3px; line-height:40px; padding:2px 5px 2px 30px; background:none;}
+	.login_btn{display:block; background:#3872f6; color:#fff; font-size:15px; width:100%; line-height:50px; border-radius:3px; border:none; margin-bottom: 1%}
+	.register_btn{display:block; background:#d4885c; color:#fff; font-size:15px; width:100%; line-height:50px; border-radius:3px; border:none; text-align: center;}
+	.register_a{text-decoration: none;cursor:pointer;}
+	.register_a:hover{text-decoration: none;cursor:pointer;}
+    .login_input{width:100%; border:1px solid #3872f6; border-radius:3px; line-height:40px; padding:2px 5px 2px 30px; background:none;}
 	.icon_font{position:absolute; bottom:15px; left:10px; font-size:18px; color:#3872f6;}
 	.font16{font-size:16px;}
 	.mg-t20{margin-top:20px;}
@@ -43,12 +46,8 @@
                         <i class="icon-lock icon_font"></i>
                         <input name="password" type="password" class="login_input" placeholder="请输入密码" />
                     </div>
-                    <!--<div class="checkbox mg-b25">-->
-                        <!--<label>-->
-                            <!--<input type="checkbox" />记住我的登录信息-->
-                        <!--</label>-->
-                    <!--</div>-->
                     <button style="submit" class="login_btn">登 录</button>
+                    <a class="register_a" href="{:url('register/index')}"><input name="" type="" class="register_btn" value="&nbsp;注 册&nbsp;"></a>
                </form>
         </div><!--row end-->
     </div><!--container end-->
