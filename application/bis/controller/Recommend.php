@@ -3,6 +3,7 @@ namespace app\bis\controller;
 use think\Controller;
 use app\api\controller\Image;
 use think\Db;
+use think\cache\driver\Redis;
 
 class Recommend extends Base {
 
@@ -65,9 +66,10 @@ class Recommend extends Base {
             $image_data = str_replace("\\", "/", $image_data);
         }
 
+        $bis_id = session('bis_id','','bis');
         //设置添加到数据库的数据
         $recommend_data = [
-            'bis_id'  => session('bis_id','','bis'),
+            'bis_id'  => $bis_id,
             'image' => $image_data,
             'redirect_url' => $param['redirect_url'],
             'type' => $param['type'],
@@ -80,6 +82,8 @@ class Recommend extends Base {
         $r_res = model('Recommend')->add($recommend_data);
 
         if($r_res){
+            //更新redis
+            $this->updateRedis($bis_id);
             $this->success("新增成功");
         }else{
             $this->error('新增失败');
@@ -118,6 +122,9 @@ class Recommend extends Base {
         //更新数据
         Db::table('store_recommend')->where('id = '.$param['res_id'])->update($data);
 
+        //更新redis
+        $this->updateRedis($param['bis_id']);
+
         $this->success("修改成功!");
     }
 
@@ -132,6 +139,11 @@ class Recommend extends Base {
         $data['listorder'] = $listorder;
 
         $res = Db::table('store_recommend')->where('id = '.$id)->update($data);
+
+        //获取bis_id
+        $bis_id = model('Recommend')->getBisIdById($id);
+        //更新redis
+        $this->updateRedis($bis_id);
 
         if($res){
             return show(1,'success',$_SERVER['HTTP_REFERER']);
@@ -150,11 +162,23 @@ class Recommend extends Base {
         $res = Db::table('store_recommend')->where('id = '.$id)->update($data);
 
         if($res){
+            //获取bis_id
+            $bis_id = model('Recommend')->getBisIdById($id);
+            //更新redis
+            $this->updateRedis($bis_id);
             $this->success('更新状态成功!');
         }else{
             $this->error('更新状态失败!');
         }
     }
 
+    //更新redis
+    public function updateRedis($bis_id){
+        $redis = new Redis();
+        $redis_key = "banners_list_".$bis_id;
+        $res = model('Recommend')->getBanners($bis_id);
+        $json = json_encode($res);
+        $redis->set($redis_key,$json);
+    }
 
 }
