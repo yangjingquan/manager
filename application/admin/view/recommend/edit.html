@@ -4,7 +4,7 @@
 	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" enctype="multipart/form-data" method="post" action="{:url('recommend/update')}">
 		<input type="hidden" name="res_id" value="{$rec_res.id}">
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>推荐位图片：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>轮播图图片：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="file" value="" id="image" name="image">
 				<img style="width: 15%;" src="" id="image_c" onclick="F_Open('image_c','image')" >
@@ -17,12 +17,12 @@
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>推荐位栏目：</label>
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>轮播图栏目：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<span class="select-box">
 				<select name="type" class="select type">
 					<option value="">--请选择--</option>
-					<option value="1" {if condition="$rec_res.type eq 1"} selected="selected" {/if}>首页banner</option>
+					<option value="1" {if condition="$rec_res.type eq 1"} selected="selected" {/if}>首页轮播图</option>
 					<!--<option value="2" {if condition="$rec_res.type eq 2"} selected="selected" {/if}>其他位置</option>-->
 				</select>
 				</span>
