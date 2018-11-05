@@ -109,6 +109,19 @@ class Recommend extends Model{
         return $res;
     }
 
+    //获取当前商家banner
+    public function getBanners($bis_id){
+        $res = Db::table('store_recommend')->where('bis_id = '.$bis_id.' and type = 1 and status = 1')->order('listorder desc,create_time desc')->limit(3)->select();
+        return $res;
+    }
+
+    //通过id获取bis_id
+    public function getBisIdById($id)
+    {
+        $res = Db::table('store_recommend')->where('id = '.$id)->find();
+        return $res['bis_id'];
+    }
+
 }
 
 ?>
