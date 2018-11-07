@@ -229,6 +229,13 @@
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">会员商品：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" style="width:2%;" value="1" name="mem_product" {if condition="$pro_res.mem_product eq 1"} checked="checked" {/if}>是
+				<input type="radio" style="width:2%;" value="0" name="mem_product" {if condition="$pro_res.mem_product eq 0"} checked="checked" {/if}>否
+			</div>
+		</div>
 		<div class="row cl {$is_pintuan == 1 ? '' : 'pintuan_display'}">
 			<label class="form-label col-xs-4 col-sm-2">成团人数：</label>
 			<div class="formControls col-xs-8 col-sm-9">
