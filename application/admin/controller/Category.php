@@ -5,7 +5,7 @@ use think\Validate;
 use think\Db;
 
 class Category extends Base {
-
+    const PAGE_SIZE = 20;
     //商家分类列表
     public function index(){
         $current_page = input('get.current_page',1,'intval');
@@ -319,6 +319,184 @@ class Category extends Base {
         }
         //通过id获取二级分类
         $categorys = model('DefinedCategory')->getNormalCategoryByParentId($category_id);
+
+        if(!$categorys){
+            return show(0,'error');
+        }
+        return show(1,'success',$categorys);
+    }
+
+    //****************************************
+    //以下为餐饮部分
+    //分类列表
+    public function catIndex(){
+        $current_page = input('get.current_page',1,'intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('CatCategory')->getAllCategorysCount();
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('CatCategory')->getAllCategorys($bis_id,$limit,$offset);
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+
+        return $this->fetch('catering/category/index',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'current_page'  => $current_page,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res,
+        ]);
+    }
+
+    //添加分类页面
+    public function catAdd(){
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/category/add',[
+            'bis_res'  => $bis_res
+        ]);
+    }
+
+
+    //编辑分类
+    public function catEdit(){
+        //获取参数
+        $id = input('get.id');
+        $bis_id = input('get.bis_id');
+        //获取该分类信息
+        $category = Db::table('cy_category')->where('id = '.$id)->find();
+
+        return $this->fetch('catering/category/catedit',[
+            'category'  => $category,
+        ]);
+    }
+
+    //添加分类
+    public function catSave(){
+        //获取提交的数据
+        $param = input('post.');
+        //验证数据
+        $validate = validate('Category');
+        if(!$validate->scene('add')->check($param)){
+            $this->error($validate->getError());
+        }
+
+        //设置添加到数据库的数据
+        $data = [
+            'bis_id' => $param['bis_id'],
+            'cat_name' => $param['cat_name'],
+            'listorder' => 0,
+            'create_time' => date('Y-m-d H:i:s'),
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        $res = model('CatCategory')->add($data);
+
+        if($res){
+            $this->success("新增成功");
+        }else{
+            $this->error('新增失败');
+        }
+    }
+
+    //根据父id查询分类信息
+    public function getCategorysInfo1(){
+        $res = model('Category')->getCategorysByParentId();
+
+        if($res){
+            return show(1,'success',$res);
+        }else{
+            return show(0,'error');
+        }
+    }
+
+    //排序
+    public function catListorder(){
+        if(!request()->isPost()){
+            return show(0,'请求方式错误');
+        }
+        //获取参数
+        $id = input('post.id');
+        $listorder = input('post.listorder');
+        $data['listorder'] = $listorder;
+
+        $res = Db::table('cy_category')->where('id = '.$id)->update($data);
+
+        if($res){
+            return show(1,'success',$_SERVER['HTTP_REFERER']);
+        }else{
+            return show(1,'error');
+        }
+    }
+
+    //更改状态
+    public function catUpdateStatus(){
+        //获取参数
+        $id = input('get.id');
+        $status = input('get.status');
+        $data['status'] = $status;
+        $res = Db::table('cy_category')->where('id = '.$id)->update($data);
+
+        if($res){
+            $this->success('更新状态成功!');
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
+
+    //修改分类
+    public function catUpdateCategory(){
+        if(!request()->isPost()){
+            $this->error('请求方式错误!');
+        }
+        //获取提交的数据
+        $param = input('post.');
+        //验证数据
+        $validate = validate('Category');
+        if(!$validate->scene('update')->check($param)){
+            $this->error($validate->getError());
+        }
+
+        //设置添加到数据库的数据
+        $data = [
+            'cat_name' => $param['cat_name'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_category')->where('id = '.$param['id'])->update($data);
+
+        if($res){
+            $this->success("修改成功");
+        }else{
+            $this->error('修改失败');
+        }
+    }
+
+    //添加商品页面获取一级分类信息
+    public function getNormalFirstCategory1(){
+        $bis_id = session('bis_id','','bis');
+        $defined_category = model('Category')->getNormalFirstCategory($bis_id);
+        if($defined_category){
+            return show(1,'success',$defined_category);
+        }else{
+            return show(0,'error');
+        }
+    }
+
+    //添加商品页面根据父id获取分类信息
+    public function getCategoryByParentId1(){
+
+        $category_id = input('post.category_id',0,'intval');
+
+        if(!$category_id){
+            $this->error('ID不合法');
+        }
+        //通过id获取二级分类
+        $categorys = model('Category')->getNormalCategoryByParentId($category_id);
 
         if(!$categorys){
             return show(0,'error');

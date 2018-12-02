@@ -6,7 +6,7 @@ use think\Validate;
 use think\Db;
 
 class Product extends Base {
-
+    const PAGE_SIZE = 20;
     //商品列表
     public function index(){
         $date_from = input('get.date_from');
@@ -15,7 +15,7 @@ class Product extends Base {
         $bis_id = input('get.bis_id',0,'intval');
 
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $pro_count = model('Products')->getAllProductCount($bis_id,$date_from,$date_to,$pro_name);
         //总页码
@@ -49,7 +49,7 @@ class Product extends Base {
         $pro_name = input('get.pro_name');
 
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $pro_count = model('Products')->getAllJfProductCount($bis_id,$date_from,$date_to,$pro_name);
         //总页码
@@ -188,7 +188,6 @@ class Product extends Base {
             $this->error('更新状态失败!');
         }
     }
-
 
     //更改推荐状态
     public function updateRecommendStatus(){
@@ -650,10 +649,144 @@ class Product extends Base {
         }else{
             return show(0,'error');
         }
-
-
     }
 
+    //************************************
+    //以下是餐饮相关接口
+    //编辑商品
+    public function catEdit(){
+        //获取参数
+        $id = input('get.id');
+        $bis_id = input('get.bis_id');
+        //获取该商品信息
+        $pro_res = model('Products')->getProInfoById($id);
+        $category = model('CatCategory')->getNormalFirstCategory($bis_id);
+        return $this->fetch('catering/product/edit',[
+            'pro_res'  => $pro_res,
+            'category'  => $category,
+            'pro_id'  => $id
+        ]);
+    }
+
+
+    //更改状态
+    public function updateCatStatus(){
+        //获取参数
+        $id = input('get.id');
+        $status = input('get.status');
+        $data['status'] = $status;
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            $this->success('删除成功!');
+        }else{
+            $this->error('删除失败!');
+        }
+    }
+
+    //修改商品
+    public function updateCatProduct(){
+        if(!request()->isPost()){
+            $this->error('请求方式错误!');
+        }
+        //获取提交的数据
+        $param = input('post.');
+
+        //上传图片相关
+        $image = new Image();
+
+        //设置更新的数据
+        $product_data = [
+            'cat_id' => $param['cat_id'],
+            'p_name' => $param['p_name'],
+            'pro_type' => $param['pro_type'],
+            'original_price' => $param['original_price'],
+            'associator_price' => $param['associator_price'],
+            'introduce' => $param['intro'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        //设置图片
+        if($_FILES['image']['error'] == 0){
+            $upload_image = $image->uploadS('image','product');
+            $upload_image = str_replace("\\", "/", $upload_image);
+            $product_data['image'] = $upload_image;
+        }
+        //更新商品表
+        $p_res = Db::table('cy_products')->where('id = '.$param['pro_id'])->update($product_data);
+
+        $this->success("修改成功!");
+    }
+
+    //餐饮商品列表
+    public function cy_index(){
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $pro_name = input('get.pro_name');
+        $bis_id = input('get.bis_id',0,'intval');
+
+        $current_page = input('get.current_page',1,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        $pro_count = model('Products')->getCatAllProductCount($bis_id,$date_from,$date_to,$pro_name);
+        //总页码
+        $pages = ceil($pro_count / $limit);
+
+        $pro_res = model('Products')->getCatAllProducts($bis_id,$limit, $offset,$date_from,$date_to,$pro_name);
+
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/product/index',[
+            'pro_res'  => $pro_res,
+            'pages'  => $pages,
+            'count'  => $pro_count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'pro_name'  => $pro_name,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res,
+        ]);
+    }
+
+    //更改餐品上架状态
+    public function updateCatSaleStatus(){
+        //获取参数
+        $id = input('get.id');
+        $on_sale = input('get.on_sale');
+        $data['on_sale'] = $on_sale;
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($on_sale == 1){
+                $this->success('上架成功!');
+            }else{
+                $this->success('下架成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
+
+    //更改餐品推荐状态
+    public function updateCatRecommendStatus(){
+        //获取参数
+        $id = input('get.id');
+        $is_recommend = input('get.is_recommend');
+        $data['is_recommend'] = $is_recommend;
+        $data['update_time'] = date('Y-m-d H:i:s');
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($is_recommend == 1){
+                $this->success('设置推荐成功!');
+            }else{
+                $this->success('取消推荐成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
 
 
 }

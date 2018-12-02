@@ -62,6 +62,57 @@ class Products extends Model{
         return $result;
     }
 
+    //查询餐品
+    public function getCatAllProducts($bis_id,$limit, $offset, $date_from, $date_to,$pro_name){
+        if($bis_id != 0){
+            $where = " pro.status <> -1 and pro.bis_id = ".$bis_id;
+        }else{
+            $where = " pro.status <> -1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and pro.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and pro.create_time < '$new_date_to'";
+        }
+        if($pro_name){
+            $where .= " and pro.p_name like '%$pro_name%'";
+        }
+
+        $listorder = [
+            'pro.id'  => 'desc'
+        ];
+        $res = Db::table('cy_products')->alias('pro')->field('pro.*,bis.bis_name,cat.cat_name')
+            ->join('cy_bis bis','pro.bis_id = bis.id','LEFT')
+            ->join('cy_category cat','pro.cat_id = cat.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset,$limit)
+            ->select();
+
+        $index = 0;
+        foreach($res as $val){
+            switch($val['pro_type']){
+                case 1:
+                    $type = '堂食';
+                    break;
+                case 2:
+                    $type = '外卖';
+                    break;
+                default:
+                    $type = '堂食&外卖';
+                    break;
+            }
+            $res[$index]['type'] = $type;
+            $index ++;
+        }
+
+        return $res;
+    }
+
     //查询商品数量
     public function getAllProductCount($bis_id,$date_from,$date_to,$pro_name){
         if($bis_id != 0){
@@ -85,17 +136,44 @@ class Products extends Model{
         return $res;
     }
 
+    //查询餐品数量
+    public function getCatAllProductCount($bis_id,$date_from,$date_to,$pro_name){
+        if($bis_id != 0){
+            $where = " pro.status <> -1 and pro.bis_id = ".$bis_id;
+        }else{
+            $where = " pro.status <> -1";
+        }
+
+
+        if($date_from){
+            $where .= " and pro.create_time >= '$date_from'";
+        }
+        if($date_to){
+            $where .= " and pro.create_time < '$date_to'";
+        }
+        if($pro_name){
+            $where .= " and pro.p_name like '%$pro_name%'";
+        }
+
+        $res = Db::table('cy_products')->alias('pro')
+            ->join('cy_bis bis','pro.bis_id = bis.id','LEFT')
+            ->join('cy_category cat','pro.cat_id = cat.id','LEFT')
+            ->where($where)
+            ->count();
+
+        return $res;
+    }
+
     //通过id获取商品信息
     public function getProInfoById($id){
         //设置查询条件
         $where = [
             'pro.id'  => $id
         ];
-        $res = Db::table('store_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.rec_rate,pro.pintuan_count,pro.pintuan_price,pro.ex_jifen,pro.cat1_id,pro.cat2_id,pro.cat3_id,pro.defined_cat1_id,pro.defined_cat2_id,pro.brand,pro.unit,pro.producing_area,pro.original_price,pro.associator_discount,pro.associator_price,pro.vip_discount,pro.vip_price,pro.vvip_discount,pro.vvip_price,weight,pro.listorder,pro.huohao,pro.rate,pro.keywords,pro.introduce,pro.wx_introduce,pro.nature,pro.jifen,img.image,img.thumb,img.config_image1,img.config_image2,img.config_image3,img.config_image4,img.wx_config_image1,img.wx_config_image2,img.wx_config_image3,img.wx_config_image4,img.wx_config_image5,img.wx_config_image6,img.wx_config_image7,img.wx_config_image8,img.wx_config_image9,img.wx_config_image10')
-            ->join('store_pro_images img','pro.id = img.p_id','LEFT')
+        $res = Db::table('cy_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.cat_id,pro.original_price,pro.associator_price,pro.introduce as intro,pro.image,pro.pro_type')
             ->where($where)
             ->find();
-        $res['rec_rate'] = $res['rec_rate'] * 100;
+
         return $res;
     }
 

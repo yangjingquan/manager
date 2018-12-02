@@ -122,6 +122,66 @@ class Recommend extends Model{
         return $res['bis_id'];
     }
 
+    //获取餐饮所有推荐位信息
+    public function getCatAllRecommends($bis_id,$limit,$offset){
+        if($bis_id != 0){
+            $where = [
+                'rec.status'  => ['neq','-1'],
+                'rec.bis_id'  => $bis_id
+            ];
+        }else{
+            $where = [
+                'rec.status'  => ['neq','-1']
+            ];
+        }
+
+        $listorder = [
+            'rec.listorder'  => 'desc',
+            'rec.id'  => 'desc'
+        ];
+
+        $res = Db::table('cy_banners')->alias('rec')->field('rec.*,bis.bis_name')
+            ->join('cy_bis bis','rec.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset,$limit)
+            ->select();
+        return $res;
+    }
+
+    //获取餐饮所有推荐位总数
+    public function getCatAllRecommendsCount($bis_id){
+        if($bis_id != 0){
+            $where = [
+                'status'  => ['neq','-1'],
+                'bis_id'  => $bis_id
+            ];
+        }else{
+            $where = [
+                'status'  => ['neq','-1']
+            ];
+        }
+
+        $res = Db::table('cy_banners')->where($where)->count();
+        return $res;
+    }
+
+    //添加推荐位
+    public function catAdd($data){
+        $res = Db::table('cy_banners')->insert($data);
+        return $res;
+    }
+
+    //根据id获取推荐位信息
+    public function getCatRecInfoById($id){
+        $where = [
+            'id'  => $id
+        ];
+
+        $res = Db::table('cy_banners')->where($where)->find();
+        return $res;
+    }
+
 }
 
 ?>

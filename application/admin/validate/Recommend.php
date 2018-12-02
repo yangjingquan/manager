@@ -16,8 +16,10 @@ class Recommend extends Validate{
     //场景设置
     protected $scene = [
         'add'  =>  ['bis_id','redirect_url','type'],//商家添加
+        'catAdd'  =>  ['bis_id','redirect_url'],//餐饮商家添加
         'add1'  =>  ['redirect_url'],//平台添加
         'update'   => ['res_id','redirect_url','type'],//商家修改
+        'catUpdate'   => ['res_id','redirect_url'],//餐饮商家修改
         'update1'   => ['res_id','redirect_url'],//平台修改
     ];
 

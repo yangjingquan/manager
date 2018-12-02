@@ -10,8 +10,22 @@ class Category extends Model{
         return Db::table('store_category')->insert($data);
     }
 
-    //获取一级分类信息
+    //商城获取一级分类信息
     public function getNormalFirstCategory(){
+        $data = [
+            'status' => 1,
+            'parent_id' => 0
+        ];
+
+        $order = [
+            'id'  => 'desc'
+        ];
+
+        return Db::table('store_category')->where($data)->order($order)->select();
+    }
+
+    //餐饮获取一级分类信息
+    public function getCatNormalFirstCategory(){
         $data = [
             'status' => 1,
             'parent_id' => 0
@@ -74,8 +88,25 @@ class Category extends Model{
         return $result;
     }
 
-    //获取所有分类数量
+    //商城获取所有分类数量
     public function getCategorysCount($parent_id = 0){
+        $data = [
+            'parent_id'  => $parent_id,
+            'status'  => ['neq',-1]
+        ];
+
+        $order = [
+            'listorder'  => 'desc',
+            'id'  => 'desc'
+        ];
+
+        $result = Db::table('store_category')->where($data)->count();
+
+        return $result;
+    }
+
+    //餐饮获取所有分类数量
+    public function getCatCategorysCount($parent_id = 0){
         $data = [
             'parent_id'  => $parent_id,
             'status'  => ['neq',-1]

@@ -6,6 +6,7 @@ use app\api\controller\Image;
 use think\Db;
 
 class Bis extends Base {
+    const PAGE_SIZE = 20;
 
     //店铺详情
     public function detail(){
@@ -24,6 +25,20 @@ class Bis extends Base {
             'bis_res'  => $bis_res,
             'cat_res'  => $cat_res
          ]);
+    }
+
+    //餐饮店铺详情
+    public function catDetail(){
+        $bis_id = input('get.bis_id');
+        //账号信息
+        $res = Db::table('cy_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
+        //店铺信息
+        $bis_res = Db::table('cy_bis')->where('id = '.$bis_id)->find();
+
+        return $this->fetch('catering/bis/index',[
+            'user_res'  => $res,
+            'bis_res'  => $bis_res
+        ]);
     }
 
     //更新店铺信息
@@ -94,7 +109,39 @@ class Bis extends Base {
         $this->success("更新成功");
     }
 
-    //商家列表
+    //修改餐饮店铺信息
+    public function catSave(){
+        if(!request()->isPost()){
+            $this->error('请求方式错误!');
+        }
+        $param = input('post.');
+        //设置添加到数据库的数据
+        $data = [
+            'bis_name' => $param['bis_name'],
+            'brand' => $param['brand'],
+            'leader' => $param['leader'],
+            'link_tel' => $param['link_tel'],
+            'link_mobile' => $param['link_mobile'],
+            'email' => $param['email'],
+            'intro' => $param['intro'],
+            'scope' => $param['scope'],
+            'min_price' => $param['min_price'],
+            'lunch_box_fee' => $param['lunch_box_fee'],
+            'distribution_fee' => $param['distribution_fee'],
+            'business_time' => $param['business_time'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_bis')->where('id = '.$param['id'])->update($data);
+
+        if($res){
+            $this->success("修改成功");
+        }else{
+            $this->error('修改失败');
+        }
+    }
+
+    //商城商家列表
     public function index(){
         $current_page = input('get.current_page',1,'intval');
         $limit = 10;
@@ -103,7 +150,7 @@ class Bis extends Base {
         $pages = ceil($count / $limit);
         $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status')
             ->where('status >= 0')
-            ->limit($offset,$limit)
+            ->limit($offset,self::PAGE_SIZE)
             ->order('id desc')
             ->select();
 
@@ -128,7 +175,41 @@ class Bis extends Base {
         ]);
     }
 
-    //更改状态
+    //餐饮店铺列表
+    public function list(){
+        $current_page = input('get.current_page',1,'intval');
+        $limit = 10;
+        $offset = ($current_page - 1) * $limit;
+        $count = Db::table('cy_bis')->where('status >= 0')->count();
+        $pages = ceil($count / $limit);
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name,citys,address,business_time,status')
+            ->where('status >= 0')
+            ->limit($offset,self::PAGE_SIZE)
+            ->order('id desc')
+            ->select();
+
+        $index = 0;
+        foreach($bis_res as $val){
+            $citys = $val['citys'];
+            $temp_arr = explode(',',$citys);
+            $province_id = $temp_arr[0];
+            $city_id = $temp_arr[1];
+            $province_info = Db::table('store_province')->field('p_name')->where('id = '.$province_id)->find();
+            $city_info = Db::table('store_city')->field('c_name')->where('id = '.$city_id)->find();
+            $province = $province_info['p_name'];
+            $city = $city_info['c_name'];
+            $bis_res[$index]['address_info'] = $province.$city.$val['address'];
+            $index ++;
+        }
+        return $this->fetch('catering/bis/list',[
+            'bis_res'  => $bis_res,
+            'pages'  => $pages,
+            'current_page'  => $current_page,
+            'count'  => $count,
+        ]);
+    }
+
+    //商城--更改状态
     public function updateStatus(){
         //获取参数
         $bis_id = input('get.bis_id');
@@ -136,6 +217,17 @@ class Bis extends Base {
 
         $data['status'] = $status;
         $res = Db::table('store_bis')->where('id = '.$bis_id)->update($data);
+        $this->success("更新成功");
+    }
+
+    //餐饮--更改状态
+    public function catUpdateStatus(){
+        //获取参数
+        $bis_id = input('get.bis_id');
+        $status = input('get.status');
+
+        $data['status'] = $status;
+        $res = Db::table('cy_bis')->where('id = '.$bis_id)->update($data);
         $this->success("更新成功");
     }
 
@@ -283,6 +375,123 @@ class Bis extends Base {
         $data['password'] = md5($pwd);
         $res = Db::table('store_bis_admin_users')->where('id = '.$user_id)->update($data);
         return show(1,'success');
+    }
+
+    //店铺图片设置页面
+    public function picDetail(){
+        $bis_id = input('get.bis_id');
+        $img_res = Db::table('cy_bis_images')->where('bis_id = '.$bis_id)->find();
+        if(!$img_res){
+            $img_res = [
+                'logo_image'  => '',
+                'env_image1'  => '',
+                'env_image2'  => '',
+                'env_image3'  => '',
+                'env_image4'  => '',
+                'env_image5'  => '',
+                'env_image6'  => '',
+                'qua_image1'  => '',
+                'qua_image2'  => '',
+                'qua_image3'  => '',
+                'qua_image4'  => '',
+                'qua_image5'  => '',
+                'qua_image6'  => ''
+            ];
+        }
+
+        return $this->fetch('catering/bis/img_index',[
+            'bis_id'  => $bis_id,
+            'img_res'  => $img_res
+        ]);
+    }
+
+    //设置图片
+    public function saveImgs(){
+        $bis_id = input('post.bis_id');
+        //上传图片相关
+        $image = new Image();
+
+        //设置图片
+        if($_FILES['logo_image']['error'] == 0){
+            $images_data['logo_image'] = $image->uploadS('logo_image','bisImgs');
+            $images_data['logo_image'] = str_replace("\\", "/", $images_data['logo_image']);
+        }
+        if($_FILES['env_image1']['error'] == 0){
+            $images_data['env_image1'] = $image->uploadS('env_image1','bisImgs');
+            $images_data['env_image1'] = str_replace("\\", "/", $images_data['env_image1']);
+        }
+        if($_FILES['env_image2']['error'] == 0){
+            $images_data['env_image2'] = $image->uploadS('env_image2','bisImgs');
+            $images_data['env_image2'] = str_replace("\\", "/", $images_data['env_image2']);
+        }
+        if($_FILES['env_image3']['error'] == 0){
+            $images_data['env_image3'] = $image->uploadS('env_image3','bisImgs');
+            $images_data['env_image3'] = str_replace("\\", "/", $images_data['env_image3']);
+        }
+        if($_FILES['env_image4']['error'] == 0){
+            $images_data['env_image4'] = $image->uploadS('env_image4','bisImgs');
+            $images_data['env_image4'] = str_replace("\\", "/", $images_data['env_image4']);
+        }
+        if($_FILES['env_image5']['error'] == 0){
+            $images_data['env_image5'] = $image->uploadS('env_image5','bisImgs');
+            $images_data['env_image5'] = str_replace("\\", "/", $images_data['env_image5']);
+        }
+        if($_FILES['env_image6']['error'] == 0){
+            $images_data['env_image6'] = $image->uploadS('env_image6','bisImgs');
+            $images_data['env_image6'] = str_replace("\\", "/", $images_data['env_image6']);
+        }
+        if($_FILES['qua_image1']['error'] == 0){
+            $images_data['qua_image1'] = $image->uploadS('qua_image1','bisImgs');
+            $images_data['qua_image1'] = str_replace("\\", "/", $images_data['qua_image1']);
+        }
+        if($_FILES['qua_image2']['error'] == 0){
+            $images_data['qua_image2'] = $image->uploadS('qua_image2','bisImgs');
+            $images_data['qua_image2'] = str_replace("\\", "/", $images_data['qua_image2']);
+        }
+        if($_FILES['qua_image3']['error'] == 0){
+            $images_data['qua_image3'] = $image->uploadS('qua_image3','bisImgs');
+            $images_data['qua_image3'] = str_replace("\\", "/", $images_data['qua_image3']);
+        }
+        if($_FILES['qua_image4']['error'] == 0){
+            $images_data['qua_image4'] = $image->uploadS('qua_image4','bisImgs');
+            $images_data['qua_image4'] = str_replace("\\", "/", $images_data['qua_image4']);
+        }
+        if($_FILES['qua_image5']['error'] == 0){
+            $images_data['qua_image5'] = $image->uploadS('qua_image5','bisImgs');
+            $images_data['qua_image5'] = str_replace("\\", "/", $images_data['qua_image5']);
+        }
+        if($_FILES['qua_image6']['error'] == 0){
+            $images_data['qua_image6'] = $image->uploadS('qua_image6','bisImgs');
+            $images_data['qua_image6'] = str_replace("\\", "/", $images_data['qua_image6']);
+        }
+
+        $img_res = Db::table('cy_bis_images')->where('bis_id = '.$bis_id)->find();
+        if(!$img_res){
+            //设置添加的信息
+            $insert_data = [
+                'bis_id' => $bis_id,
+                'logo_image' => !empty($images_data['logo_image']) ? $images_data['logo_image'] : '',
+                'env_image1' => !empty($images_data['env_image1']) ? $images_data['env_image1'] : '',
+                'env_image2' => !empty($images_data['env_image2']) ? $images_data['env_image2'] : '',
+                'env_image3' => !empty($images_data['env_image3']) ? $images_data['env_image3'] : '',
+                'env_image4' => !empty($images_data['env_image4']) ? $images_data['env_image4'] : '',
+                'env_image5' => !empty($images_data['env_image5']) ? $images_data['env_image5'] : '',
+                'env_image6' => !empty($images_data['env_image6']) ? $images_data['env_image6'] : '',
+                'qua_image1' => !empty($images_data['qua_image1']) ? $images_data['qua_image1'] : '',
+                'qua_image2' => !empty($images_data['qua_image2']) ? $images_data['qua_image2'] : '',
+                'qua_image3' => !empty($images_data['qua_image3']) ? $images_data['qua_image3'] : '',
+                'qua_image4' => !empty($images_data['qua_image4']) ? $images_data['qua_image4'] : '',
+                'qua_image5' => !empty($images_data['qua_image5']) ? $images_data['qua_image5'] : '',
+                'qua_image6' => !empty($images_data['qua_image6']) ? $images_data['qua_image6'] : '',
+            ];
+
+            $res = Db::table('cy_bis_images')->insert($insert_data);
+        }else{
+            //更新操作
+            $res =  Db::table('cy_bis_images')->where('id = '.$img_res['id'])->update($images_data);
+        }
+
+        $this->success("更新成功!");
     }
 
 }
