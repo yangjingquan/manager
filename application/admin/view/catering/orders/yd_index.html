@@ -24,6 +24,16 @@
 	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 预定订单管理 <span class="c-gray en">&gt;</span> 预定订单列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 	<div class="page-container">
 		<form action="{:url('orders/yd_index')}" method="get">
+			<div style="margin-bottom: 0.5%;" class="">选择商铺：
+				<span style="width: 15%;" class="select-box">
+					<select name="bis_id" class="select bis_id">
+						<option value="0">全部</option>
+						{volist name="bis_res" id="vo"}
+						<option value="{$vo.bis_id}" {if condition="$bis_id eq $vo.bis_id"} selected="selected" {/if}>{$vo.bis_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
 			<div class=""> 日期范围：
 				<input type="date" name="date_from" value="{$date_from}" id="logmin" class="input-text" style="width:170px;">
 				-
@@ -45,6 +55,7 @@
 			<table class="table table-border table-bordered table-bg table-hover table-sort">
 				<thead>
 					<tr class="text-c">
+						<th width="40">店铺</th>
 						<th width="40">ID</th>
 						<th width="40">时间</th>
 						<th width="80">日期</th>
@@ -60,6 +71,7 @@
 				<tbody>
 					{volist name="res" id="vo"}
 						<tr class="text-c va-m">
+							<td>{$vo.bis_name}</td>
 							<td>{$vo.order_id}</td>
 							<td>{$vo.date}</td>
 							<td>{$vo.time}</td>

@@ -205,7 +205,7 @@
         if($status == 1){
             $str = "<span class='label label-success radius'>已点餐</span>";
         }else{
-            $str = "<span class='label label-success radius'>完成</span>";
+            $str = "<span style='color: red' class='label label-success radius'>完成</span>";
         }
 
         return $str;
@@ -213,13 +213,13 @@
     //设置外卖订单状态
     function wm_order_status($status){
         if($status == 1){
-            $str = "<span class='label label-success radius'>未付款</span>";
+            $str = "<span style='color: red' class='label label-success radius'>未付款</span>";
         }elseif($status == 2){
-            $str = "<span class='label label-success radius'>已付款</span>";
+            $str = "<span style='color: #555fff' class='label label-success radius'>已付款</span>";
         }elseif($status == 3){
-            $str = "<span class='label label-success radius'>配送中</span>";
+            $str = "<span style='color: #0a6999' class='label label-success radius'>配送中</span>";
         }else{
-            $str = "<span class='label label-success radius'>完成</span>";
+            $str = "<span style='color: #333333' class='label label-success radius'>完成</span>";
         }
 
         return $str;
@@ -229,9 +229,9 @@
         if($status == 1){
             $str = "<span class='label label-success radius'>预定中</span>";
         }elseif($status == 2){
-            $str = "<span class='label label-success radius'>取消</span>";
+            $str = "<span style='color: red' class='label label-success radius'>取消</span>";
         }else{
-            $str = "<span class='label label-success radius'>预定完成</span>";
+            $str = "<span style='color: #333333;' class='label label-success radius'>预定完成</span>";
         }
 
         return $str;

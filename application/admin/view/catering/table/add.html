@@ -3,6 +3,18 @@
 <div class="page-container">
 	<form class="form form-horizontal form-o2o-add" id="form-o2o-add" method="post" action="{:url('table/save')}">
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择商铺：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<span style="width: 30%;" class="select-box">
+					<select name="bis_id" id="bis_id" class="select bis_id">
+						{volist name="bis_res" id="vo"}
+						<option value="{$vo.bis_id}">{$vo.bis_name}</option>
+						{/volist}
+					</select>
+				</span>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>桌位名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text" value="" placeholder="" id="name" name="table_name">
