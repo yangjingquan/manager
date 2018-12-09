@@ -104,7 +104,7 @@ class Announcement extends Base {
         return $this->fetch();
     }
 
-    //添加商品
+    //添加banner
     public function save(){
         if(!request()->isPost()){
             $this->error('请求方式错误!');

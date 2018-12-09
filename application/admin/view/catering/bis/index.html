@@ -16,6 +16,11 @@
 			color: red;
 		}
 
+		#acode_c{
+			width: 15%;
+			max-height: 150px;
+		}
+
 	</style>
 	<script>
 		function checkParams(){
@@ -168,9 +173,16 @@
 				<!--<input type="text" class="input-text1" value="{$bis_res.intro}" placeholder="" id="intro" name="intro">-->
 			</div>
 		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="acode_c" >
+			</div>
+		</div>
 
 		<div class="row cl">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+				<button class="btn btn-primary radius" type="button" class="makeacode" style="" onclick="makeAcode({$bis_res.id})">生成二维码</button>
 				<button class="btn btn-primary radius" type="submit" style="margin-left: 25%;">更&nbsp;新&nbsp;资&nbsp;料</button>
 			</div>
 		</div>
@@ -184,26 +196,32 @@
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
 <script type="text/javascript">
-	//初始化
-	$(function(){
-		//设置图片
-		$('#env_image1').css('display','none');
-		$('#env_image2').css('display','none');
-		$('#env_image3').css('display','none');
-		$('#env_image4').css('display','none');
-		$('#env_image5').css('display','none');
-		$('#env_image6').css('display','none');
-		$('#qua_image1').css('display','none');
-		$('#qua_image2').css('display','none');
-		$('#qua_image3').css('display','none');
-		$('#qua_image4').css('display','none');
-		$('#qua_image5').css('display','none');
-		$('#qua_image6').css('display','none');
+	$(document).ready(function () {
+		$('#acode').css('display','none');
+		$('#acode_c').attr('src','../../{$bis_res.acode}');
 	});
+
 	function F_Open(id1,id2){
 		$('#'+id1).css('display','none');
 		$('#'+id2).css('display','block');
 		document.getElementById(id2).click();
+	}
+
+	function makeAcode(bis_id){
+
+		var url = "{:url('admin/bis/getcywxacode')}";
+		var postData = {
+			'bis_id'  : bis_id
+		};
+
+		$.post(url,postData,function(result){
+			if(result.status == 1){
+				//刷新当前页面
+				location.reload();
+			}else{
+				alert(result.data);
+			}
+		},'json');
 	}
 </script>
 

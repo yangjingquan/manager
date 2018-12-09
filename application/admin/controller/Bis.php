@@ -176,9 +176,9 @@ class Bis extends Base {
     }
 
     //餐饮店铺列表
-    public function list(){
+    public function cy_list(){
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('cy_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
@@ -331,6 +331,55 @@ class Bis extends Base {
         //将图片路径更新到商家表中
         $up_data['acode'] = $img_path;
         Db::table('store_bis')->where('id = '.$bis_id)->update($up_data);
+        return show(1,'success');
+    }
+
+    //获取餐饮小程序二维码
+    public function getcywxacode(){
+
+        //获取参数
+        $bis_id = input('post.bis_id');
+
+        $bis_res = Db::table('store_home_info')->field('appid,secret')->where('id = 1')->find();
+        $appid = $bis_res['appid'];
+        $secret = $bis_res['secret'];
+
+        if($appid == ''){
+            return show(0,'fail','请先设置appid');
+        }
+        if($secret == ''){
+            return show(0,'fail','请先设置secret');
+        }
+
+        //创建文件夹
+        $upload_file_path = 'cy_wxcode/';
+        if(!is_dir($upload_file_path)) {
+            mkdir($upload_file_path,0777,true);
+        }
+
+        //获取access_token
+        $access_token_json = $this->getAccessToken($appid,$secret);
+        $arr = json_decode($access_token_json,true);
+        $access_token = $arr['access_token'];
+
+        //设置路径及二维码大小
+        $path="pages/index/index?bis_id=".$bis_id;
+        $width=430;
+
+        $post_data='{"path":"'.$path.'","width":'.$width.'}';
+        $url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=".$access_token;
+
+        $result = $this->api_notice_increment($url,$post_data);
+        //设置图片名称
+        $img_name = substr(date('Y'),2,2).date('m').date('d').$bis_id.'.png';
+
+        //设置图片路径
+        $img_path = $upload_file_path.$img_name;
+
+        file_put_contents($img_path, $result);
+        //将图片路径更新到商家表中
+        $up_data['acode'] = $img_path;
+        Db::table('cy_bis')->where('id = '.$bis_id)->update($up_data);
         return show(1,'success');
     }
 
