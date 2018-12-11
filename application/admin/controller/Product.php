@@ -7,6 +7,11 @@ use think\Db;
 
 class Product extends Base {
 
+<<<<<<< Updated upstream
+=======
+    const PAGE_SIZE = 20;
+
+>>>>>>> Stashed changes
     //商品列表
     public function index(){
         $date_from = input('get.date_from');
@@ -88,6 +93,9 @@ class Product extends Base {
         $pro_config_count = count($pro_config);
         //判断该店家是否开启拼团
         $pintuan_res = Db::table('store_bis')->field('is_pintuan')->where('id = '.$bis_id)->find();
+
+        dump($pro_res);
+        die;
         return $this->fetch('',[
             'pro_res'  => $pro_res,
             'first_category'  => $first_category,

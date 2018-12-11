@@ -6,6 +6,11 @@ use app\api\controller\Image;
 use think\Db;
 
 class Bis extends Base {
+<<<<<<< Updated upstream
+=======
+
+    const PAGE_SIZE = 20;
+>>>>>>> Stashed changes
 
     //店铺详情
     public function detail(){
@@ -13,24 +18,72 @@ class Bis extends Base {
         //账号信息
         $res = Db::table('store_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
         //店铺信息
-        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,cat.id as cat_id,cat.cat_name')
+        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,cat.id as cat_id,cat.cat_name')
             ->join('store_category cat','bis.cat_id = cat.id','LEFT')
             ->where('bis.id = '.$bis_id)
             ->find();
+
+        $citys = $bis_res['citys'];
+        $citysArr = explode(',',$citys);
+        $provinceId = $citysArr[0];
+        $cityId = $citysArr[1];
+
         //分类信息
         $cat_res = Db::table('store_category')->where('status = 1 and parent_id = 0')->select();
+        //省级信息
+        $provinces = model('Province')->getProvinceInfo();
+        //市级信息
+        $citys = model('Province')->getCitysById($provinceId);
+
         return $this->fetch('',[
             'user_res'  => $res,
             'bis_res'  => $bis_res,
-            'cat_res'  => $cat_res
+            'cat_res'  => $cat_res,
+            'provinces'  => $provinces,
+            'citys'  => $citys,
+            'province_id'  => $provinceId,
+            'city_id'  => $cityId,
          ]);
     }
 
+<<<<<<< Updated upstream
+=======
+    //餐饮店铺详情
+    public function catDetail(){
+        $bis_id = input('get.bis_id');
+        //账号信息
+        $res = Db::table('cy_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
+        //店铺信息
+        $bis_res = Db::table('cy_bis')->where('id = '.$bis_id)->find();
+
+        $citys = $bis_res['citys'];
+        $citysArr = explode(',',$citys);
+        $provinceId = $citysArr[0];
+        $cityId = $citysArr[1];
+
+        //省级信息
+        $provinces = model('Province')->getProvinceInfo();
+        //市级信息
+        $citys = model('Province')->getCitysById($provinceId);
+
+        return $this->fetch('catering/bis/index',[
+            'user_res'  => $res,
+            'bis_res'  => $bis_res,
+            'provinces'  => $provinces,
+            'citys'  => $citys,
+            'province_id'  => $provinceId,
+            'city_id'  => $cityId,
+        ]);
+    }
+
+>>>>>>> Stashed changes
     //更新店铺信息
     public function save(){
         //获取参数
         $bis_id = input('post.id');
         $bis_name = input('post.bis_name');
+        $citys = input('post.city_id').','.input('post.se_city_id');
+        $address = input('post.address');
         $jifen = input('post.jifen');
         $brand = input('post.brand');
         $leader = input('post.leader');
@@ -49,6 +102,8 @@ class Bis extends Base {
         //设置更新字段
         $data = [
             'bis_name'  => $bis_name,
+            'citys'  => $citys,
+            'address'  => $address,
             'jifen'  => $jifen,
             'brand'  => $brand,
             'leader'  => $leader,
@@ -94,7 +149,45 @@ class Bis extends Base {
         $this->success("更新成功");
     }
 
+<<<<<<< Updated upstream
     //商家列表
+=======
+    //修改餐饮店铺信息
+    public function catSave(){
+        if(!request()->isPost()){
+            $this->error('请求方式错误!');
+        }
+        $param = input('post.');
+        //设置添加到数据库的数据
+        $data = [
+            'bis_name' => $param['bis_name'],
+            'citys' => $param['city_id'].','.$param['se_city_id'],
+            'address' => $param['address'],
+            'brand' => $param['brand'],
+            'leader' => $param['leader'],
+            'link_tel' => $param['link_tel'],
+            'link_mobile' => $param['link_mobile'],
+            'email' => $param['email'],
+            'intro' => $param['intro'],
+            'scope' => $param['scope'],
+            'min_price' => $param['min_price'],
+            'lunch_box_fee' => $param['lunch_box_fee'],
+            'distribution_fee' => $param['distribution_fee'],
+            'business_time' => $param['business_time'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_bis')->where('id = '.$param['id'])->update($data);
+
+        if($res){
+            $this->success("修改成功");
+        }else{
+            $this->error('修改失败');
+        }
+    }
+
+    //商城商家列表
+>>>>>>> Stashed changes
     public function index(){
         $current_page = input('get.current_page',1,'intval');
         $limit = 10;

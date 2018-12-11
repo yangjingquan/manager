@@ -79,6 +79,36 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">选择地区：</label>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="city_id" class="select cityId">
+					<option value="0">--请选择--</option>
+					{volist name="provinces" id="vo"}
+					<option value="{$vo.id}" {if condition="$province_id eq $vo.id"} selected="selected" {/if}>{$vo.p_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="se_city_id" class="select se_city_id">
+					<option value="0">--请选择--</option>
+					{volist name="citys" id="vo"}
+					<option value="{$vo.id}" {if condition="$city_id eq $vo.id"} selected="selected" {/if}>{$vo.c_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div><label class="star_label">**</label>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">详细地址：</label>
+			<div class="formControls col-xs-8 col-sm-3">
+				<input type="text" class="input-text1" value="{$bis_res.address}" placeholder="" id="address" name="address">
+				<label class="star_label">**</label>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商户积分：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.jifen}" id="jifen" name="jifen">
@@ -208,6 +238,8 @@
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/register.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function () {
 		var logistics_status = {$bis_res.logistics_status};
@@ -271,6 +303,10 @@
 			$('.fahuo_template_id').css('display','block');
 		}
 	})
+
+	var SCOPE = {
+		'city_url' : "{:url('api/city/getCitysByParentId')}",
+	}
 </script>
 </body>
 </html>
