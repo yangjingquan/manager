@@ -147,7 +147,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
 
         ]);
     }
@@ -176,7 +177,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
 
         ]);
     }
@@ -201,7 +203,8 @@ class Product extends Base {
             'brand'  => $brand,
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
-            'pro_id'  => $id
+            'pro_id'  => $id,
+            'no_img_url'  => self::NO_IMG_URL
 
         ]);
     }

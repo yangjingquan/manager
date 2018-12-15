@@ -38,7 +38,8 @@ class Recommend extends Base {
         $rec_res = model('Recommend')->getRecInfoById($id);
 
         return $this->fetch('',[
-            'rec_res'  => $rec_res
+            'rec_res'  => $rec_res,
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 

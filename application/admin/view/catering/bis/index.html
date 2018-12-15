@@ -97,6 +97,36 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">选择地区：</label>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="city_id" class="select cityId">
+					<option value="0">--请选择--</option>
+					{volist name="provinces" id="vo"}
+					<option value="{$vo.id}" {if condition="$province_id eq $vo.id"} selected="selected" {/if}>{$vo.p_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="se_city_id" class="select se_city_id">
+					<option value="0">--请选择--</option>
+					{volist name="citys" id="vo"}
+					<option value="{$vo.id}" {if condition="$city_id eq $vo.id"} selected="selected" {/if}>{$vo.c_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div><label class="star_label">**</label>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">详细地址：</label>
+			<div class="formControls col-xs-8 col-sm-3">
+				<input type="text" class="input-text1" value="{$bis_res.address}" placeholder="" id="address" name="address">
+				<label class="star_label">**</label>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">经营品牌：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.brand}" placeholder="" id="brand" name="brand">
@@ -176,7 +206,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="acode_c" >
+				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="acode_c" >
 			</div>
 		</div>
 
@@ -195,6 +225,8 @@
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/ueditor.config.js"></script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/ueditor.all.min.js"> </script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/ueditor/1.4.3/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/register.js"></script>
+
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#acode').css('display','none');

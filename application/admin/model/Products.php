@@ -170,6 +170,20 @@ class Products extends Model{
         $where = [
             'pro.id'  => $id
         ];
+        $res = Db::table('store_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.rec_rate,pro.pintuan_count,pro.pintuan_price,pro.ex_jifen,pro.cat1_id,pro.cat2_id,pro.cat3_id,pro.defined_cat1_id,pro.defined_cat2_id,pro.brand,pro.unit,pro.producing_area,pro.original_price,pro.associator_discount,pro.associator_price,pro.vip_discount,pro.vip_price,pro.vvip_discount,pro.vvip_price,weight,pro.listorder,pro.huohao,pro.rate,pro.keywords,pro.introduce,pro.wx_introduce,pro.nature,pro.jifen,img.image,img.thumb,img.config_image1,img.config_image2,img.config_image3,img.config_image4,img.wx_config_image1,img.wx_config_image2,img.wx_config_image3,img.wx_config_image4,img.wx_config_image5,img.wx_config_image6,img.wx_config_image7,img.wx_config_image8,img.wx_config_image9,img.wx_config_image10')
+            ->join('store_pro_images img','pro.id = img.p_id','LEFT')
+            ->where($where)
+            ->find();
+        $res['rec_rate'] = $res['rec_rate'] * 100;
+        return $res;
+    }
+
+    //通过id获取商品信息
+    public function getCatProInfoById($id){
+        //设置查询条件
+        $where = [
+            'pro.id'  => $id
+        ];
         $res = Db::table('cy_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.cat_id,pro.original_price,pro.associator_price,pro.introduce as intro,pro.image,pro.pro_type')
             ->where($where)
             ->find();

@@ -13,12 +13,29 @@ class Bis extends Base {
         $user_id = session('bis_user_id','','bis');
         $mem_res = Db::table('store_bis_admin_users')->field('id,username,password')->where('id = '.$user_id)->find();
         $res = Db::table('store_bis')->where('id = '.$bis_id)->find();
+
+        $citys = $res['citys'];
+        $citysArr = explode(',',$citys);
+        $provinceId = $citysArr[0];
+        $cityId = $citysArr[1];
+
+        //省级信息
+        $provinces = model('Province')->getProvinceInfo();
+        //市级信息
+        $citys = model('Province')->getCitysById($provinceId);
+
         //分类信息
         $cat_res = Db::table('store_category')->where('status = 1 and parent_id = 0')->select();
+
         return $this->fetch('',[
             'bis_res'  => $res,
             'mem_res'  => $mem_res,
-            'cat_res'  => $cat_res
+            'cat_res'  => $cat_res,
+            'provinces'  => $provinces,
+            'citys'  => $citys,
+            'province_id'  => $provinceId,
+            'city_id'  => $cityId,
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -27,6 +44,8 @@ class Bis extends Base {
         //获取参数
         $bis_id = input('post.id');
         $bis_name = input('post.bis_name');
+        $citys = input('post.city_id').','.input('post.se_city_id');
+        $address = input('post.address');
         $jifen = input('post.jifen');
         $brand = input('post.brand');
         $leader = input('post.leader');
@@ -44,6 +63,8 @@ class Bis extends Base {
         //设置更新字段
         $data = [
             'bis_name'  => $bis_name,
+            'citys'  => $citys,
+            'address'  => $address,
             'jifen'  => $jifen,
             'brand'  => $brand,
             'leader'  => $leader,

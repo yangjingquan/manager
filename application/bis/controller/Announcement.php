@@ -125,7 +125,8 @@ class Announcement extends Base {
         $res = Db::table('store_announcement')->where('id = '.$id)->find();
 
         return $this->fetch('',[
-            'res'  => $res
+            'res'  => $res,
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 

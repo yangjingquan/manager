@@ -6,6 +6,7 @@ use app\api\controller\Image;
 use think\Db;
 
 class Bis extends Base {
+
     const PAGE_SIZE = 20;
 
     //店铺详情
@@ -14,16 +15,32 @@ class Bis extends Base {
         //账号信息
         $res = Db::table('store_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
         //店铺信息
-        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,cat.id as cat_id,cat.cat_name')
+        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,cat.id as cat_id,cat.cat_name')
             ->join('store_category cat','bis.cat_id = cat.id','LEFT')
             ->where('bis.id = '.$bis_id)
             ->find();
+
+        $citys = $bis_res['citys'];
+        $citysArr = explode(',',$citys);
+        $provinceId = $citysArr[0];
+        $cityId = $citysArr[1];
+
         //分类信息
         $cat_res = Db::table('store_category')->where('status = 1 and parent_id = 0')->select();
+        //省级信息
+        $provinces = model('Province')->getProvinceInfo();
+        //市级信息
+        $citys = model('Province')->getCitysById($provinceId);
+
         return $this->fetch('',[
             'user_res'  => $res,
             'bis_res'  => $bis_res,
-            'cat_res'  => $cat_res
+            'cat_res'  => $cat_res,
+            'provinces'  => $provinces,
+            'citys'  => $citys,
+            'province_id'  => $provinceId,
+            'city_id'  => $cityId,
+            'no_img_url'  => self::NO_IMG_URL
          ]);
     }
 
@@ -35,9 +52,24 @@ class Bis extends Base {
         //店铺信息
         $bis_res = Db::table('cy_bis')->where('id = '.$bis_id)->find();
 
+        $citys = $bis_res['citys'];
+        $citysArr = explode(',',$citys);
+        $provinceId = $citysArr[0];
+        $cityId = $citysArr[1];
+
+        //省级信息
+        $provinces = model('Province')->getProvinceInfo();
+        //市级信息
+        $citys = model('Province')->getCitysById($provinceId);
+
         return $this->fetch('catering/bis/index',[
             'user_res'  => $res,
-            'bis_res'  => $bis_res
+            'bis_res'  => $bis_res,
+            'provinces'  => $provinces,
+            'citys'  => $citys,
+            'province_id'  => $provinceId,
+            'city_id'  => $cityId,
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -46,6 +78,8 @@ class Bis extends Base {
         //获取参数
         $bis_id = input('post.id');
         $bis_name = input('post.bis_name');
+        $citys = input('post.city_id').','.input('post.se_city_id');
+        $address = input('post.address');
         $jifen = input('post.jifen');
         $brand = input('post.brand');
         $leader = input('post.leader');
@@ -64,6 +98,8 @@ class Bis extends Base {
         //设置更新字段
         $data = [
             'bis_name'  => $bis_name,
+            'citys'  => $citys,
+            'address'  => $address,
             'jifen'  => $jifen,
             'brand'  => $brand,
             'leader'  => $leader,
@@ -118,6 +154,8 @@ class Bis extends Base {
         //设置添加到数据库的数据
         $data = [
             'bis_name' => $param['bis_name'],
+            'citys' => $param['city_id'].','.$param['se_city_id'],
+            'address' => $param['address'],
             'brand' => $param['brand'],
             'leader' => $param['leader'],
             'link_tel' => $param['link_tel'],
@@ -148,10 +186,10 @@ class Bis extends Base {
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('store_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
-        $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status')
+        $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status,listorder,is_recommend')
             ->where('status >= 0')
             ->limit($offset,self::PAGE_SIZE)
-            ->order('id desc')
+            ->order('listorder desc,id desc')
             ->select();
 
         $index = 0;
@@ -182,10 +220,10 @@ class Bis extends Base {
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('cy_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
-        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name,citys,address,business_time,status')
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name,citys,address,business_time,status,listorder,is_recommend')
             ->where('status >= 0')
             ->limit($offset,self::PAGE_SIZE)
-            ->order('id desc')
+            ->order('listorder desc,id desc')
             ->select();
 
         $index = 0;
@@ -207,6 +245,45 @@ class Bis extends Base {
             'current_page'  => $current_page,
             'count'  => $count,
         ]);
+    }
+
+
+    //排序
+    public function listorder(){
+        if(!request()->isPost()){
+            return show(0,'请求方式错误');
+        }
+        //获取参数
+        $id = input('post.id');
+        $listorder = input('post.listorder');
+        $data['listorder'] = $listorder;
+
+        $res = Db::table('store_bis')->where('id = '.$id)->update($data);
+
+        if($res){
+            return show(1,'success',$_SERVER['HTTP_REFERER']);
+        }else{
+            return show(1,'error');
+        }
+    }
+
+    //排序
+    public function catListorder(){
+        if(!request()->isPost()){
+            return show(0,'请求方式错误');
+        }
+        //获取参数
+        $id = input('post.id');
+        $listorder = input('post.listorder');
+        $data['listorder'] = $listorder;
+
+        $res = Db::table('cy_bis')->where('id = '.$id)->update($data);
+
+        if($res){
+            return show(1,'success',$_SERVER['HTTP_REFERER']);
+        }else{
+            return show(1,'error');
+        }
     }
 
     //商城--更改状态
@@ -463,55 +540,55 @@ class Bis extends Base {
         //设置图片
         if($_FILES['logo_image']['error'] == 0){
             $images_data['logo_image'] = $image->uploadS('logo_image','bisImgs');
-            $images_data['logo_image'] = str_replace("\\", "/", $images_data['logo_image']);
+            $images_data['logo_image'] = self::IMG_URL.str_replace("\\", "/", $images_data['logo_image']);
         }
         if($_FILES['env_image1']['error'] == 0){
             $images_data['env_image1'] = $image->uploadS('env_image1','bisImgs');
-            $images_data['env_image1'] = str_replace("\\", "/", $images_data['env_image1']);
+            $images_data['env_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image1']);
         }
         if($_FILES['env_image2']['error'] == 0){
             $images_data['env_image2'] = $image->uploadS('env_image2','bisImgs');
-            $images_data['env_image2'] = str_replace("\\", "/", $images_data['env_image2']);
+            $images_data['env_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image2']);
         }
         if($_FILES['env_image3']['error'] == 0){
             $images_data['env_image3'] = $image->uploadS('env_image3','bisImgs');
-            $images_data['env_image3'] = str_replace("\\", "/", $images_data['env_image3']);
+            $images_data['env_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image3']);
         }
         if($_FILES['env_image4']['error'] == 0){
             $images_data['env_image4'] = $image->uploadS('env_image4','bisImgs');
-            $images_data['env_image4'] = str_replace("\\", "/", $images_data['env_image4']);
+            $images_data['env_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image4']);
         }
         if($_FILES['env_image5']['error'] == 0){
             $images_data['env_image5'] = $image->uploadS('env_image5','bisImgs');
-            $images_data['env_image5'] = str_replace("\\", "/", $images_data['env_image5']);
+            $images_data['env_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image5']);
         }
         if($_FILES['env_image6']['error'] == 0){
             $images_data['env_image6'] = $image->uploadS('env_image6','bisImgs');
-            $images_data['env_image6'] = str_replace("\\", "/", $images_data['env_image6']);
+            $images_data['env_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['env_image6']);
         }
         if($_FILES['qua_image1']['error'] == 0){
             $images_data['qua_image1'] = $image->uploadS('qua_image1','bisImgs');
-            $images_data['qua_image1'] = str_replace("\\", "/", $images_data['qua_image1']);
+            $images_data['qua_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image1']);
         }
         if($_FILES['qua_image2']['error'] == 0){
             $images_data['qua_image2'] = $image->uploadS('qua_image2','bisImgs');
-            $images_data['qua_image2'] = str_replace("\\", "/", $images_data['qua_image2']);
+            $images_data['qua_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image2']);
         }
         if($_FILES['qua_image3']['error'] == 0){
             $images_data['qua_image3'] = $image->uploadS('qua_image3','bisImgs');
-            $images_data['qua_image3'] = str_replace("\\", "/", $images_data['qua_image3']);
+            $images_data['qua_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image3']);
         }
         if($_FILES['qua_image4']['error'] == 0){
             $images_data['qua_image4'] = $image->uploadS('qua_image4','bisImgs');
-            $images_data['qua_image4'] = str_replace("\\", "/", $images_data['qua_image4']);
+            $images_data['qua_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image4']);
         }
         if($_FILES['qua_image5']['error'] == 0){
             $images_data['qua_image5'] = $image->uploadS('qua_image5','bisImgs');
-            $images_data['qua_image5'] = str_replace("\\", "/", $images_data['qua_image5']);
+            $images_data['qua_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image5']);
         }
         if($_FILES['qua_image6']['error'] == 0){
             $images_data['qua_image6'] = $image->uploadS('qua_image6','bisImgs');
-            $images_data['qua_image6'] = str_replace("\\", "/", $images_data['qua_image6']);
+            $images_data['qua_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['qua_image6']);
         }
 
         $img_res = Db::table('cy_bis_images')->where('bis_id = '.$bis_id)->find();
@@ -543,4 +620,43 @@ class Bis extends Base {
         $this->success("更新成功!");
     }
 
+    //更改商城推荐状态
+    public function updateRecStatus(){
+        //获取参数
+        $id = input('get.id');
+        $is_recommend = input('get.is_recommend');
+        $data['is_recommend'] = $is_recommend;
+        $data['updated_time'] = date('Y-m-d H:i:s');
+        $res = Db::table('store_bis')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($is_recommend == 1){
+                $this->success('设置推荐成功!');
+            }else{
+                $this->success('取消推荐成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
+
+    //更改餐饮店铺推荐状态
+    public function updateCatRecStatus(){
+        //获取参数
+        $id = input('get.id');
+        $is_recommend = input('get.is_recommend');
+        $data['is_recommend'] = $is_recommend;
+        $data['updated_time'] = date('Y-m-d H:i:s');
+        $res = Db::table('cy_bis')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($is_recommend == 1){
+                $this->success('设置推荐成功!');
+            }else{
+                $this->success('取消推荐成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
 }

@@ -335,7 +335,7 @@
 			<label class="form-label col-xs-4 col-sm-2">商品图片: </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<label style="margin-left: 1%;">缩略图:</label>
-				<input type="file" class="input-text1" id="thumb" name="thumb"><img src="" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<input type="file" class="input-text1" id="thumb" name="thumb"><img src="" onerror="javascript:this.src='{$no_img_url}'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
 				<label style="margin-left: 1%;" class="intro">(产品缩略图,请尽量压缩图片大小.)</label><br>
 
 			</div>
@@ -344,16 +344,16 @@
 			<label class="form-label col-xs-4 col-sm-2">配置图片上传: </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<label style="margin-left: 1%;">图片一:</label>
-				<input type="file" class="input-text1 " id="image" name="image"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="image_c" onclick="F_Open('image_c','image')" >
+				<input type="file" class="input-text1 " id="image" name="image"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="image_c" onclick="F_Open('image_c','image')" >
 				<label style="margin-left: 1%;" class="intro">(商品配置图片最多五张,作为商品轮播图显示,至少上传一张..)</label><br>
 				<label style="margin-left: 1%;">图片二: </label>
-				<input type="file" class="input-text1 " id="config_image1" name="config_image1"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="config_image1_c" onclick="F_Open('config_image1_c','config_image1')" ><br>
+				<input type="file" class="input-text1 " id="config_image1" name="config_image1"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="config_image1_c" onclick="F_Open('config_image1_c','config_image1')" ><br>
 				<label style="margin-left: 1%;">图片三: </label>
-				<input type="file" class="input-text1 " id="config_image2" name="config_image2"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="config_image2_c" onclick="F_Open('config_image2_c','config_image2')" ><br>
+				<input type="file" class="input-text1 " id="config_image2" name="config_image2"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="config_image2_c" onclick="F_Open('config_image2_c','config_image2')" ><br>
 				<label style="margin-left: 1%;">图片四: </label>
-				<input type="file" class="input-text1 " id="config_image3" name="config_image3"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="config_image3_c" onclick="F_Open('config_image3_c','config_image3')" ><br>
+				<input type="file" class="input-text1 " id="config_image3" name="config_image3"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="config_image3_c" onclick="F_Open('config_image3_c','config_image3')" ><br>
 				<label style="margin-left: 1%;">图片五: </label>
-				<input type="file" class="input-text1" id="config_image4" name="config_image4"><img src="" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="config_image4_c" onclick="F_Open('config_image4_c','config_image4')" >
+				<input type="file" class="input-text1" id="config_image4" name="config_image4"><img src="" onerror="javascript:this.src='{$no_img_url}'" id="config_image4_c" onclick="F_Open('config_image4_c','config_image4')" >
 			</div>
 		</div>
 		<div class="row cl">
@@ -366,25 +366,25 @@
 			<label class="form-label col-xs-4 col-sm-2">商品介绍图片(小程序专用): </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<label style="margin-left: 1%;">图片一: </label>
-				<input type="file" class="input-text1" id="wx_config_image1"  name="wx_config_image1"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image1_c" onclick="F_Open('wx_config_image1_c','wx_config_image1')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image1"  name="wx_config_image1"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image1_c" onclick="F_Open('wx_config_image1_c','wx_config_image1')" ><br>
 				<label style="margin-left: 1%;">图片二: </label>
-				<input type="file" class="input-text1" id="wx_config_image2"  name="wx_config_image2"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image2_c" onclick="F_Open('wx_config_image2_c','wx_config_image2')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image2"  name="wx_config_image2"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image2_c" onclick="F_Open('wx_config_image2_c','wx_config_image2')" ><br>
 				<label style="margin-left: 1%;">图片三: </label>
-				<input type="file" class="input-text1" id="wx_config_image3"  name="wx_config_image3"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image3_c" onclick="F_Open('wx_config_image3_c','wx_config_image3')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image3"  name="wx_config_image3"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image3_c" onclick="F_Open('wx_config_image3_c','wx_config_image3')" ><br>
 				<label style="margin-left: 1%;">图片四: </label>
-				<input type="file" class="input-text1" id="wx_config_image4"  name="wx_config_image4"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image4_c" onclick="F_Open('wx_config_image4_c','wx_config_image4')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image4"  name="wx_config_image4"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image4_c" onclick="F_Open('wx_config_image4_c','wx_config_image4')" ><br>
 				<label style="margin-left: 1%;">图片五: </label>
-				<input type="file" class="input-text1" id="wx_config_image5"  name="wx_config_image5"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image5_c" onclick="F_Open('wx_config_image5_c','wx_config_image5')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image5"  name="wx_config_image5"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image5_c" onclick="F_Open('wx_config_image5_c','wx_config_image5')" ><br>
 				<label style="margin-left: 1%;">图片六: </label>
-				<input type="file" class="input-text1" id="wx_config_image6"  name="wx_config_image6"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image6_c" onclick="F_Open('wx_config_image6_c','wx_config_image6')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image6"  name="wx_config_image6"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image6_c" onclick="F_Open('wx_config_image6_c','wx_config_image6')" ><br>
 				<label style="margin-left: 1%;">图片七: </label>
-				<input type="file" class="input-text1" id="wx_config_image7"  name="wx_config_image7"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image7_c" onclick="F_Open('wx_config_image7_c','wx_config_image7')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image7"  name="wx_config_image7"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image7_c" onclick="F_Open('wx_config_image7_c','wx_config_image7')" ><br>
 				<label style="margin-left: 1%;">图片八: </label>
-				<input type="file" class="input-text1" id="wx_config_image8"  name="wx_config_image8"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image8_c" onclick="F_Open('wx_config_image8_c','wx_config_image8')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image8"  name="wx_config_image8"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image8_c" onclick="F_Open('wx_config_image8_c','wx_config_image8')" ><br>
 				<label style="margin-left: 1%;">图片九: </label>
-				<input type="file" class="input-text1" id="wx_config_image9"  name="wx_config_image9"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image9_c" onclick="F_Open('wx_config_image9_c','wx_config_image9')" ><br>
+				<input type="file" class="input-text1" id="wx_config_image9"  name="wx_config_image9"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image9_c" onclick="F_Open('wx_config_image9_c','wx_config_image9')" ><br>
 				<label style="margin-left: 1%;">图片十: </label>
-				<input type="file" class="input-text1" id="wx_config_image10"  name="wx_config_image10"><img src="" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="wx_config_image10_c" onclick="F_Open('wx_config_image10_c','wx_config_image10')" >
+				<input type="file" class="input-text1" id="wx_config_image10"  name="wx_config_image10"><img src="" onerror="javascript:this.src='{$no_img_url}'" id="wx_config_image10_c" onclick="F_Open('wx_config_image10_c','wx_config_image10')" >
 			</div>
 		</div>
 		<!--<div class="row cl">-->

@@ -163,6 +163,17 @@
         return $str;
     }
 
+    //设置商品推荐状态
+    function bis_recommend($is_recommend){
+        if($is_recommend == 1){
+            $str = "<span style='color:red;' class='label label-success radius'>取消推荐</span>";
+        }else{
+            $str = "<span class='label label-success radius'>设置推荐</span>";
+        }
+
+        return $str;
+    }
+
     //设置提现状态(小程序)
     function wx_tixian_status($status){
         if($status == 1){

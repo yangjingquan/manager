@@ -4,6 +4,8 @@ use think\Controller;
 use think\Db;
 class Base extends Controller{
 
+    const NO_IMG_URL = 'http://cp.58canyin.com:88/uploads/images/no_img.png';
+
     public $bis_user_id;
     public function _initialize(){
         //判定用户是否登录

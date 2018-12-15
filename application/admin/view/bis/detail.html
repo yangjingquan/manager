@@ -59,20 +59,50 @@
 <div class="page-container">
 	<form action="{:url('bis/save')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
 		<input type="hidden" name="id" value="{$bis_res.id}">
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">商户账号：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				{volist name="user_res" id="vo"}
-					<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$vo.username}" disabled>&nbsp;&nbsp;&nbsp;
-					密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$vo.u_id}" value="{$vo.password}">
-					<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$vo.u_id}" onclick="editPwd({$vo.u_id})">修改密码</button><br>
-				{/volist}
-			</div>
-		</div>
+		<!--<div class="row cl">-->
+			<!--<label class="form-label col-xs-4 col-sm-2">商户账号：</label>-->
+			<!--<div class="formControls col-xs-8 col-sm-9">-->
+				<!--{volist name="user_res" id="vo"}-->
+					<!--<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$vo.username}" disabled>&nbsp;&nbsp;&nbsp;-->
+					<!--密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$vo.u_id}" value="{$vo.password}">-->
+					<!--<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$vo.u_id}" onclick="editPwd({$vo.u_id})">修改密码</button><br>-->
+				<!--{/volist}-->
+			<!--</div>-->
+		<!--</div>-->
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.bis_name}" id="bis_name" name="bis_name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">选择地区：</label>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="city_id" class="select cityId">
+					<option value="0">--请选择--</option>
+					{volist name="provinces" id="vo"}
+					<option value="{$vo.id}" {if condition="$province_id eq $vo.id"} selected="selected" {/if}>{$vo.p_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="se_city_id" class="select se_city_id">
+					<option value="0">--请选择--</option>
+					{volist name="citys" id="vo"}
+					<option value="{$vo.id}" {if condition="$city_id eq $vo.id"} selected="selected" {/if}>{$vo.c_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div><label class="star_label">**</label>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">详细地址：</label>
+			<div class="formControls col-xs-8 col-sm-3">
+				<input type="text" class="input-text1" value="{$bis_res.address}" placeholder="" id="address" name="address">
+				<label class="star_label">**</label>
 			</div>
 		</div>
 		<div class="row cl">
@@ -189,14 +219,14 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺logo: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 " id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<input type="file" class="input-text1 " id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="acode_c" >
+				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="acode_c" >
 			</div>
 		</div>
 		<div class="row cl">
@@ -212,6 +242,7 @@
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/register.js"></script>
 <script type="text/javascript">
 	$(document).ready(function () {
 		var logistics_status = {$bis_res.logistics_status};
@@ -296,6 +327,10 @@
 			$('.fahuo_template_id').css('display','block');
 		}
 	})
+
+	var SCOPE = {
+		'city_url' : "{:url('api/city/getCitysByParentId')}",
+	}
 </script>
 </body>
 </html>

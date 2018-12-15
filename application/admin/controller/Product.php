@@ -6,7 +6,9 @@ use think\Validate;
 use think\Db;
 
 class Product extends Base {
+
     const PAGE_SIZE = 20;
+
     //商品列表
     public function index(){
         $date_from = input('get.date_from');
@@ -88,6 +90,7 @@ class Product extends Base {
         $pro_config_count = count($pro_config);
         //判断该店家是否开启拼团
         $pintuan_res = Db::table('store_bis')->field('is_pintuan')->where('id = '.$bis_id)->find();
+
         return $this->fetch('',[
             'pro_res'  => $pro_res,
             'first_category'  => $first_category,
@@ -96,7 +99,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -124,7 +128,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -150,7 +155,8 @@ class Product extends Base {
             'brand'  => $brand,
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
-            'pro_id'  => $id
+            'pro_id'  => $id,
+            'no_img_url'  => self::NO_IMG_URL
 
         ]);
     }
@@ -659,12 +665,13 @@ class Product extends Base {
         $id = input('get.id');
         $bis_id = input('get.bis_id');
         //获取该商品信息
-        $pro_res = model('Products')->getProInfoById($id);
+        $pro_res = model('Products')->getCatProInfoById($id);
         $category = model('CatCategory')->getNormalFirstCategory($bis_id);
         return $this->fetch('catering/product/edit',[
             'pro_res'  => $pro_res,
             'category'  => $category,
-            'pro_id'  => $id
+            'pro_id'  => $id,
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -710,7 +717,7 @@ class Product extends Base {
         if($_FILES['image']['error'] == 0){
             $upload_image = $image->uploadS('image','product');
             $upload_image = str_replace("\\", "/", $upload_image);
-            $product_data['image'] = $upload_image;
+            $product_data['image'] = self::IMG_URL.$upload_image;
         }
         //更新商品表
         $p_res = Db::table('cy_products')->where('id = '.$param['pro_id'])->update($product_data);
