@@ -3,9 +3,12 @@ namespace app\admin\controller;
 use think\Controller;
 use think\Db;
 class Base extends Controller{
+    //本地图片地址
     const IMG_URL = 'http://store.spring.com/';
-
-    const NO_IMG_URL = 'http://cp.58canyin.com:88/uploads/images/no_img.png';
+    //本地默认图片
+    const NO_IMG_URL = 'http://store.spring.com/uploads/images/no_img.png';
+    //服务器
+//    const NO_IMG_URL = 'http://cp.58canyin.com:88/uploads/images/no_img.png';
 
     public $admin_user_id;
     public function _initialize(){

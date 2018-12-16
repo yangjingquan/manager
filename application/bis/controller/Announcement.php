@@ -71,13 +71,13 @@ class Announcement extends Base {
         if($img1_error == 0){
             $image_data = $image->uploadS('img1','announcement');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img1'] = $image_data;
+            $data['img1'] = self::IMG_URL.$image_data;
         }
 
         if($img2_error == 0){
             $image_data = $image->uploadS('img2','announcement');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img2'] = $image_data;
+            $data['img2'] = self::IMG_URL.$image_data;
         }
 
         $res = Db::table('store_announcement')->insert($data);
@@ -150,21 +150,17 @@ class Announcement extends Base {
         if($img1_error == 0){
             $image_data = $image->uploadS('img1','announcement');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img1'] = $image_data;
+            $data['img1'] = self::IMG_URL.$image_data;
         }
 
         if($img2_error == 0){
             $image_data = $image->uploadS('img2','announcement');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img2'] = $image_data;
+            $data['img2'] = self::IMG_URL.$image_data;
         }
 
         $res = Db::table('store_announcement')->where('id = '.$id)->update($data);
 
-        if($res){
-            $this->success("修改成功");
-        }else{
-            $this->error('修改失败');
-        }
+        $this->success("修改成功");
     }
 }

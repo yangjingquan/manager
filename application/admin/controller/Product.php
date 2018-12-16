@@ -235,67 +235,67 @@ class Product extends Base {
         //设置图片
         if($_FILES['config_image1']['error'] == 0){
             $images_data['config_image1'] = $image->uploadS('config_image1','product');
-            $images_data['config_image1'] = str_replace("\\", "/", $images_data['config_image1']);
+            $images_data['config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image1']);
         }
         if($_FILES['config_image2']['error'] == 0){
             $images_data['config_image2'] = $image->uploadS('config_image2','product');
-            $images_data['config_image2'] = str_replace("\\", "/", $images_data['config_image2']);
+            $images_data['config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image2']);
         }
         if($_FILES['config_image3']['error'] == 0){
             $images_data['config_image3'] = $image->uploadS('config_image3','product');
-            $images_data['config_image3'] = str_replace("\\", "/", $images_data['config_image3']);
+            $images_data['config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image3']);
         }
         if($_FILES['config_image4']['error'] == 0){
             $images_data['config_image4'] = $image->uploadS('config_image4','product');
-            $images_data['config_image4'] = str_replace("\\", "/", $images_data['config_image4']);
+            $images_data['config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image4']);
         }
         if($_FILES['wx_config_image1']['error'] == 0){
             $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
-            $images_data['wx_config_image1'] = str_replace("\\", "/", $images_data['wx_config_image1']);
+            $images_data['wx_config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
         }
         if($_FILES['wx_config_image2']['error'] == 0){
             $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
-            $images_data['wx_config_image2'] = str_replace("\\", "/", $images_data['wx_config_image2']);
+            $images_data['wx_config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
         }
         if($_FILES['wx_config_image3']['error'] == 0){
             $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
-            $images_data['wx_config_image3'] = str_replace("\\", "/", $images_data['wx_config_image3']);
+            $images_data['wx_config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
         }
         if($_FILES['wx_config_image4']['error'] == 0){
             $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
-            $images_data['wx_config_image4'] = str_replace("\\", "/", $images_data['wx_config_image4']);
+            $images_data['wx_config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
         }
         if($_FILES['wx_config_image5']['error'] == 0){
             $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
-            $images_data['wx_config_image5'] = str_replace("\\", "/", $images_data['wx_config_image5']);
+            $images_data['wx_config_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
         }
         if($_FILES['wx_config_image6']['error'] == 0){
             $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
-            $images_data['wx_config_image6'] = str_replace("\\", "/", $images_data['wx_config_image6']);
+            $images_data['wx_config_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
         }
         if($_FILES['wx_config_image7']['error'] == 0){
             $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
-            $images_data['wx_config_image7'] = str_replace("\\", "/", $images_data['wx_config_image7']);
+            $images_data['wx_config_image7'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
         }
         if($_FILES['wx_config_image8']['error'] == 0){
             $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
-            $images_data['wx_config_image8'] = str_replace("\\", "/", $images_data['wx_config_image8']);
+            $images_data['wx_config_image8'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
         }
         if($_FILES['wx_config_image9']['error'] == 0){
             $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
-            $images_data['wx_config_image9'] = str_replace("\\", "/", $images_data['wx_config_image9']);
+            $images_data['wx_config_image9'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
         }
         if($_FILES['wx_config_image10']['error'] == 0){
             $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
-            $images_data['wx_config_image10'] = str_replace("\\", "/", $images_data['wx_config_image10']);
+            $images_data['wx_config_image10'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
         }
         if($_FILES['image']['error'] == 0){
             $images_data['image'] = $image->uploadS('image','product');
-            $images_data['image'] = str_replace("\\", "/", $images_data['image']);
+            $images_data['image'] = self::IMG_URL.str_replace("\\", "/", $images_data['image']);
         }
         if($_FILES['thumb']['error'] == 0){
             $images_data['thumb'] = $image->uploadS('thumb','product');
-            $images_data['thumb'] = str_replace("\\", "/", $images_data['thumb']);
+            $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
 
         //设置更新的数据
@@ -331,7 +331,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 
@@ -362,67 +362,67 @@ class Product extends Base {
         //设置图片
         if($_FILES['config_image1']['error'] == 0){
             $images_data['config_image1'] = $image->uploadS('config_image1','product');
-            $images_data['config_image1'] = str_replace("\\", "/", $images_data['config_image1']);
+            $images_data['config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image1']);
         }
         if($_FILES['config_image2']['error'] == 0){
             $images_data['config_image2'] = $image->uploadS('config_image2','product');
-            $images_data['config_image2'] = str_replace("\\", "/", $images_data['config_image2']);
+            $images_data['config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image2']);
         }
         if($_FILES['config_image3']['error'] == 0){
             $images_data['config_image3'] = $image->uploadS('config_image3','product');
-            $images_data['config_image3'] = str_replace("\\", "/", $images_data['config_image3']);
+            $images_data['config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image3']);
         }
         if($_FILES['config_image4']['error'] == 0){
             $images_data['config_image4'] = $image->uploadS('config_image4','product');
-            $images_data['config_image4'] = str_replace("\\", "/", $images_data['config_image4']);
+            $images_data['config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image4']);
         }
         if($_FILES['wx_config_image1']['error'] == 0){
             $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
-            $images_data['wx_config_image1'] = str_replace("\\", "/", $images_data['wx_config_image1']);
+            $images_data['wx_config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
         }
         if($_FILES['wx_config_image2']['error'] == 0){
             $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
-            $images_data['wx_config_image2'] = str_replace("\\", "/", $images_data['wx_config_image2']);
+            $images_data['wx_config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
         }
         if($_FILES['wx_config_image3']['error'] == 0){
             $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
-            $images_data['wx_config_image3'] = str_replace("\\", "/", $images_data['wx_config_image3']);
+            $images_data['wx_config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
         }
         if($_FILES['wx_config_image4']['error'] == 0){
             $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
-            $images_data['wx_config_image4'] = str_replace("\\", "/", $images_data['wx_config_image4']);
+            $images_data['wx_config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
         }
         if($_FILES['wx_config_image5']['error'] == 0){
             $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
-            $images_data['wx_config_image5'] = str_replace("\\", "/", $images_data['wx_config_image5']);
+            $images_data['wx_config_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
         }
         if($_FILES['wx_config_image6']['error'] == 0){
             $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
-            $images_data['wx_config_image6'] = str_replace("\\", "/", $images_data['wx_config_image6']);
+            $images_data['wx_config_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
         }
         if($_FILES['wx_config_image7']['error'] == 0){
             $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
-            $images_data['wx_config_image7'] = str_replace("\\", "/", $images_data['wx_config_image7']);
+            $images_data['wx_config_image7'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
         }
         if($_FILES['wx_config_image8']['error'] == 0){
             $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
-            $images_data['wx_config_image8'] = str_replace("\\", "/", $images_data['wx_config_image8']);
+            $images_data['wx_config_image8'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
         }
         if($_FILES['wx_config_image9']['error'] == 0){
             $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
-            $images_data['wx_config_image9'] = str_replace("\\", "/", $images_data['wx_config_image9']);
+            $images_data['wx_config_image9'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
         }
         if($_FILES['wx_config_image10']['error'] == 0){
             $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
-            $images_data['wx_config_image10'] = str_replace("\\", "/", $images_data['wx_config_image10']);
+            $images_data['wx_config_image10'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
         }
         if($_FILES['image']['error'] == 0){
             $images_data['image'] = $image->uploadS('image','product');
-            $images_data['image'] = str_replace("\\", "/", $images_data['image']);
+            $images_data['image'] = self::IMG_URL.str_replace("\\", "/", $images_data['image']);
         }
         if($_FILES['thumb']['error'] == 0){
             $images_data['thumb'] = $image->uploadS('thumb','product');
-            $images_data['thumb'] = str_replace("\\", "/", $images_data['thumb']);
+            $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
 
         //设置更新的数据
@@ -450,7 +450,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 

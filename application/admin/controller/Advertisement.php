@@ -53,7 +53,7 @@ class Advertisement extends Base {
         if($img_error == 0){
             $image_data = $image->uploadS('img_url','ads');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img_url'] = $image_data;
+            $data['img_url'] = self::IMG_URL.$image_data;
         }
 
         $res = Db::table('store_ads')->insert($data);
@@ -95,7 +95,7 @@ class Advertisement extends Base {
         if($img_error == 0){
             $image_data = $image->uploadS('img_url','ads');
             $image_data = str_replace("\\", "/", $image_data);
-            $data['img_url'] = $image_data;
+            $data['img_url'] = self::IMG_URL.$image_data;
         }
 
         $res = Db::table('store_ads')->where("id = $id")->update($data);

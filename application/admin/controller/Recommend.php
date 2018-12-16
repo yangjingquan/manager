@@ -7,6 +7,7 @@ use think\cache\driver\Redis;
 
 class Recommend extends Base {
     const PAGE_SIZE = 20;
+
     //推荐位列表
     public function index(){
         $current_page = input('get.current_page',1,'intval');
@@ -105,7 +106,7 @@ class Recommend extends Base {
 
         if($image_error == 0){
             $image_data = $image->uploadS('image','recommend');
-            $image_data = str_replace("\\", "/", $image_data);
+            $image_data = self::IMG_URL.str_replace("\\", "/", $image_data);
         }
 
         //设置添加到数据库的数据
@@ -152,7 +153,7 @@ class Recommend extends Base {
 
         if($image_error == 0){
             $image_data = $image->uploadS('image','recommend');
-            $image_data = str_replace("\\", "/", $image_data);
+            $image_data = self::IMG_URL.str_replace("\\", "/", $image_data);
         }
 
         //设置添加到数据库的数据
@@ -193,7 +194,7 @@ class Recommend extends Base {
         //设置图片
         if($_FILES['image']['error'] == 0){
             $data['image'] = $image->uploadS('image','recommend');
-            $data['image'] = str_replace("\\", "/", $data['image']);
+            $data['image'] = self::IMG_URL.str_replace("\\", "/", $data['image']);
         }
 
 
@@ -230,7 +231,7 @@ class Recommend extends Base {
         //设置图片
         if($_FILES['image']['error'] == 0){
             $data['image'] = $image->uploadS('image','recommend');
-            $data['image'] = str_replace("\\", "/", $data['image']);
+            $data['image'] = self::IMG_URL.str_replace("\\", "/", $data['image']);
         }
 
 
