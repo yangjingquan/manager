@@ -120,7 +120,7 @@ class Bis extends Base {
         $image = new Image();
         if($_FILES['thumb']['error'] == 0){
             $thumb_url = $image->uploadS('thumb','bis');
-            $thumb_url = str_replace("\\", "/", $thumb_url);
+            $thumb_url = self::IMG_URL.str_replace("\\", "/", $thumb_url);
             $data = [
                 'bis_name'  => $bis_name,
                 'jifen'  => $jifen,
