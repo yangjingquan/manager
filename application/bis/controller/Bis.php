@@ -60,6 +60,21 @@ class Bis extends Base {
         $key = input('post.key');
         $fahuo_template_id = input('post.fahuo_template_id');
 
+        //获取当前地址
+        $provinceId = input('post.city_id');
+        $cityId = input('post.se_city_id');
+        $province = $this->getProvinceInfo($provinceId);
+        $city = $this->getCityInfo($cityId);
+        $address = $province.$city.$address;
+        $positionRes = $this->execUrl($address);
+        $positionArr = json_decode($positionRes,true);
+
+        if(!empty($positionArr['pois'])){
+            $location = $positionArr['pois'][0]['location'];
+        }else{
+            $this->error('设置的地址检测不到经纬度,请重新设置');
+        }
+
         //设置更新字段
         $data = [
             'bis_name'  => $bis_name,
@@ -73,6 +88,7 @@ class Bis extends Base {
             'cat_id'  => $category,
             'is_pintuan'  => $group_type,
             'logistics_status'  => $logistics_status,
+            'positions'  => $location,
             'appid'  => $appid,
             'secret'  => $secret,
             'mchid'  => $mchid,
@@ -121,5 +137,29 @@ class Bis extends Base {
         $data['password'] = md5($pwd);
         $res = Db::table('store_bis_admin_users')->where('id = '.$user_id)->update($data);
         return show(1,'success');
+    }
+
+    public function execUrl($address){
+        $url = "http://restapi.amap.com/v3/place/text?key=4c9ea4c4b4f719f7e69d625586f8c00d&keywords=".$address."&types=&city=&children=1&offset=20&page=1&extensions=all";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true) ; // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $r = curl_exec($ch);
+        curl_close($ch);
+        return $r;
+    }
+
+    //获取省级信息
+    public function getProvinceInfo($provinceId){
+        $res = Db::table('store_province')->where("id = '$provinceId'")->find();
+        return $res['p_name'];
+    }
+
+    //获取市级信息
+    public function getCityInfo($cityId){
+        $res = Db::table('store_city')->where("id = '$cityId'")->find();
+        return $res['c_name'];
     }
 }
