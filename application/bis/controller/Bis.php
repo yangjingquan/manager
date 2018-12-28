@@ -65,8 +65,8 @@ class Bis extends Base {
         $cityId = input('post.se_city_id');
         $province = $this->getProvinceInfo($provinceId);
         $city = $this->getCityInfo($cityId);
-        $address = $province.$city.$address;
-        $positionRes = $this->execUrl($address);
+        $totalAddress = $province.$city.$address;
+        $positionRes = $this->execUrl($totalAddress);
         $positionArr = json_decode($positionRes,true);
 
         if(!empty($positionArr['pois'])){

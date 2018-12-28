@@ -100,8 +100,8 @@ class Bis extends Base {
         $cityId = input('post.se_city_id');
         $province = $this->getProvinceInfo($provinceId);
         $city = $this->getCityInfo($cityId);
-        $address = $province.$city.$address;
-        $positionRes = $this->execUrl($address);
+        $totalAddress = $province.$city.$address;
+        $positionRes = $this->execUrl($totalAddress);
         $positionArr = json_decode($positionRes,true);
 
         if(!empty($positionArr['pois'])){
@@ -253,7 +253,7 @@ class Bis extends Base {
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('cy_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
-        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name,citys,address,business_time,status,listorder,is_recommend')
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name,citys,brand,address,business_time,status,listorder,is_recommend')
             ->where('status >= 0')
             ->limit($offset,self::PAGE_SIZE)
             ->order('listorder desc,id desc')

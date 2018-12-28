@@ -33,6 +33,7 @@
 					<tr class="text-c">
 						<th width="40">店铺ID</th>
 						<th width="40">店铺名称</th>
+						<th width="40">营业项目</th>
 						<th width="40">营业时间</th>
 						<th width="80">店铺地址</th>
 						<th width="40">排序</th>
@@ -46,6 +47,7 @@
 						<tr class="text-c va-m">
 							<td><a style="color:#5B892E;" href="{:url('bis/catDetail',['bis_id'=>$vo.bis_id])}">{$vo.bis_id}</a></td>
 							<td><a style="color:#5B892E;" href="{:url('bis/catDetail',['bis_id'=>$vo.bis_id])}">{$vo.bis_name}</a></td>
+							<td>{$vo.brand}</td>
 							<td>{$vo.business_time}</td>
 							<td>{$vo.address_info}</td>
 							<td class="text-c listorder"><input size="3" attr-id="{$vo.bis_id}" name="listorder" value="{$vo.listorder}" /></td>
