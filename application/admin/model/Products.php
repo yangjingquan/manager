@@ -184,7 +184,7 @@ class Products extends Model{
         $where = [
             'pro.id'  => $id
         ];
-        $res = Db::table('cy_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.cat_id,pro.original_price,pro.associator_price,pro.introduce as intro,pro.image,pro.pro_type')
+        $res = Db::table('cy_products')->alias('pro')->field('pro.id as pro_id,pro.p_name,pro.cat_id,pro.original_price,pro.associator_price,pro.introduce as intro,pro.image,pro.pro_type,pro.detail_images')
             ->where($where)
             ->find();
 

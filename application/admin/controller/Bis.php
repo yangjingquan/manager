@@ -450,7 +450,7 @@ class Bis extends Base {
         //获取参数
         $bis_id = input('post.bis_id');
 
-        $bis_res = Db::table('store_home_info')->field('appid,secret')->where('id = 1')->find();
+        $bis_res = Db::table('store_home_info')->field('appid,secret')->where('id = 2')->find();
         $appid = $bis_res['appid'];
         $secret = $bis_res['secret'];
 
@@ -473,7 +473,7 @@ class Bis extends Base {
         $access_token = $arr['access_token'];
 
         //设置路径及二维码大小
-        $path="pages/index/index?bis_id=".$bis_id;
+        $path="pages/cy_index/index?bis_id=".$bis_id;
         $width=430;
 
         $post_data='{"path":"'.$path.'","width":'.$width.'}';

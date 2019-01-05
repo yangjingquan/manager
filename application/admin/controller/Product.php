@@ -667,11 +667,16 @@ class Product extends Base {
         //获取该商品信息
         $pro_res = model('Products')->getCatProInfoById($id);
         $category = model('CatCategory')->getNormalFirstCategory($bis_id);
+        $temp_detail_images = json_decode($pro_res['detail_images'],true);
+        for($i = 0;$i < 10;$i++){
+            $detail_images[] = !empty($temp_detail_images[$i]) ? $temp_detail_images[$i] : '';
+        }
         return $this->fetch('catering/product/edit',[
             'pro_res'  => $pro_res,
             'category'  => $category,
             'pro_id'  => $id,
-            'no_img_url'  => self::NO_IMG_URL
+            'no_img_url'  => self::NO_IMG_URL,
+            'detail_images'  => $detail_images
         ]);
     }
 
@@ -699,6 +704,11 @@ class Product extends Base {
         //获取提交的数据
         $param = input('post.');
 
+        //获取当前商品信息
+        $res = Db::table('cy_products')->where("id = ".$param['pro_id'])->find();
+        $detail_images_json = $res['detail_images'];
+        $detail_images = json_decode($detail_images_json,true);
+
         //上传图片相关
         $image = new Image();
 
@@ -719,6 +729,50 @@ class Product extends Base {
             $upload_image = str_replace("\\", "/", $upload_image);
             $product_data['image'] = self::IMG_URL.$upload_image;
         }
+
+        if($_FILES['wx_config_image1']['error'] == 0){
+            $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
+            $detail_images[0] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
+        }
+        if($_FILES['wx_config_image2']['error'] == 0){
+            $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
+            $detail_images[1] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
+        }
+        if($_FILES['wx_config_image3']['error'] == 0){
+            $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
+            $detail_images[2] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
+        }
+        if($_FILES['wx_config_image4']['error'] == 0){
+            $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
+            $detail_images[3] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
+        }
+        if($_FILES['wx_config_image5']['error'] == 0){
+            $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
+            $detail_images[4] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
+        }
+        if($_FILES['wx_config_image6']['error'] == 0){
+            $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
+            $detail_images[5] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
+        }
+        if($_FILES['wx_config_image7']['error'] == 0){
+            $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
+            $detail_images[6] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
+        }
+        if($_FILES['wx_config_image8']['error'] == 0){
+            $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
+            $detail_images[7] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
+        }
+        if($_FILES['wx_config_image9']['error'] == 0){
+            $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
+            $detail_images[8] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
+        }
+        if($_FILES['wx_config_image10']['error'] == 0){
+            $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
+            $detail_images[9] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
+        }
+        $detail_images_json = json_encode($detail_images);
+        $product_data['detail_images'] = $detail_images_json;
+
         //更新商品表
         $p_res = Db::table('cy_products')->where('id = '.$param['pro_id'])->update($product_data);
 
