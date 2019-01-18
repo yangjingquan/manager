@@ -215,13 +215,13 @@ class Bis extends Base {
     //商城商家列表
     public function index(){
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('store_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
         $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status,listorder,is_recommend')
             ->where('status >= 0')
-            ->limit($offset,self::PAGE_SIZE)
+            ->limit($offset,$limit)
             ->order('listorder desc,id desc')
             ->select();
 
