@@ -90,6 +90,14 @@
 	<form action="{:url('bis/catSave')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
 		<input type="hidden" name="id" value="{$bis_res.id}">
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$user_res.username}" disabled>&nbsp;&nbsp;&nbsp;
+				密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$user_res.u_id}" value="{$user_res.password}">
+				<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$user_res.u_id}" onclick="editPwd({$user_res.u_id})">修改密码</button><br>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.bis_name}" placeholder="" id="bis_name" name="bis_name">
@@ -183,6 +191,16 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小程序支付：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="1" {if condition="$bis_res.is_pay eq 1"} checked {/if} id="is_pay" name="is_pay">
+				<label for="is_pay">开启</label>
+				<input type="radio" value="0" {if condition="$bis_res.is_pay eq 0"} checked {/if} id="not_pay" name="is_pay">
+				<label for="not_pay">关闭</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">餐盒费：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" style="width: 15%;" value="{$bis_res.lunch_box_fee}"  id="lunch_box_fee"  name="lunch_box_fee">元/个
@@ -230,7 +248,7 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('#acode').css('display','none');
-		$('#acode_c').attr('src','../../{$bis_res.acode}');
+		$('#acode_c').attr('src','{$bis_res.acode}');
 	});
 
 	function F_Open(id1,id2){
@@ -245,7 +263,7 @@
 		var postData = {
 			'bis_id'  : bis_id
 		};
-
+		console.log(bis_id)
 		$.post(url,postData,function(result){
 			if(result.status == 1){
 				//刷新当前页面
@@ -255,6 +273,41 @@
 			}
 		},'json');
 	}
+
+	function editPwd(user_id){
+		var text = $('#editPwd_'+user_id).text();
+		if(text == '修改密码'){
+			$('#pwd_'+user_id).removeAttr('disabled');
+			$('#pwd_'+user_id).val('');
+			$('#pwd_'+user_id).focus();
+			$('#editPwd_'+user_id).text('确认修改');
+		}else{
+			var url = "{:url('admin/bis/editCatPwd')}";
+			var password = $('#pwd_'+user_id).val();
+			if(password == '' || !password){
+				alert('请输入新密码!');
+			}else{
+				var postData = {
+					'user_id'  : user_id,
+					'password'  : password,
+				};
+
+				$.post(url,postData,function(result){
+					if(result.status == 1){
+						alert('修改成功!');
+						//刷新当前页面
+						location.reload();
+					}else{
+						alert('修改失败!');
+						//刷新当前页面
+						location.reload();
+					}
+				},'json');
+			}
+
+		}
+	}
+
 </script>
 
 <script>

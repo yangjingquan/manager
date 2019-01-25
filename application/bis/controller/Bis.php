@@ -53,6 +53,7 @@ class Bis extends Base {
         $category = input('post.category');
         $config_type = input('post.config_type');
         $group_type = input('post.group_type');
+        $is_pay = input('post.is_pay');
         $logistics_status = input('post.logistics_status');
         $appid = input('post.appid');
         $secret = input('post.secret');
@@ -87,6 +88,7 @@ class Bis extends Base {
             'config_type'  => $config_type,
             'cat_id'  => $category,
             'is_pintuan'  => $group_type,
+            'is_pay'  => $is_pay,
             'logistics_status'  => $logistics_status,
             'positions'  => $location,
             'appid'  => $appid,

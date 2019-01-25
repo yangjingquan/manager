@@ -719,7 +719,8 @@ class Product extends Base {
             $images_data['thumb'] = $image->uploadS('thumb','product');
             $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
-
+        dump($images_data);
+        die;
         //设置更新的数据
         $product_data = [
             'cat1_id' => $param['cat1_id'],
@@ -754,7 +755,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 
@@ -873,7 +874,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 
