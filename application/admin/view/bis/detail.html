@@ -73,6 +73,39 @@
 			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.bis_name}" id="bis_name" name="bis_name">
+				<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$user_res.username}" disabled>&nbsp;&nbsp;&nbsp;
+				密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$user_res.u_id}" value="{$user_res.password}">
+				<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$user_res.u_id}" onclick="editPwd({$user_res.u_id})">修改密码</button><br>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">选择地区：</label>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="city_id" class="select cityId">
+					<option value="0">--请选择--</option>
+					{volist name="provinces" id="vo"}
+					<option value="{$vo.id}" {if condition="$province_id eq $vo.id"} selected="selected" {/if}>{$vo.p_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div>
+			<div class="formControls col-xs-8 col-sm-2">
+				<span class="select-box">
+				<select name="se_city_id" class="select se_city_id">
+					<option value="0">--请选择--</option>
+					{volist name="citys" id="vo"}
+					<option value="{$vo.id}" {if condition="$city_id eq $vo.id"} selected="selected" {/if}>{$vo.c_name}</option>
+					{/volist}
+				</select>
+				</span>
+			</div><label class="star_label">**</label>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">详细地址：</label>
+			<div class="formControls col-xs-8 col-sm-3">
+				<input type="text" class="input-text1" value="{$bis_res.address}" placeholder="" id="address" name="address">
+				<label class="star_label">**</label>
 			</div>
 		</div>
 		<div class="row cl">
@@ -183,6 +216,16 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小程序支付：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="1" {if condition="$bis_res.is_pay eq 1"} checked {/if} id="is_pay" name="is_pay">
+				<label for="is_pay">开启</label>
+				<input type="radio" value="0" {if condition="$bis_res.is_pay eq 0"} checked {/if} id="not_pay" name="is_pay">
+				<label for="not_pay">关闭</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">小程序id(Appid)：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.appid}" id="appid" name="appid">
@@ -219,14 +262,14 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺logo: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 " id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<input type="file" class="input-text1 " id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="acode_c" >
+				<input type="file" class="input-text1 " id="acode" name="acode"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="acode_c" >
 			</div>
 		</div>
 		<div class="row cl">
@@ -252,10 +295,10 @@
 
 		//设置图片
 		$('#thumb').css('display','none');
-		$('#thumb_c').attr('src','../../{$bis_res.thumb}');
+		$('#thumb_c').attr('src','{$bis_res.thumb}');
 
 		$('#acode').css('display','none');
-		$('#acode_c').attr('src','../../{$bis_res.acode}');
+		$('#acode_c').attr('src','{$bis_res.acode}');
 
 		$('.pwd').attr("disabled","disabled");
 

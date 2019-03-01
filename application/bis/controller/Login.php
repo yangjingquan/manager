@@ -18,8 +18,10 @@ class Login extends Controller {
                 $this->error('该用户不存在或已失效');
             }
 
-            $bis_info = model('Bis')->get(['id' => $admin_res['bis_id']]);
-            if($bis_info->status != 1){
+//            $bis_info = model('Bis')->get(['id' => $admin_res['bis_id']]);
+            $bis_info = Db::table('store_bis')->where("id = ".$admin_res['bis_id'])->find();
+
+            if(empty($bis_info) ||  $bis_info['status'] != 1){
                 $this->error('商家不存在、已失效或未通过审核');
             }
 

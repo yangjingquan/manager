@@ -60,10 +60,10 @@
 			<label class="form-label col-xs-4 col-sm-2">图片上传: </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<label style="margin-left: 1%;">图片一:</label>
-				<input type="file" class="input-text1" value="" placeholder="" id="img1" name="img1"><img style="margin-bottom:0.5%;" src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="img1_c" onclick="F_Open('img1_c','img1')" >
+				<input type="file" class="input-text1" value="" placeholder="" id="img1" name="img1"><img style="margin-bottom:0.5%;" src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="img1_c" onclick="F_Open('img1_c','img1')" >
 				<br>
 				<label style="margin-left: 1%;">图片二: </label>
-				<input type="file" class="input-text1" value="" placeholder="" id="img2" name="img2"><img src="" class="img_bottom" onerror="javascript:this.src='http://admin.siweishop.com/uploads/other/no_img.png'" id="img2_c" onclick="F_Open('img2_c','img2')" >
+				<input type="file" class="input-text1" value="" placeholder="" id="img2" name="img2"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="img2_c" onclick="F_Open('img2_c','img2')" >
 			</div>
 		</div>
 
@@ -83,8 +83,8 @@
 	$(function(){
 		$('#img1').css('display','none');
 		$('#img2').css('display','none');
-		$('#img1_c').attr('src','../../{$res.img1}');
-		$('#img2_c').attr('src','../../{$res.img2}');
+		$('#img1_c').attr('src','{$res.img1}');
+		$('#img2_c').attr('src','{$res.img2}');
 	});
 
 	function F_Open(id1,id2){

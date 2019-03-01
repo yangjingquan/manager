@@ -180,6 +180,16 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小程序支付：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="1" {if condition="$bis_res.is_pay eq 1"} checked {/if} id="is_pay" name="is_pay">
+				<label for="is_pay">开启</label>
+				<input type="radio" value="0" {if condition="$bis_res.is_pay eq 0"} checked {/if} id="not_pay" name="is_pay">
+				<label for="not_pay">关闭</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">小程序id(Appid)：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.appid}" id="appid" name="appid">
@@ -216,14 +226,14 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">店铺logo: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="file" class="input-text1 "  id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='http://mall.siweishop.com/uploads/other/no_img.png'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<input type="file" class="input-text1 "  id="thumb" name="thumb"><img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
 		<div class="row cl {$bis_res.is_ind_version == 1 ? 'display_none' : ''}">
 			<label class="form-label col-xs-4 col-sm-2">店铺二维码: </label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<img src="" class="img_bottom" onerror="javascript:this.src='http://mall.siweishop.com/uploads/other/no_img.png'"  id="acode_c" >
+				<img src="" class="img_bottom" onerror="javascript:this.src='{$no_img_url}'"  id="acode_c" >
 			</div>
 		</div>
 		<div class="row cl">

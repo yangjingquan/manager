@@ -343,6 +343,288 @@ class Orders extends Model{
         return $logistics_status;
     }
 
+
+    //*******************************
+    //以下是餐饮相关接口
+
+    //获取点餐所有订单信息
+    public function getDcAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status){
+        if($bis_id){
+            $where = "mo.type = 1 and mo.bis_id = ".$bis_id." and  mo.status = 1";
+        }else{
+            $where = "mo.type = 1 and  mo.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and mo.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and mo.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+        $listorder = [
+            'mo.create_time'  => 'desc'
+        ];
+
+        $res = Db::table('cy_main_orders')->alias('mo')->field('mo.id as order_id,mo.table_id,mo.order_no,mo.order_status,mo.total_amount,mo.remark,mo.create_time,bis.bis_name')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('cy_bis bis','mo.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset, $limit)
+            ->select();
+        return $res;
+    }
+
+    //获取点餐所有订单数量
+    public function getDcAllOrdersCount($bis_id,$date_from,$date_to,$order_status){
+        if($bis_id){
+            $where = "mo.type = 1 and mo.bis_id = ".$bis_id." and  mo.status = 1";
+        }else{
+            $where = "mo.type = 1 and  mo.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and mo.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and mo.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+
+        $res = Db::table('cy_main_orders')->alias('mo')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('cy_bis bis','mo.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->count();
+        return $res;
+    }
+
+    //获取外卖所有订单信息
+    public function getWmAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status){
+        if($bis_id){
+            $where = "mo.type = 2 and mo.bis_id = ".$bis_id." and  mo.status = 1";
+        }else{
+            $where = "mo.type = 2 and  mo.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and mo.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and mo.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+        $listorder = [
+            'mo.create_time'  => 'desc'
+        ];
+
+        $res = Db::table('cy_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.order_status,mo.total_amount,mo.create_time,mo.rec_name,mo.mobile,mo.address,bis.bis_name')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('cy_bis bis','mo.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset, $limit)
+            ->select();
+        return $res;
+    }
+
+    //获取外卖所有订单数量
+    public function getWmAllOrdersCount($bis_id,$date_from,$date_to,$order_status){
+        if($bis_id){
+            $where = "mo.type = 2 and mo.bis_id = ".$bis_id." and  mo.status = 1";
+        }else{
+            $where = "mo.type = 2 and  mo.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and mo.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and mo.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+
+        $res = Db::table('cy_main_orders')->alias('mo')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('cy_bis bis','mo.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->count();
+        return $res;
+    }
+    //根据id获取点餐订单详情
+    public function getDcOrderInfoById($id){
+        //设置查询条件
+        $where = [
+            'mo.id'  => $id
+        ];
+
+        //查询结果
+        $res = Db::table('cy_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.remark,mo.total_amount,SUM(sub.amount) as amount,sub.pro_id,mo.order_status,mo.table_id,mo.create_time')
+            ->join('cy_sub_orders sub','sub.main_id = mo.id','LEFT')
+            ->join('cy_members mem','mo.mem_id = mem.id','LEFT')
+            ->where($where)
+            ->find();
+        return $res;
+    }
+
+    //根据订单id获取点餐订单下商品信息
+    public function getDcProductInfoById($id){
+        //设置查询条件
+        $where = [
+            'so.main_id'  => $id,
+            'so.status' => 1
+        ];
+
+        $order = [
+            'so.id'   => 'asc'
+        ];
+
+        //查询结果
+        $res = Db::table('cy_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,so.amount')
+            ->join('cy_products p','so.pro_id = p.id','LEFT')
+            ->where($where)
+            ->order($order)
+            ->select();
+        return $res;
+    }
+    //根据id获取外卖订单详情
+    public function getWmOrderInfoById($id){
+        //设置查询条件
+        $where = [
+            'mo.id'  => $id
+        ];
+
+        //查询结果
+        $res = Db::table('cy_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.remark,mo.total_amount,SUM(sub.amount) as amount,mo.order_status,mo.create_time,mo.rec_name,mo.mobile,mo.address')
+            ->join('cy_sub_orders sub','sub.main_id = mo.id','LEFT')
+            ->join('cy_members mem','mo.mem_id = mem.id','LEFT')
+            ->where($where)
+            ->find();
+        return $res;
+    }
+
+    //根据订单id获取外卖订单下商品信息
+    public function getWmProductInfoById($id){
+        //设置查询条件
+        $where = [
+            'so.main_id'  => $id,
+            'so.status' => 1
+        ];
+
+        $order = [
+            'so.id'   => 'asc'
+        ];
+
+        //查询结果
+        $res = Db::table('cy_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,so.amount')
+            ->join('cy_products p','so.pro_id = p.id','LEFT')
+            ->where($where)
+            ->order($order)
+            ->select();
+        return $res;
+    }
+
+    //获取预定订单信息
+    public function getYdAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status){
+        if($bis_id){
+            $where = "pre.bis_id = ".$bis_id." and  pre.status = 1";
+        }else{
+            $where = "pre.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and pre.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and pre.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and pre.order_status = '$order_status'";
+        }
+        $listorder = [
+            'pre.create_time'  => 'desc'
+        ];
+
+        $res = Db::table('cy_pre_orders')->alias('pre')->field('pre.id as order_id,pre.order_status,pre.date,pre.time,pre.remark,pre.create_time,pre.type,pre.link_man,pre.count,pre.mobile,bis.bis_name')
+            ->join('cy_bis bis','pre.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset, $limit)
+            ->select();
+
+        $index = 0;
+        foreach($res as $val){
+            switch ($val['type']){
+                case 0 :
+                    $res[$index]['type'] = '二十人桌';
+                    break;
+                case 1 :
+                    $res[$index]['type'] = '十六人桌';
+                    break;
+                case 2 :
+                    $res[$index]['type'] = '十二人桌';
+                    break;
+                case 3 :
+                    $res[$index]['type'] = '十人桌';
+                    break;
+                case 4 :
+                    $res[$index]['type'] = '四人桌';
+                    break;
+                default :
+                    $res[$index]['type'] = '二人桌';
+                    break;
+            }
+            $index ++;
+        }
+        return $res;
+    }
+
+    //获取预定订单数量
+    public function getYdAllOrdersCount($bis_id,$date_from,$date_to,$order_status){
+        if($bis_id){
+            $where = "pre.bis_id = ".$bis_id." and  pre.status = 1";
+        }else{
+            $where = "pre.status = 1";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and pre.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and pre.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and pre.order_status = '$order_status'";
+        }
+
+        $res = Db::table('cy_pre_orders')->alias('pre')
+            ->join('cy_bis bis','pre.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->count();
+        return $res;
+    }
+
 }
 
 ?>

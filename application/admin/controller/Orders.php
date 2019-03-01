@@ -4,6 +4,7 @@ use think\Controller;
 use think\Db;
 
 class Orders extends Base {
+    const PAGE_SIZE = 20;
 
     //订单列表
     public function index(){
@@ -15,7 +16,7 @@ class Orders extends Base {
         $bis_id = input('get.bis_id',0,'intval');
         $order_from = input('get.order_from',0,'intval');
 
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         //总数量
         $count = model('Orders')->getAllOrdersCount($bis_id,$date_from, $date_to, $order_status,$order_from);
@@ -447,5 +448,186 @@ class Orders extends Base {
         $template_id = $bis_res['fahuo_template_id'];
         return $template_id;
     }
+
+
+    //************************
+    //以下是餐饮部分
+
+    //点餐订单列表
+    public function dc_index(){
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page',1,'intval');
+        $order_status = input('get.order_status',0,'intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getDcAllOrdersCount($bis_id,$date_from, $date_to, $order_status);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getDcAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status);
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/orders/dc_index',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'count'  => $count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'order_status'  => $order_status,
+            'bis_res'  => $bis_res,
+            'bis_id'  => $bis_id
+        ]);
+    }
+
+    //点餐订单详情
+    public function dc_detail(){
+        //获取参数
+        $id = input('get.id');
+        //获取订单详情
+        $order_info = Model('Orders')->getDcOrderInfoById($id);
+        //获取订单内商品信息
+        $sub_order_info = Model('Orders')->getDcProductInfoById($id);
+
+        return $this->fetch('catering/orders/dc_detail',[
+            'order_info'   => $order_info,
+            'sub_order_info'   => $sub_order_info
+        ]);
+    }
+    //外卖订单列表
+    public function wm_index(){
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page',1,'intval');
+        $order_status = input('get.order_status',0,'intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getWmAllOrdersCount($bis_id,$date_from, $date_to, $order_status);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getWmAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status);
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/orders/wm_index',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'count'  => $count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'order_status'  => $order_status,
+            'bis_res'  => $bis_res,
+            'bis_id'  => $bis_id
+        ]);
+    }
+
+    //外卖订单详情
+    public function wm_detail(){
+        //获取参数
+        $id = input('get.id');
+        //获取订单详情
+        $order_info = Model('Orders')->getWmOrderInfoById($id);
+        //获取订单内商品信息
+        $sub_order_info = Model('Orders')->getWmProductInfoById($id);
+
+        return $this->fetch('catering/orders/wm_detail',[
+            'order_info'   => $order_info,
+            'sub_order_info'   => $sub_order_info
+        ]);
+    }
+
+    //修改订单状态
+    public function changeCatOrderStatus(){
+        //获取参数
+        $param = input('post.');
+
+        if(empty($param['order_status'])){
+            return $this->error('订单状态不能为空','Orders/dc_index');
+        }
+        $data = [
+            'order_status' => $param['order_status'],
+            'update_time'  => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_main_orders')->where('id = '.$param['order_id'])->update($data);
+
+        if($param['type'] == 1){
+            return $this->success('修改订单状态成功!','Orders/dc_index');
+        }else{
+            return $this->success('修改订单状态成功!','Orders/wm_index');
+        }
+    }
+
+    //预定订单列表
+    public function yd_index(){
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page',1,'intval');
+        $order_status = input('get.order_status',0,'intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getYdAllOrdersCount($bis_id,$date_from, $date_to, $order_status);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getYdAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status);
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/orders/yd_index',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'count'  => $count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'order_status'  => $order_status,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res
+        ]);
+    }
+
+    //确认预定订单
+    public function confirm_yd_order(){
+        //获取参数
+        $param = input('get.');
+
+        $data = [
+            'order_status' => 3,
+            'update_time'  => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_pre_orders')->where('id = '.$param['order_id'])->update($data);
+
+        return $this->success('修改订单状态成功!','Orders/yd_index');
+    }
+
+    //取消预定订单
+    public function cancel_yd_order(){
+        //获取参数
+        $param = input('get.');
+
+        $data = [
+            'order_status' => 2,
+            'update_time'  => date('Y-m-d H:i:s')
+        ];
+
+        $res = Db::table('cy_pre_orders')->where('id = '.$param['order_id'])->update($data);
+
+        return $this->success('取消订单成功!','Orders/yd_index');
+    }
+
+
+
 
 }

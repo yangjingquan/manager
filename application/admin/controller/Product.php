@@ -7,11 +7,8 @@ use think\Db;
 
 class Product extends Base {
 
-<<<<<<< Updated upstream
-=======
     const PAGE_SIZE = 20;
 
->>>>>>> Stashed changes
     //商品列表
     public function index(){
         $date_from = input('get.date_from');
@@ -20,7 +17,7 @@ class Product extends Base {
         $bis_id = input('get.bis_id',0,'intval');
 
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $pro_count = model('Products')->getAllProductCount($bis_id,$date_from,$date_to,$pro_name);
         //总页码
@@ -54,7 +51,7 @@ class Product extends Base {
         $pro_name = input('get.pro_name');
 
         $current_page = input('get.current_page',1,'intval');
-        $limit = 10;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         $pro_count = model('Products')->getAllJfProductCount($bis_id,$date_from,$date_to,$pro_name);
         //总页码
@@ -94,8 +91,6 @@ class Product extends Base {
         //判断该店家是否开启拼团
         $pintuan_res = Db::table('store_bis')->field('is_pintuan')->where('id = '.$bis_id)->find();
 
-        dump($pro_res);
-        die;
         return $this->fetch('',[
             'pro_res'  => $pro_res,
             'first_category'  => $first_category,
@@ -104,7 +99,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -132,7 +128,8 @@ class Product extends Base {
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
             'pro_id'  => $id,
-            'is_pintuan'  => $pintuan_res['is_pintuan']
+            'is_pintuan'  => $pintuan_res['is_pintuan'],
+            'no_img_url'  => self::NO_IMG_URL
         ]);
     }
 
@@ -158,7 +155,8 @@ class Product extends Base {
             'brand'  => $brand,
             'pro_config'  => $pro_config,
             'pro_config_count'  => $pro_config_count,
-            'pro_id'  => $id
+            'pro_id'  => $id,
+            'no_img_url'  => self::NO_IMG_URL
 
         ]);
     }
@@ -196,7 +194,6 @@ class Product extends Base {
             $this->error('更新状态失败!');
         }
     }
-
 
     //更改推荐状态
     public function updateRecommendStatus(){
@@ -238,67 +235,67 @@ class Product extends Base {
         //设置图片
         if($_FILES['config_image1']['error'] == 0){
             $images_data['config_image1'] = $image->uploadS('config_image1','product');
-            $images_data['config_image1'] = str_replace("\\", "/", $images_data['config_image1']);
+            $images_data['config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image1']);
         }
         if($_FILES['config_image2']['error'] == 0){
             $images_data['config_image2'] = $image->uploadS('config_image2','product');
-            $images_data['config_image2'] = str_replace("\\", "/", $images_data['config_image2']);
+            $images_data['config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image2']);
         }
         if($_FILES['config_image3']['error'] == 0){
             $images_data['config_image3'] = $image->uploadS('config_image3','product');
-            $images_data['config_image3'] = str_replace("\\", "/", $images_data['config_image3']);
+            $images_data['config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image3']);
         }
         if($_FILES['config_image4']['error'] == 0){
             $images_data['config_image4'] = $image->uploadS('config_image4','product');
-            $images_data['config_image4'] = str_replace("\\", "/", $images_data['config_image4']);
+            $images_data['config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image4']);
         }
         if($_FILES['wx_config_image1']['error'] == 0){
             $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
-            $images_data['wx_config_image1'] = str_replace("\\", "/", $images_data['wx_config_image1']);
+            $images_data['wx_config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
         }
         if($_FILES['wx_config_image2']['error'] == 0){
             $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
-            $images_data['wx_config_image2'] = str_replace("\\", "/", $images_data['wx_config_image2']);
+            $images_data['wx_config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
         }
         if($_FILES['wx_config_image3']['error'] == 0){
             $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
-            $images_data['wx_config_image3'] = str_replace("\\", "/", $images_data['wx_config_image3']);
+            $images_data['wx_config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
         }
         if($_FILES['wx_config_image4']['error'] == 0){
             $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
-            $images_data['wx_config_image4'] = str_replace("\\", "/", $images_data['wx_config_image4']);
+            $images_data['wx_config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
         }
         if($_FILES['wx_config_image5']['error'] == 0){
             $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
-            $images_data['wx_config_image5'] = str_replace("\\", "/", $images_data['wx_config_image5']);
+            $images_data['wx_config_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
         }
         if($_FILES['wx_config_image6']['error'] == 0){
             $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
-            $images_data['wx_config_image6'] = str_replace("\\", "/", $images_data['wx_config_image6']);
+            $images_data['wx_config_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
         }
         if($_FILES['wx_config_image7']['error'] == 0){
             $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
-            $images_data['wx_config_image7'] = str_replace("\\", "/", $images_data['wx_config_image7']);
+            $images_data['wx_config_image7'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
         }
         if($_FILES['wx_config_image8']['error'] == 0){
             $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
-            $images_data['wx_config_image8'] = str_replace("\\", "/", $images_data['wx_config_image8']);
+            $images_data['wx_config_image8'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
         }
         if($_FILES['wx_config_image9']['error'] == 0){
             $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
-            $images_data['wx_config_image9'] = str_replace("\\", "/", $images_data['wx_config_image9']);
+            $images_data['wx_config_image9'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
         }
         if($_FILES['wx_config_image10']['error'] == 0){
             $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
-            $images_data['wx_config_image10'] = str_replace("\\", "/", $images_data['wx_config_image10']);
+            $images_data['wx_config_image10'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
         }
         if($_FILES['image']['error'] == 0){
             $images_data['image'] = $image->uploadS('image','product');
-            $images_data['image'] = str_replace("\\", "/", $images_data['image']);
+            $images_data['image'] = self::IMG_URL.str_replace("\\", "/", $images_data['image']);
         }
         if($_FILES['thumb']['error'] == 0){
             $images_data['thumb'] = $image->uploadS('thumb','product');
-            $images_data['thumb'] = str_replace("\\", "/", $images_data['thumb']);
+            $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
 
         //设置更新的数据
@@ -334,7 +331,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 
@@ -365,67 +362,67 @@ class Product extends Base {
         //设置图片
         if($_FILES['config_image1']['error'] == 0){
             $images_data['config_image1'] = $image->uploadS('config_image1','product');
-            $images_data['config_image1'] = str_replace("\\", "/", $images_data['config_image1']);
+            $images_data['config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image1']);
         }
         if($_FILES['config_image2']['error'] == 0){
             $images_data['config_image2'] = $image->uploadS('config_image2','product');
-            $images_data['config_image2'] = str_replace("\\", "/", $images_data['config_image2']);
+            $images_data['config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image2']);
         }
         if($_FILES['config_image3']['error'] == 0){
             $images_data['config_image3'] = $image->uploadS('config_image3','product');
-            $images_data['config_image3'] = str_replace("\\", "/", $images_data['config_image3']);
+            $images_data['config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image3']);
         }
         if($_FILES['config_image4']['error'] == 0){
             $images_data['config_image4'] = $image->uploadS('config_image4','product');
-            $images_data['config_image4'] = str_replace("\\", "/", $images_data['config_image4']);
+            $images_data['config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['config_image4']);
         }
         if($_FILES['wx_config_image1']['error'] == 0){
             $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
-            $images_data['wx_config_image1'] = str_replace("\\", "/", $images_data['wx_config_image1']);
+            $images_data['wx_config_image1'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
         }
         if($_FILES['wx_config_image2']['error'] == 0){
             $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
-            $images_data['wx_config_image2'] = str_replace("\\", "/", $images_data['wx_config_image2']);
+            $images_data['wx_config_image2'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
         }
         if($_FILES['wx_config_image3']['error'] == 0){
             $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
-            $images_data['wx_config_image3'] = str_replace("\\", "/", $images_data['wx_config_image3']);
+            $images_data['wx_config_image3'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
         }
         if($_FILES['wx_config_image4']['error'] == 0){
             $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
-            $images_data['wx_config_image4'] = str_replace("\\", "/", $images_data['wx_config_image4']);
+            $images_data['wx_config_image4'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
         }
         if($_FILES['wx_config_image5']['error'] == 0){
             $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
-            $images_data['wx_config_image5'] = str_replace("\\", "/", $images_data['wx_config_image5']);
+            $images_data['wx_config_image5'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
         }
         if($_FILES['wx_config_image6']['error'] == 0){
             $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
-            $images_data['wx_config_image6'] = str_replace("\\", "/", $images_data['wx_config_image6']);
+            $images_data['wx_config_image6'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
         }
         if($_FILES['wx_config_image7']['error'] == 0){
             $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
-            $images_data['wx_config_image7'] = str_replace("\\", "/", $images_data['wx_config_image7']);
+            $images_data['wx_config_image7'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
         }
         if($_FILES['wx_config_image8']['error'] == 0){
             $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
-            $images_data['wx_config_image8'] = str_replace("\\", "/", $images_data['wx_config_image8']);
+            $images_data['wx_config_image8'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
         }
         if($_FILES['wx_config_image9']['error'] == 0){
             $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
-            $images_data['wx_config_image9'] = str_replace("\\", "/", $images_data['wx_config_image9']);
+            $images_data['wx_config_image9'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
         }
         if($_FILES['wx_config_image10']['error'] == 0){
             $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
-            $images_data['wx_config_image10'] = str_replace("\\", "/", $images_data['wx_config_image10']);
+            $images_data['wx_config_image10'] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
         }
         if($_FILES['image']['error'] == 0){
             $images_data['image'] = $image->uploadS('image','product');
-            $images_data['image'] = str_replace("\\", "/", $images_data['image']);
+            $images_data['image'] = self::IMG_URL.str_replace("\\", "/", $images_data['image']);
         }
         if($_FILES['thumb']['error'] == 0){
             $images_data['thumb'] = $image->uploadS('thumb','product');
-            $images_data['thumb'] = str_replace("\\", "/", $images_data['thumb']);
+            $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
 
         //设置更新的数据
@@ -453,7 +450,7 @@ class Product extends Base {
         ];
 
         //更新商品表
-        $p_res = model('Products')->where('id = '.$param['pro_id'])->update($product_data);
+        $p_res = Db::table('store_products')->where('id = '.$param['pro_id'])->update($product_data);
 
         $images_data['update_time'] = date('Y-m-d H:i:s');
 
@@ -658,10 +655,199 @@ class Product extends Base {
         }else{
             return show(0,'error');
         }
-
-
     }
 
+    //************************************
+    //以下是餐饮相关接口
+    //编辑商品
+    public function catEdit(){
+        //获取参数
+        $id = input('get.id');
+        $bis_id = input('get.bis_id');
+        //获取该商品信息
+        $pro_res = model('Products')->getCatProInfoById($id);
+        $category = model('CatCategory')->getNormalFirstCategory($bis_id);
+        $temp_detail_images = json_decode($pro_res['detail_images'],true);
+        for($i = 0;$i < 10;$i++){
+            $detail_images[] = !empty($temp_detail_images[$i]) ? $temp_detail_images[$i] : '';
+        }
+        return $this->fetch('catering/product/edit',[
+            'pro_res'  => $pro_res,
+            'category'  => $category,
+            'pro_id'  => $id,
+            'no_img_url'  => self::NO_IMG_URL,
+            'detail_images'  => $detail_images
+        ]);
+    }
+
+
+    //更改状态
+    public function updateCatStatus(){
+        //获取参数
+        $id = input('get.id');
+        $status = input('get.status');
+        $data['status'] = $status;
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            $this->success('删除成功!');
+        }else{
+            $this->error('删除失败!');
+        }
+    }
+
+    //修改商品
+    public function updateCatProduct(){
+        if(!request()->isPost()){
+            $this->error('请求方式错误!');
+        }
+        //获取提交的数据
+        $param = input('post.');
+
+        //获取当前商品信息
+        $res = Db::table('cy_products')->where("id = ".$param['pro_id'])->find();
+        $detail_images_json = $res['detail_images'];
+        $detail_images = json_decode($detail_images_json,true);
+
+        //上传图片相关
+        $image = new Image();
+
+        //设置更新的数据
+        $product_data = [
+            'cat_id' => $param['cat_id'],
+            'p_name' => $param['p_name'],
+            'pro_type' => $param['pro_type'],
+            'original_price' => $param['original_price'],
+            'associator_price' => $param['associator_price'],
+            'introduce' => $param['intro'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
+
+        //设置图片
+        if($_FILES['image']['error'] == 0){
+            $upload_image = $image->uploadS('image','product');
+            $upload_image = str_replace("\\", "/", $upload_image);
+            $product_data['image'] = self::IMG_URL.$upload_image;
+        }
+
+        if($_FILES['wx_config_image1']['error'] == 0){
+            $images_data['wx_config_image1'] = $image->uploadS('wx_config_image1','product');
+            $detail_images[0] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image1']);
+        }
+        if($_FILES['wx_config_image2']['error'] == 0){
+            $images_data['wx_config_image2'] = $image->uploadS('wx_config_image2','product');
+            $detail_images[1] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image2']);
+        }
+        if($_FILES['wx_config_image3']['error'] == 0){
+            $images_data['wx_config_image3'] = $image->uploadS('wx_config_image3','product');
+            $detail_images[2] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image3']);
+        }
+        if($_FILES['wx_config_image4']['error'] == 0){
+            $images_data['wx_config_image4'] = $image->uploadS('wx_config_image4','product');
+            $detail_images[3] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image4']);
+        }
+        if($_FILES['wx_config_image5']['error'] == 0){
+            $images_data['wx_config_image5'] = $image->uploadS('wx_config_image5','product');
+            $detail_images[4] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image5']);
+        }
+        if($_FILES['wx_config_image6']['error'] == 0){
+            $images_data['wx_config_image6'] = $image->uploadS('wx_config_image6','product');
+            $detail_images[5] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image6']);
+        }
+        if($_FILES['wx_config_image7']['error'] == 0){
+            $images_data['wx_config_image7'] = $image->uploadS('wx_config_image7','product');
+            $detail_images[6] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image7']);
+        }
+        if($_FILES['wx_config_image8']['error'] == 0){
+            $images_data['wx_config_image8'] = $image->uploadS('wx_config_image8','product');
+            $detail_images[7] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image8']);
+        }
+        if($_FILES['wx_config_image9']['error'] == 0){
+            $images_data['wx_config_image9'] = $image->uploadS('wx_config_image9','product');
+            $detail_images[8] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image9']);
+        }
+        if($_FILES['wx_config_image10']['error'] == 0){
+            $images_data['wx_config_image10'] = $image->uploadS('wx_config_image10','product');
+            $detail_images[9] = self::IMG_URL.str_replace("\\", "/", $images_data['wx_config_image10']);
+        }
+        $detail_images_json = json_encode($detail_images);
+        $product_data['detail_images'] = $detail_images_json;
+
+        //更新商品表
+        $p_res = Db::table('cy_products')->where('id = '.$param['pro_id'])->update($product_data);
+
+        $this->success("修改成功!");
+    }
+
+    //餐饮商品列表
+    public function cy_index(){
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $pro_name = input('get.pro_name');
+        $bis_id = input('get.bis_id',0,'intval');
+
+        $current_page = input('get.current_page',1,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        $pro_count = model('Products')->getCatAllProductCount($bis_id,$date_from,$date_to,$pro_name);
+        //总页码
+        $pages = ceil($pro_count / $limit);
+
+        $pro_res = model('Products')->getCatAllProducts($bis_id,$limit, $offset,$date_from,$date_to,$pro_name);
+
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/product/index',[
+            'pro_res'  => $pro_res,
+            'pages'  => $pages,
+            'count'  => $pro_count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'pro_name'  => $pro_name,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res,
+        ]);
+    }
+
+    //更改餐品上架状态
+    public function updateCatSaleStatus(){
+        //获取参数
+        $id = input('get.id');
+        $on_sale = input('get.on_sale');
+        $data['on_sale'] = $on_sale;
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($on_sale == 1){
+                $this->success('上架成功!');
+            }else{
+                $this->success('下架成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
+
+    //更改餐品推荐状态
+    public function updateCatRecommendStatus(){
+        //获取参数
+        $id = input('get.id');
+        $is_recommend = input('get.is_recommend');
+        $data['is_recommend'] = $is_recommend;
+        $data['update_time'] = date('Y-m-d H:i:s');
+        $res = Db::table('cy_products')->where('id = '.$id)->update($data);
+
+        if($res){
+            if($is_recommend == 1){
+                $this->success('设置推荐成功!');
+            }else{
+                $this->success('取消推荐成功!');
+            }
+        }else{
+            $this->error('更新状态失败!');
+        }
+    }
 
 
 }

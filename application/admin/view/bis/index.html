@@ -35,6 +35,8 @@
 						<th width="40">店铺名称</th>
 						<th width="40">店铺类型</th>
 						<th width="80">店铺地址</th>
+						<th width="40">排序</th>
+						<th width="40">设置推荐</th>
 						<th width="40">审核</th>
 					</tr>
 				</thead>
@@ -45,6 +47,8 @@
 							<td><a style="color:#5B892E;" href="{:url('bis/detail',['bis_id'=>$vo.bis_id])}">{$vo.bis_name}</a></td>
 							<td>{$vo.is_pintuan == 1 ? '拼团模式' : '普通模式'}</td>
 							<td>{$vo.address_info}</td>
+							<td class="text-c listorder"><input size="3" attr-id="{$vo.bis_id}" name="listorder" value="{$vo.listorder}" /></td>
+							<td class="td-status"><a href="{:url('bis/updateRecStatus',['id'=>$vo.bis_id,'is_recommend'=>$vo.is_recommend == 1 ? 0 : 1])}" title="点击修改推荐状态">{$vo.is_recommend|bis_recommend}</a></td>
 							<td class="td-status"><a href="{:url('bis/updateStatus',['bis_id'=>$vo.bis_id,'status' =>$vo.status == 1 ? 0 : 1])}" title="点击修改状态">{$vo.status|bis_status}</a></td>
 						</tr>
 					{/volist}
@@ -72,6 +76,32 @@
 
 			location.href = "index?current_page="+choose_page;
 		}
+	});
+
+	var SCOPE = {
+		'listorder_url'  :  "{:url('bis/listorder')}"
+	};
+
+	$('.listorder input').blur(function(){
+		//获取主键id
+		var id = $(this).attr('attr-id');
+		//获取排序的值
+		var listorder = $(this).val();
+
+		var postData = {
+			'id'  : id,
+			'listorder'  : listorder
+		};
+
+		//抛送的url
+		var url = SCOPE.listorder_url;
+		$.post(url,postData,function(result){
+			if(result.status == 1){
+				location.href = result.data;
+			}else{
+				alert(result.message);
+			}
+		},"json");
 	});
 </script>
 </html>

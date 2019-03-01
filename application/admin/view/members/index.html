@@ -28,7 +28,6 @@
 					<th width="100">昵称</th>
 					<th width="30">真实姓名</th>
 					<th width="60">注册时间</th>
-					<!--<th width="30">操作</th>-->
 				</tr>
 			</thead>
 			<tbody>
@@ -40,7 +39,6 @@
 						<td>{$vo.nickname}</td>
 						<td>{$vo.truename}</td>
 						<td>{$vo.create_time}</td>
-						<!--<td class="td-status"><a href="javascript:void(0)" title="点击加入组织" onclick="join_team({$vo.id},{$vo.team_status});">{$vo.team_status|team_status}</a></td>-->
 					</tr>
 				{/volist}
 			</tbody>
@@ -72,27 +70,6 @@
 			location.href = "index?current_page="+choose_page+"&bis_id="+bis_id;
 		}
 	});
-
-	function join_team(id,team_status){
-		if(team_status == 1){
-
-		}else{
-			var postData = {
-				'id'  : id
-			};
-
-			//抛送的url
-			var url = "{:url('team/join_team')}";
-			$.post(url,postData,function(result){
-				if(result.status == 1){
-					location.href = result.data;
-				}else{
-					alert(result.message);
-				}
-			},"json");
-		}
-
-	}
 </script>
 <style>
 	.no_show{

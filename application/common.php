@@ -163,6 +163,17 @@
         return $str;
     }
 
+    //设置商品推荐状态
+    function bis_recommend($is_recommend){
+        if($is_recommend == 1){
+            $str = "<span style='color:red;' class='label label-success radius'>取消推荐</span>";
+        }else{
+            $str = "<span class='label label-success radius'>设置推荐</span>";
+        }
+
+        return $str;
+    }
+
     //设置提现状态(小程序)
     function wx_tixian_status($status){
         if($status == 1){
@@ -191,11 +202,81 @@
 
     //设置公告状态
     function team_status($status){
-    if($status == 0){
-        $str = "<span class='label label-success radius'>加入直销组织</span>";
-    }else{
-        $str = "<span style='color: red;' class='label label-success radius'>已加入直销组织</span>";
+        if($status == 0){
+            $str = "<span class='label label-success radius'>加入直销组织</span>";
+        }else{
+            $str = "<span style='color: red;' class='label label-success radius'>已加入直销组织</span>";
+        }
+
+        return $str;
     }
 
-    return $str;
-}
+    //设置点餐订单状态
+    function dc_order_status($status){
+        if($status == 1){
+            $str = "<span class='label label-success radius'>已点餐</span>";
+        }else{
+            $str = "<span style='color: red' class='label label-success radius'>完成</span>";
+        }
+
+        return $str;
+    }
+    //设置外卖订单状态
+    function wm_order_status($status){
+        if($status == 1){
+            $str = "<span style='color: red' class='label label-success radius'>未付款</span>";
+        }elseif($status == 2){
+            $str = "<span style='color: #555fff' class='label label-success radius'>已付款</span>";
+        }elseif($status == 3){
+            $str = "<span style='color: #0a6999' class='label label-success radius'>配送中</span>";
+        }else{
+            $str = "<span style='color: #333333' class='label label-success radius'>完成</span>";
+        }
+
+        return $str;
+    }
+    //设置预定订单状态
+    function yd_order_status($status){
+        if($status == 1){
+            $str = "<span class='label label-success radius'>预定中</span>";
+        }elseif($status == 2){
+            $str = "<span style='color: red' class='label label-success radius'>取消</span>";
+        }else{
+            $str = "<span style='color: #333333;' class='label label-success radius'>预定完成</span>";
+        }
+
+        return $str;
+    }
+    //确认预定订单
+    function confirm_yd_order_status($status){
+        $str = "<span class='label radius' style='background-color: red'>确认</span>";
+
+        return $str;
+    }
+    //取消预定订单
+    function cancel_yd_order_status($status){
+        $str = "<span class='label radius' style='background-color: #bbbbbb'>取消</span>";
+
+        return $str;
+    }
+
+    //设置点餐订单状态
+    function table_show($status){
+        if($status == 1){
+            $str = "<span class='label label-success radius'>可用</span>";
+        }else{
+            $str = "<span style='color: red;' class='label label-success radius'>不可用</span>";
+        }
+        return $str;
+    }
+
+    //设置活动状态
+    function activity_status($status){
+        if($status == 1){
+            $str = "<span class='label label-success radius'>上线</span>";
+        }else{
+            $str = "<span style='color: red;' class='label label-success radius'>下线</span>";
+        }
+        return $str;
+    }
+
