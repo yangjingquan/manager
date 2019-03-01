@@ -12,10 +12,11 @@ class Bis extends Base {
     //店铺详情
     public function detail(){
         $bis_id = input('get.bis_id');
+
         //账号信息
-        $res = Db::table('store_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
+        $res = Db::table('store_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->find();
         //店铺信息
-        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,cat.id as cat_id,cat.cat_name')
+        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,bis.is_pay,cat.id as cat_id,cat.cat_name')
             ->join('store_category cat','bis.cat_id = cat.id','LEFT')
             ->where('bis.id = '.$bis_id)
             ->find();
@@ -48,7 +49,7 @@ class Bis extends Base {
     public function catDetail(){
         $bis_id = input('get.bis_id');
         //账号信息
-        $res = Db::table('cy_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->select();
+        $res = Db::table('cy_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->find();
         //店铺信息
         $bis_res = Db::table('cy_bis')->where('id = '.$bis_id)->find();
 
@@ -87,6 +88,7 @@ class Bis extends Base {
         $category = input('post.category');
         $config_type = input('post.config_type');
         $group_type = input('post.group_type');
+        $is_pay = input('post.is_pay');
         $is_ind_version = input('post.is_ind_version');
         $logistics_status = input('post.logistics_status');
         $appid = input('post.appid');
@@ -125,6 +127,7 @@ class Bis extends Base {
             'is_ind_version'  => $is_ind_version,
             'logistics_status'  => $logistics_status,
             'positions'  => $location,
+            'is_pay'  => $is_pay,
             'appid'  => $appid,
             'secret'  => $secret,
             'mchid'  => $mchid,
@@ -195,6 +198,7 @@ class Bis extends Base {
             'email' => $param['email'],
             'intro' => $param['intro'],
             'scope' => $param['scope'],
+            'is_pay' => $param['is_pay'],
             'min_price' => $param['min_price'],
             'lunch_box_fee' => $param['lunch_box_fee'],
             'distribution_fee' => $param['distribution_fee'],
@@ -352,7 +356,15 @@ class Bis extends Base {
         ]);
     }
 
-    //商家用户注册
+    public function reg_cat_index(){
+        //获取一级城市数据
+        $provinces = model('Province')->getProvinceInfo();
+        return $this->fetch('catering/bis/reg_index',[
+            'provinces'  => $provinces
+        ]);
+    }
+
+    //商城商家注册
     public function register(){
         if(!request()->isPost()){
             $this->error('请求错误!');
@@ -384,6 +396,49 @@ class Bis extends Base {
                 'create_time'   => date('Y-m-d H:i:s')
             ];
             $user_info = Db::table('store_bis_admin_users')->insert($con);
+            if($user_info){
+                $this->success('注册成功!');
+            }else{
+                $this->error('注册失败!');
+            }
+        }else{
+            $this->error('注册失败!');
+        }
+
+    }
+
+    //餐饮店铺注册
+    public function cat_register(){
+        if(!request()->isPost()){
+            $this->error('请求错误!');
+        }
+
+        //获取数据
+        $param = input('post.');
+
+        $validate = validate('Bis');
+
+        if(!$validate->scene('register')->check($param)){
+            $this->error($validate->getError());
+        }
+
+        //验证用户名唯一性
+        $username = $param['username'];
+        $user_res = Db::table('cy_bis_admin_users')->where("username = '$username' and status != -1")->select();
+        if($user_res){
+            $this->error('该用户已存在!');
+        }
+
+        $res = model('Bis')->cat_register($param);
+
+        if($res){
+            $con = [
+                'bis_id'   => $res,
+                'username'   => $param['username'],
+                'password'   => md5($param['password']),
+                'create_time'   => date('Y-m-d H:i:s')
+            ];
+            $user_info = Db::table('cy_bis_admin_users')->insert($con);
             if($user_info){
                 $this->success('注册成功!');
             }else{
@@ -439,7 +494,7 @@ class Bis extends Base {
 
         file_put_contents($img_path, $result);
         //将图片路径更新到商家表中
-        $up_data['acode'] = $img_path;
+        $up_data['acode'] = self::IMG_URL.$img_path;
         Db::table('store_bis')->where('id = '.$bis_id)->update($up_data);
         return show(1,'success');
     }
@@ -450,7 +505,7 @@ class Bis extends Base {
         //获取参数
         $bis_id = input('post.bis_id');
 
-        $bis_res = Db::table('store_home_info')->field('appid,secret')->where('id = 2')->find();
+        $bis_res = Db::table('store_home_info')->field('appid,secret')->where('id = 1')->find();
         $appid = $bis_res['appid'];
         $secret = $bis_res['secret'];
 
@@ -488,7 +543,7 @@ class Bis extends Base {
 
         file_put_contents($img_path, $result);
         //将图片路径更新到商家表中
-        $up_data['acode'] = $img_path;
+        $up_data['acode'] = self::IMG_URL.$img_path;
         Db::table('cy_bis')->where('id = '.$bis_id)->update($up_data);
         return show(1,'success');
     }
@@ -526,13 +581,23 @@ class Bis extends Base {
         }
     }
 
-    //修改密码
+    //商城修改密码
     public function editPwd(){
         //获取参数
         $user_id = input('post.user_id');
         $pwd = input('post.password');
         $data['password'] = md5($pwd);
         $res = Db::table('store_bis_admin_users')->where('id = '.$user_id)->update($data);
+        return show(1,'success');
+    }
+
+    //餐饮店铺修改密码
+    public function editCatPwd(){
+        //获取参数
+        $user_id = input('post.user_id');
+        $pwd = input('post.password');
+        $data['password'] = md5($pwd);
+        $res = Db::table('cy_bis_admin_users')->where('id = '.$user_id)->update($data);
         return show(1,'success');
     }
 

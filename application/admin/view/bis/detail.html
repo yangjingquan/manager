@@ -59,16 +59,14 @@
 <div class="page-container">
 	<form action="{:url('bis/save')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
 		<input type="hidden" name="id" value="{$bis_res.id}">
-		<!--<div class="row cl">-->
-			<!--<label class="form-label col-xs-4 col-sm-2">商户账号：</label>-->
-			<!--<div class="formControls col-xs-8 col-sm-9">-->
-				<!--{volist name="user_res" id="vo"}-->
-					<!--<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$vo.username}" disabled>&nbsp;&nbsp;&nbsp;-->
-					<!--密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$vo.u_id}" value="{$vo.password}">-->
-					<!--<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$vo.u_id}" onclick="editPwd({$vo.u_id})">修改密码</button><br>-->
-				<!--{/volist}-->
-			<!--</div>-->
-		<!--</div>-->
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户账号：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$user_res.username}" disabled>&nbsp;&nbsp;&nbsp;
+				密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$user_res.u_id}" value="{$user_res.password}">
+				<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$user_res.u_id}" onclick="editPwd({$user_res.u_id})">修改密码</button><br>
+			</div>
+		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -179,6 +177,16 @@
 				<label for="no_logistics">不需要</label>
 				<input type="radio" value="1" {if condition="$bis_res.logistics_status eq 1"} checked {/if} id="logistics" name="logistics_status">
 				<label for="logistics">需要</label>
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">小程序支付：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="radio" value="1" {if condition="$bis_res.is_pay eq 1"} checked {/if} id="is_pay" name="is_pay">
+				<label for="is_pay">开启</label>
+				<input type="radio" value="0" {if condition="$bis_res.is_pay eq 0"} checked {/if} id="not_pay" name="is_pay">
+				<label for="not_pay">关闭</label>
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>

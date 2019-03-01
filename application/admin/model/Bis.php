@@ -41,6 +41,42 @@ class Bis extends Model{
         return $res;
     }
 
+    //注册用户
+    public function cat_register($param){
+
+        //获取当前地址
+        $provinceId = $param['city_id'];
+        $cityId = $param['se_city_id'];
+        $address = $param['address'];
+        $province = $this->getProvinceInfo($provinceId);
+        $city = $this->getCityInfo($cityId);
+        $address = $province.$city.$address;
+        $positionRes = $this->execUrl($address);
+        $positionArr = json_decode($positionRes,true);
+
+        if(!empty($positionArr['pois'])){
+            $location = $positionArr['pois'][0]['location'];
+        }else{
+            return false;
+        }
+        //获取参数
+        $data = [
+            'bis_name' => $param['bis_name'],
+            'brand' => $param['brand'],
+            'leader' => $param['leader'],
+            'citys' => $param['city_id'].','.$param['se_city_id'],
+            'address' => $param['address'],
+            'link_tel' => $param['link_tel'],
+            'link_mobile' => $param['link_mobile'],
+            'email' => $param['email'],
+            'positions' => $location,
+            'create_time' => date('Y-m-d H:i:s'),
+        ];
+
+        $res = Db::table('cy_bis')->insertGetId($data);
+        return $res;
+    }
+
     //更新数据
     public function updateById($data,$id){
         //allowField 过滤data数组中非数据表中的数据

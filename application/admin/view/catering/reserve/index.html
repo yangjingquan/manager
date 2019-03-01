@@ -3,13 +3,27 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 预定类型管理 <span class="c-gray en">&gt;</span> 预定类型列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container">
-	
+	<form action="{:url('reserve/index')}" method="get">
+		<label style="width: 10%;margin-top: 0.5%;" class="form-label col-xs-4 col-sm-2"></span>选择商铺：</label>
+		<div class="">
+			<span style="width: 15%;" class="select-box">
+				<select name="bis_id" class="select bis_id">
+					<option value="0">全部</option>
+					{volist name="bis_res" id="vo"}
+					<option value="{$vo.bis_id}" {if condition="$bis_id eq $vo.bis_id"} selected="selected" {/if}>{$vo.bis_name}</option>
+					{/volist}
+				</select>
+			</span>
+			<button name="" id="" class="btn btn-success" type="submit"><i class="Hui-iconfont">&#xe665;</i> 搜索</button>
+		</div>
+	</form>
 	<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"> <a class="btn btn-primary radius" onclick="o2o_s_edit('添加类型','{:url('reserve/add')}','','300')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 添加类型</a></span> <span class="r"></span> </div>
 	<div class="mt-20">
 		<table class="table table-border table-bordered table-bg table-hover table-sort">
 			<thead>
 				<tr class="text-c">
 					<th width="80">ID</th>
+					<th width="80">店铺名称</th>
 					<th width="100">预定类型</th>
 					<th width="60">预定金</th>
 					<th width="60">创建时间</th>
@@ -21,6 +35,7 @@
 				{volist name="res" id="vo"}
 					<tr class="text-c">
 						<td>{$vo.id}</td>
+						<td>{$vo.bis_name}</td>
 						<td>{$vo.table_name}</td>
 						<td>{$vo.deposit}</td>
 						<td>{$vo.created_at}</td>
