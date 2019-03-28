@@ -24,24 +24,27 @@
 	</style>
 	<script>
 		function checkParams(){
-//			var appid = document.getElementById('appid');
-//			var mchid = document.getElementById('mchid');
-//			var key = document.getElementById('key');
-			var fahuo_template_id = document.getElementById('fahuo_template_id');
+			var is_ind_version = $("input[name='is_ind_version']:checked").val();
+			var appid = document.getElementById('appid');
+			var mchid = document.getElementById('mchid');
+			var key = document.getElementById('key');
+			if(is_ind_version == 1){
+				if(!appid.value || appid.value == '' || appid.value == 0){
+					alert('请填写小程序id(appid)!');
+					return false;
+				}
+				if(!mchid.value || mchid.value == '' || mchid.value == 0){
+					alert('请填写商户号!');
+					return false;
+				}
 
-//			if(!appid.value || appid.value == ''){
-//				alert('请填写小程序id(appid)!');
-//				return false;
-//			}
-//			if(!mchid.value || mchid.value == ''){
-//				alert('请填写商户号!');
-//				return false;
-//			}
-//
-//			if(!key.value || key.value == ''){
-//				alert('请填写支付密钥!');
-//				return false;
-//			}
+				if(!key.value || key.value == '' || key.value == 0){
+					alert('请填写支付密钥!');
+					return false;
+				}
+			}
+
+			var fahuo_template_id = document.getElementById('fahuo_template_id');
 
 			var logistics_status = $("input[name='logistics_status']:checked").val();
 			if(logistics_status == 1){

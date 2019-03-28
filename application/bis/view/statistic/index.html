@@ -1,0 +1,180 @@
+﻿<!--<!DOCTYPE HTML>-->
+
+<link type="text/css" href="__STATIC__/css/bootstrap.min.css" rel="stylesheet">
+<link type="text/css" href="__STATIC__/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+<link type="text/css" href="__STATIC__/css/animate.css" rel="stylesheet">
+<link type="text/css" href="__STATIC__/css/style.css" rel="stylesheet">
+
+{include file="public/header" /}
+
+<body>
+<div id="wrapper">
+
+    <div id="page-wrapper" class="gray-bg" style="margin-left: 0;">
+
+        <div style="padding-top: 20px;margin-left: 42px">
+            <form action="{:url('statistic/index')}" method="get">
+                <div class="" style="font-size: 15px;font-weight: bold"> 日期范围：
+                    <input type="date" name="date_from" value="{$date_from}" id="logmin" class="input-text"
+                           style="width:170px;">
+                    -
+                    <input type="date" name="date_to" value="{$date_to}" id="logmax" class="input-text"
+                           style="width:170px;">
+
+                    <button name="" id="" class="btn btn-success radius" type="submit"><i class="Hui-iconfont">
+                        &#xe665;</i> 查询
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="wrapper wrapper-content">
+            <div class="overall__content-title" style="margin-left: 35px">
+                <span class="name" style="font-size: 15px;font-weight: bold">• 收入</span>
+            </div>
+            <div class="row" style="margin-left: 20px">
+                <div class="col-lg-3" style="margin-bottom: 15px">
+                    <div class="ibox ">
+                        <div class="ibox-title">
+                            <h5>全部收入</h5>
+                            <!--<span style="margin-left: 5px">({$date_from}~{$date_to}) </span>-->
+                        </div>
+                        <div class="ibox-content">
+                            <h1 class="no-margins" style="color: red;">{$quanbu} 元</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="overall__content-title" style="margin-left: 35px">
+                <span class="name" style="font-size: 15px;font-weight: bold">• 商品</span>
+            </div>
+            <div class="row" style="margin-left: 20px">
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-content">
+                            <h5>商品总数</h5>
+                            <h1 class="no-margins" style="color: blue;">{$count} (件/个)</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+                        <div class="ibox-content">
+                            <h5>商品总额</h5>
+                            <h1 class="no-margins" style="color: blue;">{$xiaoji}元</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overall__content-title" style="margin-left: 35px">
+                <span class="name" style="font-size: 15px;font-weight: bold">• 会员</span>
+            </div>
+            <div class="row" style="margin-left: 20px">
+
+                <div class="col-lg-3">
+                    <div class="ibox ">
+
+                        <div class="ibox-content">
+                            <h5>会员总数</h5>
+                            <h1 class="no-margins" style="color: green;">{$members_count} 个</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="ibox ">
+
+                        <div class="ibox-content">
+                            <h5>新增会员 <span style="margin-left: 5px"> </span></h5>
+                            <h1 class="no-margins" style="color: green;
+
+
+
+
+
+">{$new_members_count} 个</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="overall__content-title" style="margin-left: 35px">
+                <span class="name" style="font-size: 15px;font-weight: bold">• 销售统计</span>
+            </div>
+            <div class="row">
+                <div style="width: 90%;margin-left: 50px	">
+                    <div class="row">
+                        <div class="col-lg-6" style="width: 650px">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>商品销量列表</h5>
+                                </div>
+                                <div class="ibox-content table-responsive">
+                                    <table class="table table-hover no-margins">
+                                        <thead>
+                                        <tr class="text-c">
+                                            <th>店铺名称</th>
+                                            <th>商品名称</th>
+                                            <th>商品单价</th>
+                                            <th>商品销量</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {volist name="res" id="vo"}
+                                        <tr class="text-c va-m">
+                                            <td>{$vo.bis_name}</td>
+                                            <td>{$vo.p_name}</td>
+                                            <td>{$vo.original_price}</td>
+                                            <td>{$vo.sold}</td>
+                                        </tr>
+                                        {/volist}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-lg-6" style="width: 650px">
+                            <div class="ibox ">
+                                <div class="ibox-title">
+                                    <h5>商品库存列表</h5>
+                                </div>
+                                <div class="ibox-content table-responsive">
+                                    <table class="table table-hover no-margins">
+                                        <thead>
+                                        <tr class="text-c">
+                                            <th>店铺名称</th>
+                                            <th>商品名称</th>
+                                            <th>商品单价</th>
+                                            <th>商品库存</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {volist name="kc_res" id="vo"}
+                                        <tr class="text-c va-m">
+                                            <td>{$vo.bis_name}</td>
+                                            <td>{$vo.p_name}</td>
+                                            <td>{$vo.original_price}</td>
+                                            <td>{$vo.inventory}</td>
+                                        </tr>
+                                        {/volist}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {include file="public/footer" /}
+    <script src="__STATIC__/bis/js/zxf_page.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    </script>
+</body>
+</html>

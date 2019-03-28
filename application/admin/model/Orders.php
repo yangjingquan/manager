@@ -625,6 +625,64 @@ class Orders extends Model{
         return $res;
     }
 
+    //获取所有订单金额
+    public function getAllOrdersStatisticCount($order_no,$bis_id,$date_from,$date_to,$order_status,$order_from){
+        $date  = date('Y-m-d 00:00:00');
+        $dates  = date("Y-m-d 00:00:00",strtotime("+1 day"));
+
+
+        if($bis_id != 0){
+            $where = "mo.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1 and mo.order_status = 6 ";
+        }else{
+            $where = "mo.status = 1 and pay.status = 1  and mo.order_status = 6" ;
+        }
+
+        if($order_from != 0){
+            $where .= " and mo.order_from = $order_from ";
+        }
+
+        if ($date_to  == null &&  $date_from == null){
+            $date_from = substr($date,0,10);
+            $date_to = substr($dates,0,10);
+
+            $where .= " and mo.pay_time >= '$date' and mo.pay_time < '$dates'";
+        }
+
+
+        if($date_from){
+            $where .= " and mo.pay_time >= '$date_from'";
+        }
+
+        if($date_to){
+            $where .= " and mo.pay_time < '$date_to'";
+        }
+
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+        if($order_no){
+            $where .= " and mo.order_no = '$order_no'";
+        }
+
+
+        //全部
+        $res = Db::table('store_main_orders')->alias('mo')
+            ->field('mo.total_amount,mo.id')
+            ->join('store_payment pay','mo.payment = pay.id','LEFT')
+            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
+            ->join('store_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->where($where)
+            ->sum('mo.total_amount');
+
+        $data = [
+            'quanbu' => $res,
+            'date_to' => $date_to,
+            'date_from' => $date_from,
+        ];
+
+        return $data;
+    }
+
 }
 
 ?>

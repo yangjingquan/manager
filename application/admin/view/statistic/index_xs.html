@@ -1,0 +1,135 @@
+﻿<!--<!DOCTYPE HTML>-->
+
+<link type="text/css" href="__STATIC__/css/bootstrap.min.css" rel="stylesheet">
+<link type="text/css" href="__STATIC__/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+<link type="text/css" href="__STATIC__/css/animate.css" rel="stylesheet">
+<link type="text/css" href="__STATIC__/css/style.css" rel="stylesheet">
+
+{include file="public/header" /}
+
+<body>
+<div id="wrapper">
+
+	<div id="page-wrapper" class="gray-bg" style="margin-left: 0 ; ">
+
+
+
+		<div class="wrapper wrapper-content">
+
+
+
+
+
+
+			<!--<div class="overall__content-title" style="margin-left: 4px">-->
+				<!--<span class="name" style="font-size: 15px;font-weight: bold">• 会员</span>-->
+			<!--</div>-->
+
+			<!--<div class="row" style="margin-left: -10px">-->
+
+				<!--<div class="col-lg-3">-->
+					<!--<div class="ibox ">-->
+
+						<!--<div class="ibox-content">-->
+							<!--<h5>会员总数</h5>-->
+							<!--<h1 class="no-margins" style="color: green;">{$hui}个</h1>-->
+						<!--</div>-->
+					<!--</div>-->
+				<!--</div>-->
+				<!--<div class="col-lg-3">-->
+					<!--<div class="ibox ">-->
+
+						<!--<div class="ibox-content">-->
+							<!--<h5>新增会员 <span style="margin-left: 39px">({$kai}~{$jie}) </span></h5>-->
+
+
+							<!--<h1 class="no-margins" style="color: green;">{$xinhui}个</h1>-->
+						<!--</div>-->
+					<!--</div>-->
+				<!--</div>-->
+			<!--</div>-->
+
+
+
+
+
+
+
+
+			<!--<div class="overall__content-title" style="margin-left: 4px">-->
+				<!--<span class="name" style="font-size: 15px;font-weight: bold">• 会员列表</span>-->
+			<!--</div>-->
+
+
+
+
+			<div class="mt-20">
+				<table class="table table-border table-bordered table-bg table-hover table-sort">
+					<thead>
+					<tr class="text-c">
+						<th style="background-color: #f5fafe">店铺名称</th>
+						<th style="background-color: #f5fafe">商品名称</th>
+						<th style="background-color: #f5fafe">商品单价</th>
+						<th style="background-color: #f5fafe">商品数量</th>
+						<th style="background-color: #f5fafe">商品小计</th>
+						<th style="background-color: #f5fafe">创建时间</th>
+					</tr>
+					</thead>
+					<tbody>
+					{volist name="res" id="vo"}
+					<tr class="text-c va-m">
+						<td>{$vo.bis_name}</td>
+						<td>{$vo.p_name}</td>
+						<td>{$vo.unit_price}</td>
+						<td>{$vo.count}</td>
+						<td>{$vo.amount}</td>
+						<td>{$vo.create_time}</td>
+					</tr>
+					{/volist}
+					</tbody>
+				</table>
+				<div class="zxf_pagediv"></div>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+
+{include file="public/footer" /}
+<!--<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>-->
+<script src="__STATIC__/bis/js/zxf_page.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+<script type="text/javascript">
+
+    current_page = $('.current').html();
+    $(".zxf_pagediv").createPage({
+        pageNum: {$pages},//总页码
+        current : {$current_page},//当前页码
+        backfun: function(e) {
+            var temp = parseInt($('.current').html());
+            if(!temp){
+                choose_page = {$pages};
+            }else{
+                choose_page = temp;
+            }
+            var date_from = $('#logmin').val();
+            var date_to = $('#logmax').val();
+            var order_no = $('#order_no').val();
+            var order_status = {$order_status};
+            var bis_id = {$bis_id};
+            var order_from = {$order_from};
+            // var order_no = {$order_no};
+            location.href = "index_xs?current_page="+choose_page+"&date_from="+date_from+"&date_to="+date_to+"&order_status="+order_status+"&bis_id="+bis_id+"&order_from="+order_from+"&order_no="+order_no;
+
+        }
+    });
+
+
+</script>
+</body>
+</html>

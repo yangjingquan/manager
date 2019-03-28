@@ -126,7 +126,7 @@ class Bis extends Base {
         if($res){
             $this->success("更新成功");
         }else{
-            $this->error('更新失败');
+            $this->error('更新成功,数据未发生任何变动');
         }
 
     }

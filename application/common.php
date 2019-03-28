@@ -163,6 +163,17 @@
         return $str;
     }
 
+    //供货商品推荐状态
+    function supply_pro_recommend($is_recommend){
+        if($is_recommend == 1){
+            $str = "<span style='color:red;' class='label label-success radius'>已推荐</span>";
+        }else{
+            $str = "<span class='label label-success radius'>未推荐</span>";
+        }
+
+        return $str;
+    }
+
     //设置商品推荐状态
     function bis_recommend($is_recommend){
         if($is_recommend == 1){

@@ -1,214 +1,245 @@
 <?php
+
 namespace app\common\model;
+
 use think\Model;
 use think\Db;
-class Orders extends Model{
+
+class Orders extends Model
+{
 
     //获取所有订单信息
-    public function getAllOrders($limit, $offset, $date_from, $date_to,$order_status,$order_from){
-        $bis_id = session('bis_id','','bis');
-        $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+    public function getAllOrders($limit, $offset, $date_from, $date_to, $order_status, $order_from)
+    {
+        $bis_id = session('bis_id', '', 'bis');
+        $where = "mo.bis_id = " . $bis_id . " and mem.bis_id = " . $bis_id . " and  mo.status = 1 and pay.status = 1";
 
-        if($order_from != 0){
+        if ($order_from != 0) {
             $where .= " and mo.order_from = $order_from ";
         }
 
-        if($date_from){
-            $new_date_from = $date_from.' 00:00:00';
+        if ($date_from) {
+            $new_date_from = $date_from . ' 00:00:00';
             $where .= " and mo.create_time >= '$new_date_from'";
         }
-        if($date_to){
-            $new_date_to = $date_to.' 23:59:59';
+        if ($date_to) {
+            $new_date_to = $date_to . ' 23:59:59';
             $where .= " and mo.create_time < '$new_date_to'";
         }
-        if($order_status){
+        if ($order_status) {
             $where .= " and mo.order_status = '$order_status'";
         }
         $listorder = [
-            'mo.create_time'  => 'desc'
+            'mo.create_time' => 'desc'
         ];
 
         $res = Db::table('store_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mode.post_mode,mem.nickname,mo.rec_name,pay.payment,mo.express_no,mo.order_status,mo.order_from')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.mem_id', 'LEFT')
             ->where($where)
             ->order($listorder)
             ->limit($offset, $limit)
             ->select();
+
         return $res;
     }
 
     //获取所有订单数量
-    public function getAllOrdersCount($date_from,$date_to,$order_status,$order_from){
-        $bis_id = session('bis_id','','bis');
-        $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+    public function getAllOrdersCount($date_from, $date_to, $order_status, $order_from)
+    {
+        $bis_id = session('bis_id', '', 'bis');
+        $where = "mo.bis_id = " . $bis_id . " and mem.bis_id = " . $bis_id . " and  mo.status = 1 and pay.status = 1";
 
-        if($order_from != 0){
+        if ($order_from != 0) {
             $where .= " and mo.order_from = $order_from ";
         }
 
-        if($date_from){
+        if ($date_from) {
             $where .= " and mo.create_time >= '$date_from'";
         }
-        if($date_to){
+        if ($date_to) {
             $where .= " and mo.create_time < '$date_to'";
         }
-        if($order_status){
+        if ($order_status) {
             $where .= " and mo.order_status = '$order_status'";
         }
 
         $res = Db::table('store_main_orders')->alias('mo')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.mem_id', 'LEFT')
             ->where($where)
             ->count();
         return $res;
     }
 
     //获取所有团购订单信息
-    public function getAllGroupOrders($limit, $offset, $date_from, $date_to,$order_status,$order_from){
-        $bis_id = session('bis_id','','bis');
-        $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+    public function getAllGroupOrders($limit, $offset, $date_from, $date_to, $order_status, $order_from)
+    {
+        $bis_id = session('bis_id', '', 'bis');
+        $where = "mo.bis_id = " . $bis_id . " and mem.bis_id = " . $bis_id . " and  mo.status = 1 and pay.status = 1";
 
-        if($order_from != 0){
+        if ($order_from != 0) {
             $where .= " and mo.order_from = $order_from ";
         }
 
-        if($date_from){
-            $new_date_from = $date_from.' 00:00:00';
+        if ($date_from) {
+            $new_date_from = $date_from . ' 00:00:00';
             $where .= " and mo.create_time >= '$new_date_from'";
         }
-        if($date_to){
-            $new_date_to = $date_to.' 23:59:59';
+        if ($date_to) {
+            $new_date_to = $date_to . ' 23:59:59';
             $where .= " and mo.create_time < '$new_date_to'";
         }
-        if($order_status){
+        if ($order_status) {
             $where .= " and mo.order_status = '$order_status'";
         }
         $listorder = [
-            'mo.create_time'  => 'desc'
+            'mo.create_time' => 'desc'
         ];
 
         $res = Db::table('store_group_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mode.post_mode,mem.nickname,mo.rec_name,mo.express_no,mo.order_status,mo.group_num,mo.order_type,mo.order_from')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.mem_id', 'LEFT')
             ->where($where)
             ->order($listorder)
             ->limit($offset, $limit)
             ->select();
         $index = 0;
-        foreach($res as $val){
+        foreach ($res as $val) {
             $res[$index]['order_type'] = $val['order_type'] == 1 ? '普通' : '团购';
-            $index ++;
+            $index++;
         }
         return $res;
     }
 
     //获取所有拼团订单数量
-    public function getAllGroupOrdersCount($date_from,$date_to,$order_status,$order_from){
-        $bis_id = session('bis_id','','bis');
-        $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+    public function getAllGroupOrdersCount($date_from, $date_to, $order_status, $order_from)
+    {
+        $bis_id = session('bis_id', '', 'bis');
+        $where = "mo.bis_id = " . $bis_id . " and mem.bis_id = " . $bis_id . " and  mo.status = 1 and pay.status = 1";
 
-        if($order_from != 0){
+        if ($order_from != 0) {
             $where .= " and mo.order_from = $order_from ";
         }
 
-        if($date_from){
+        if ($date_from) {
             $where .= " and mo.create_time >= '$date_from'";
         }
-        if($date_to){
+        if ($date_to) {
             $where .= " and mo.create_time < '$date_to'";
         }
-        if($order_status){
+        if ($order_status) {
             $where .= " and mo.order_status = '$order_status'";
         }
 
         $res = Db::table('store_group_main_orders')->alias('mo')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.mem_id', 'LEFT')
             ->where($where)
             ->count();
         return $res;
     }
 
     //根据id获取订单详情
-    public function getOrderInfoById($id){
+    public function getOrderInfoById($id)
+    {
         //设置查询条件
         $where = [
-            'mo.id'  => $id
+            'mo.id' => $id
         ];
 
         //查询结果
         $res = Db::table('store_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.mode,mode.post_mode,mo.rec_name,mo.address,mo.mobile,pay.payment,mo.express_no,mo.order_status,mo.create_time,mo.delivery_cost,mo.remark,mo.total_amount,SUM(sub.amount) as amount,SUM(sub.rate_amount) as rate_amount,sub.pro_id')
-            ->join('store_sub_orders sub','sub.main_id = mo.id','LEFT')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.id','LEFT')
+            ->join('store_sub_orders sub', 'sub.main_id = mo.id', 'LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.id', 'LEFT')
             ->where($where)
             ->find();
         return $res;
     }
 
     //根据id获取订单详情(拼团版)
-    public function getGroupOrderInfoById($id){
+    public function getGroupOrderInfoById($id)
+    {
         //设置查询条件
         $where = [
-            'mo.id'  => $id
+            'mo.id' => $id
         ];
 
         //查询结果
         $res = Db::table('store_group_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.mode,mode.post_mode,mo.rec_name,mo.address,mo.mobile,pay.payment,mo.express_no,mo.order_status,mo.create_time,mo.delivery_cost,mo.remark,mo.total_amount,SUM(sub.amount) as amount,SUM(sub.rate_amount) as rate_amount,sub.pro_id')
-            ->join('store_group_sub_orders sub','sub.main_id = mo.id','LEFT')
-            ->join('store_payment pay','mo.payment = pay.id','LEFT')
-            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
-            ->join('store_members mem','mo.mem_id = mem.id','LEFT')
+            ->join('store_group_sub_orders sub', 'sub.main_id = mo.id', 'LEFT')
+            ->join('store_payment pay', 'mo.payment = pay.id', 'LEFT')
+            ->join('store_post_mode mode', 'mo.mode = mode.id', 'LEFT')
+            ->join('store_members mem', 'mo.mem_id = mem.id', 'LEFT')
             ->where($where)
             ->find();
         return $res;
     }
 
     //根据订单id获取订单下商品信息
-    public function getProductInfoById($id){
+    public function getProductInfoById($id)
+    {
         //设置查询条件
         $where = [
-            'so.main_id'  => $id,
+            'so.main_id' => $id,
             'so.status' => 1
         ];
 
         $order = [
-            'so.id'   => 'asc'
+            'so.id' => 'asc'
         ];
 
         //查询结果
-        $res = Db::table('store_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount')
-                ->join('store_pro_config con','so.pro_id = con.id','LEFT')
-                ->join('store_products p','con.pro_id = p.id','LEFT')
-                ->where($where)
-                ->order($order)
-                ->select();
+        $res = Db::table('store_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount,p.id as ori_pro_id,p.supply_pro_id')
+            ->join('store_pro_config con', 'so.pro_id = con.id', 'LEFT')
+            ->join('store_products p', 'con.pro_id = p.id', 'LEFT')
+            ->where($where)
+            ->order($order)
+            ->select();
+        return $res;
+    }
+
+    //根据订单id获取订单下供货商品金额
+    public function getSupplyProductTotalAmount($id)
+    {
+        //设置查询条件
+        $where = "so.main_id = '$id' and so.status = 1 and (p.supply_pro_id != '' or p.supply_pro_id != null or p.supply_pro_id != 0)";
+
+        //查询结果
+        $res = Db::table('store_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount,p.id as ori_pro_id,p.supply_pro_id')
+            ->join('store_pro_config con', 'so.pro_id = con.id', 'LEFT')
+            ->join('store_products p', 'con.pro_id = p.id', 'LEFT')
+            ->where($where)
+            ->sum('so.amount');
+        if(empty($res)){
+            return '0.00';
+        }
         return $res;
     }
 
     //根据订单id获取订单下商品信息(拼团版)
-    public function getGroupProductInfoById($id){
+    public function getGroupProductInfoById($id)
+    {
         //设置查询条件
         $where = [
-            'so.main_id'  => $id,
+            'so.main_id' => $id,
             'so.status' => 1
         ];
 
         $order = [
-            'so.id'   => 'asc'
+            'so.id' => 'asc'
         ];
 
         //查询结果
         $res = Db::table('store_group_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount')
-            ->join('store_pro_config con','so.pro_id = con.id','LEFT')
-            ->join('store_products p','con.pro_id = p.id','LEFT')
+            ->join('store_pro_config con', 'so.pro_id = con.id', 'LEFT')
+            ->join('store_products p', 'con.pro_id = p.id', 'LEFT')
             ->where($where)
             ->order($order)
             ->select();
@@ -216,25 +247,26 @@ class Orders extends Model{
     }
 
     //获取操作记录
-    public function getOperateInfoById($id){
+    public function getOperateInfoById($id)
+    {
         //设置查询条件
         $where = [
-            'o.order_id'  => $id,
+            'o.order_id' => $id,
             'o.status' => 1
         ];
 
         $order = [
-            'o.state'   => 'asc'
+            'o.state' => 'asc'
         ];
 
         $res = Db::table('store_operation')->alias('o')->field('o.state,o.create_time,bis.username')
-                ->join('store_bis_admin_users bis','o.operator = bis.id','LEFT')
-                ->where($where)
-                ->order($order)
-                ->select();
+            ->join('store_bis_admin_users bis', 'o.operator = bis.id', 'LEFT')
+            ->where($where)
+            ->order($order)
+            ->select();
 
         $i = 0;
-        foreach($res as $val){
+        foreach ($res as $val) {
             $result[$i]['num_id'] = $i + 1;
             switch ($val['state']) {
                 case 1:
@@ -255,30 +287,31 @@ class Orders extends Model{
             $result[$i]['state'] = $state;
             $result[$i]['create_time'] = $val['create_time'];
             $result[$i]['username'] = $val['username'];
-            $i ++;
+            $i++;
         }
         return $result;
     }
 
     //获取提现记录
-    public function getTxRecords($limit, $offset, $date_from, $date_to,$tx_status){
-        $bis_id = session('bis_id','','bis');
+    public function getTxRecords($limit, $offset, $date_from, $date_to, $tx_status)
+    {
+        $bis_id = session('bis_id', '', 'bis');
 
-        $where = "rec.bis_id = ".$bis_id." and  rec.status = 1";
+        $where = "rec.bis_id = " . $bis_id . " and  rec.status = 1";
 
-        if($date_from){
-            $new_date_from = $date_from.' 00:00:00';
+        if ($date_from) {
+            $new_date_from = $date_from . ' 00:00:00';
             $where .= " and rec.create_time >= '$new_date_from'";
         }
-        if($date_to){
-            $new_date_to = $date_to.' 23:59:59';
+        if ($date_to) {
+            $new_date_to = $date_to . ' 23:59:59';
             $where .= " and rec.create_time < '$new_date_to'";
         }
-        if($tx_status){
+        if ($tx_status) {
             $where .= " and rec.tx_status = '$tx_status'";
         }
         $listorder = [
-            'rec.create_time'  => 'desc'
+            'rec.create_time' => 'desc'
         ];
 
         $res = Db::table('store_withdraw_records')->alias('rec')->field('rec.id,rec.name,rec.mem_id,rec.amount,rec.create_time,rec.tx_status')
@@ -291,19 +324,20 @@ class Orders extends Model{
     }
 
     //获取提现记录数量
-    public function getTxRecordsCount($date_from,$date_to,$tx_status){
-        $bis_id = session('bis_id','','bis');
-        $where = "rec.bis_id = ".$bis_id." and rec.status = 1";
+    public function getTxRecordsCount($date_from, $date_to, $tx_status)
+    {
+        $bis_id = session('bis_id', '', 'bis');
+        $where = "rec.bis_id = " . $bis_id . " and rec.status = 1";
 
-        if($date_from){
-            $new_date_from = $date_from.' 00:00:00';
+        if ($date_from) {
+            $new_date_from = $date_from . ' 00:00:00';
             $where .= " and rec.create_time >= '$new_date_from'";
         }
-        if($date_to){
-            $new_date_to = $date_to.' 23:59:59';
+        if ($date_to) {
+            $new_date_to = $date_to . ' 23:59:59';
             $where .= " and rec.create_time < '$new_date_to'";
         }
-        if($tx_status){
+        if ($tx_status) {
             $where .= " and rec.tx_status = '$tx_status'";
         }
 
@@ -314,8 +348,9 @@ class Orders extends Model{
     }
 
     //判断物流状态
-    public function getLogisticsStatus($bis_id){
-        $res = Db::table('store_bis')->field('logistics_status')->where('id = '.$bis_id)->find();
+    public function getLogisticsStatus($bis_id)
+    {
+        $res = Db::table('store_bis')->field('logistics_status')->where('id = ' . $bis_id)->find();
         $logistics_status = $res['logistics_status'];
         return $logistics_status;
     }

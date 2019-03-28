@@ -2,10 +2,12 @@
 namespace app\bis\controller;
 use think\Controller;
 use app\api\controller\Image;
+use think\Exception;
 use think\Validate;
 use think\Db;
 
 class Product extends Base {
+    const PAGE_SIZE = 20;
 
     //商品列表
     public function index(){
@@ -160,8 +162,6 @@ class Product extends Base {
         $bis_id = session('bis_id','','bis');
         //获取该商品信息
         $pro_res = model('Products')->getProInfoById($id);
-//        dump($pro_res);
-//        die;
         $first_category = model('Category')->getNormalFirstCategory();
         $defined_category = model('DefinedCategory')->getNormalFirstCategory($bis_id);
         $brand = model('Brand')->getNormalBrands($bis_id);
@@ -310,7 +310,6 @@ class Product extends Base {
             'pintuan_count' => !empty($param['pintuan_count']) ? $param['pintuan_count'] : 2,
             'keywords' => $param['keywords'],
             'wx_introduce' => $param['wx_description'],
-//            'nature' => $param['nature'],
             'create_time' => date('Y-m-d H:i:s'),
             'update_time' => date('Y-m-d H:i:s')
         ];
@@ -719,8 +718,6 @@ class Product extends Base {
             $images_data['thumb'] = $image->uploadS('thumb','product');
             $images_data['thumb'] = self::IMG_URL.str_replace("\\", "/", $images_data['thumb']);
         }
-        dump($images_data);
-        die;
         //设置更新的数据
         $product_data = [
             'cat1_id' => $param['cat1_id'],
@@ -750,7 +747,6 @@ class Product extends Base {
             'pintuan_count' => $param['pintuan_count'] ? $param['pintuan_count'] : 2,
             'keywords' => $param['keywords'],
             'wx_introduce' => $param['wx_description'],
-//            'nature' => $param['nature'],
             'update_time' => date('Y-m-d H:i:s')
         ];
 
@@ -1080,10 +1076,50 @@ class Product extends Base {
         }else{
             return show(0,'error');
         }
-
-
     }
 
+    //供货商品列表
+    public function supply_index(){
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $pro_name = input('get.pro_name');
 
+        $current_page = input('get.current_page',1,'intval');
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        $pro_count = model('SupplyProducts')->getAllProductCount($date_from,$date_to,$pro_name);
+        //总页码
+        $pages = ceil($pro_count / $limit);
+
+        $pro_res = model('SupplyProducts')->getAllProducts($limit, $offset,$date_from,$date_to,$pro_name);
+
+        return $this->fetch('',[
+            'pro_res'  => $pro_res,
+            'pages'  => $pages,
+            'count'  => $pro_count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'pro_name'  => $pro_name
+        ]);
+    }
+
+    public function copy(){
+        $pro_id = input('get.pro_id');
+        $pro_type = input('get.pro_type');
+        $bis_id = session('bis_id','','bis');
+        try {
+            //获取该商品信息
+            $res = model('SupplyProducts')->copy($pro_id,$bis_id,$pro_type);
+        }catch(Exception $e){
+            $this->error($e->getMessage());
+        }
+
+        if($res){
+            $this->success("复制成功!");
+        }else{
+            $this->success("复制失败!");
+        }
+    }
 
 }

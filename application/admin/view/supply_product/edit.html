@@ -41,8 +41,8 @@
 			var producing_area = document.getElementById('producing_area');
 			var original_price = document.getElementById('original_price');
 			var associator_price = document.getElementById('associator_price');
+			var supply_price = document.getElementById('supply_price');
 			var weight = document.getElementById('weight');
-//			var huohao = document.getElementById('huohao');
 			var fei =document.getElementById('fei');
 			var content1_name =document.getElementsByName('content1_name[]');
 			var con_content1 =document.getElementsByName('con_content1[]');
@@ -89,6 +89,10 @@
 				alert('请填写商品会员价!');
 				return false;
 			}
+			if(!supply_price.value || supply_price.value == ''){
+				alert('请填写供货价!');
+				return false;
+			}
 			if(!weight.value || weight.value == '' || weight.value == 0){
 				alert('请填写商品重量!');
 				return false;
@@ -116,7 +120,7 @@
 </head>
 <body>
 <div class="page-container">
-	<form action="{:url('product/updateProduct')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
+	<form action="{:url('supplyProduct/updateProduct')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
 		<input type="hidden" name="pro_id" value="{$pro_res.pro_id}">
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">平台分类：</label>
@@ -138,44 +142,13 @@
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">自定义分类：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<label>大类: </label>
-				<span class="select-box" style="width: 15%;">
-					<select name="d_cat1_id" class="select d_cat1">
-					{volist name="defined_category" id="vo"}
-						<option value="{$vo.id}" {if condition="$pro_res.defined_cat1_id eq $vo.id"} selected="selected" {/if}>{$vo.cat_name}</option>
-					{/volist}
-					</select>
-				</span>
-				<label style="margin-left: 1%;">小类: </label>
-				<span class="select-box" style="width: 15%;">
-					<select name="d_cat2_id" class="select d_cat2">
-					</select>
-				</span>
-				<label style="margin-left: 1%;" class="intro">* </label>
-			</div>
-		</div>
-		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商品名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$pro_res.p_name}" placeholder="" id="p_name" name="p_name">
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">商品品牌：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<span class="select-box" style="width: 15%;">
-					<select name="brand" class="select ">
-						{volist name="brand" id="vo"}
-							<option value="{$vo.brand_name}" {if condition="$pro_res.brand eq $vo.brand_name"} selected="selected" {/if}>{$vo.brand_name}</option>
-						{/volist}
-					</select>
-				</span>
-				<label style="margin-left: 1%;" class="intro">* </label>
-			</div>
-		</div>
+
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商品单位：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -217,7 +190,14 @@
 		<div class="row cl {$is_pintuan == 1 ? '' : 'pintuan_display'}">
 			<label class="form-label col-xs-4 col-sm-2">成团人数：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.pintuan_count}" placeholder="" id="pintuan_count" name="pintuan_count"> 人
+				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.pintuan_count}" placeholder="" id="pintuan_count" name="pintuan_count">人
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">供货价格：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.supply_price}" placeholder="" id="supply_price" name="supply_price"> 元
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
@@ -227,7 +207,7 @@
 				<button class="btn btn-success-outline radius" type="button" id="showguige" style="margin-left: 0%;" onclick="showGuige({$pro_id});">显示规格</button>
 			</div>
 		</div>
-		<div class="guige_div"></div>
+		<div class="guige_div" ></div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">其他价格：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -295,7 +275,7 @@
 			<label class="form-label col-xs-4 col-sm-2">商品图片: </label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<label style="margin-left: 1%;">缩略图:</label>
-				<input type="file" class="input-text1" id="thumb" name="thumb"><img src="" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
+				<input type="file" class="input-text1" id="thumb" name="thumb"><img src="" onerror="javascript:this.src='{$no_img_url}'" id="thumb_c" onclick="F_Open('thumb_c','thumb')" >
 				<label style="margin-left: 1%;" class="intro">(产品缩略图,请尽量压缩图片大小.)</label><br>
 
 			</div>
@@ -365,9 +345,6 @@
 		//获取总站分类的大类
 		cat1_id = {$pro_res.cat1_id};
 		getCat2Info(cat1_id);
-		//获取自定义分类的大类
-		d_cat1_id = {$pro_res.defined_cat1_id};
-		getDefinedCat2Info(d_cat1_id);
 
 		//设置单位选中
 		$(".unit").find("option[value='{$pro_res.unit}']").attr("selected",true);
@@ -391,85 +368,107 @@
 		$('#wx_config_image8').css('display','none');
 		$('#wx_config_image9').css('display','none');
 		$('#wx_config_image10').css('display','none');
-		$('#thumb_c').attr('src','{$pro_res.thumb}');
-		$('#image_c').attr('src','{$pro_res.image}');
-		$('#config_image1_c').attr('src','{$pro_res.config_image1}');
-		$('#config_image2_c').attr('src','{$pro_res.config_image2}');
-		$('#config_image3_c').attr('src','{$pro_res.config_image3}');
-		$('#config_image4_c').attr('src','{$pro_res.config_image4}');
-		$('#wx_config_image1_c').attr('src','{$pro_res.wx_config_image1}');
-		$('#wx_config_image2_c').attr('src','{$pro_res.wx_config_image2}');
-		$('#wx_config_image3_c').attr('src','{$pro_res.wx_config_image3}');
-		$('#wx_config_image4_c').attr('src','{$pro_res.wx_config_image4}');
-		$('#wx_config_image5_c').attr('src','{$pro_res.wx_config_image5}');
-		$('#wx_config_image6_c').attr('src','{$pro_res.wx_config_image6}');
-		$('#wx_config_image7_c').attr('src','{$pro_res.wx_config_image7}');
-		$('#wx_config_image8_c').attr('src','{$pro_res.wx_config_image8}');
-		$('#wx_config_image9_c').attr('src','{$pro_res.wx_config_image9}');
-		$('#wx_config_image10_c').attr('src','{$pro_res.wx_config_image10}');
+		$('#thumb_c').attr('src','{$pro_res.images.thumb}');
+		$('#image_c').attr('src','{$pro_res.images.image}');
+		$('#config_image1_c').attr('src','{$pro_res.images.config_image1}');
+		$('#config_image2_c').attr('src','{$pro_res.images.config_image2}');
+		$('#config_image3_c').attr('src','{$pro_res.images.config_image3}');
+		$('#config_image4_c').attr('src','{$pro_res.images.config_image4}');
+		$('#wx_config_image1_c').attr('src','{$pro_res.images.wx_config_image1}');
+		$('#wx_config_image2_c').attr('src','{$pro_res.images.wx_config_image2}');
+		$('#wx_config_image3_c').attr('src','{$pro_res.images.wx_config_image3}');
+		$('#wx_config_image4_c').attr('src','{$pro_res.images.wx_config_image4}');
+		$('#wx_config_image5_c').attr('src','{$pro_res.images.wx_config_image5}');
+		$('#wx_config_image6_c').attr('src','{$pro_res.images.wx_config_image6}');
+		$('#wx_config_image7_c').attr('src','{$pro_res.images.wx_config_image7}');
+		$('#wx_config_image8_c').attr('src','{$pro_res.images.wx_config_image8}');
+		$('#wx_config_image9_c').attr('src','{$pro_res.images.wx_config_image9}');
+		$('#wx_config_image10_c').attr('src','{$pro_res.images.wx_config_image10}');
+
+		var data = {$pro_res.configs};
+		count = data.length;
+		for(i = 0;i<count;i++){
+			var content1_name = data[i]['content1_name'];
+			var con_content1 = data[i]['con_content1'];
+			var unit_price = data[i]['price'];
+			var inventory = data[i]['inventory'];
+			var group_price = data[i]['group_price'];
+
+			content1_name_id = "content1_name_"+i;
+			con_content1_id = "con_content1_"+i;
+			unit_price_id = "unit_price_"+i;
+			group_price_id = "group_price_"+i;
+			inventory_id = "inventory_"+i;
+
+			var pintuan_str = '<label style="margin-left: 1%;" class="">成团价:</label><input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8" value="'+group_price+'" placeholder="" id="'+group_price_id+'" name="group_price[]">';
+
+			var str = '<div class="row cl aaaa" >'+
+					'<label class="form-label col-xs-4 col-sm-2"></label>'+
+					'<div class="formControls col-xs-8 col-sm-9 ">'+
+					'<label style="margin-left: 1%;" class="">规格:</label>'+
+					'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+content1_name+'" placeholder="如颜色等" id="'+content1_name_id+'" name="content1_name[]"> ->'+
+					'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+con_content1+'" placeholder="" id="'+con_content1_id+'" name="con_content1[]">'+
+					'<label style="margin-left: 1%;" class="">会员价:</label>'+
+					'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+unit_price+'" placeholder="" id="'+unit_price_id+'" name="unit_price[]">元'+pintuan_str+
+					'<label style="margin-left: 1%;" class="">库存量:</label>'+
+					'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+inventory+'" placeholder="" id="'+inventory_id+'" name="inventory[]">'+
+					'<button class="btn btn-secondary-outline radius remove"  type="button" style="margin-left: 2%;">-</button>'+
+					'<button class="btn btn-secondary-outline radius add" type="button" style="margin-left: 0.5%;">+</button>'+
+//						'<button class="btn btn-secondary-outline radius update" id="update_" onclick="update('+pro_id+','+config_id+');" type="button" style="margin-left: 0.5%;">修改</button>'+
+					'</div>'+
+					'</div>';
+			$('.guige_div').append(str);
+
+		}
+		$('.guige_div').css({"height":0,"min-height":0,"visibility":'hidden',"overflow":"hidden"});
 
 	});
 
 	function showGuige(pro_id){
 		text = $('#showguige').text();
 
-		var is_pintuan = {$is_pintuan};
-
 		if(text == '显示规格'){
-			url = "{:url('product/getConfigInfoByProid')}";
-			postData = {
-				'id' : pro_id
-			};
+			var div_len = $(".guige_div").children().length;
+			if(div_len == 0){
+				var data = {$pro_res.configs};
+				count = data.length;
+				for(i = 0;i<count;i++){
+					var content1_name = data[i]['content1_name'];
+					var con_content1 = data[i]['con_content1'];
+					var unit_price = data[i]['price'];
+					var inventory = data[i]['inventory'];
+					var group_price = data[i]['group_price'];
 
-			$.post(url,postData,function(result){
-				if(result.status == 1){
-					data = result.data;
-					count = data.length;
-					for(i = 0;i<count;i++){
+					content1_name_id = "content1_name_"+i;
+					con_content1_id = "con_content1_"+i;
+					unit_price_id = "unit_price_"+i;
+					group_price_id = "group_price_"+i;
+					inventory_id = "inventory_"+i;
 
-						var content1_name = data[i]['content1_name'];
-						var con_content1 = data[i]['con_content1'];
-						var unit_price = data[i]['price'];
-						var inventory = data[i]['inventory'];
-						var group_price = data[i]['group_price'];
-						var config_id = data[i]['id'];
+					var pintuan_str = '<label style="margin-left: 1%;" class="">成团价:</label><input type="text" style="margin-left: 0.5%;transition:none" class="input-text1 input-text1-8" value="'+group_price+'" placeholder="" id="'+group_price_id+'" name="group_price[]">';
 
-						content1_name_id = "content1_name_"+config_id;
-						con_content1_id = "con_content1_"+config_id;
-						unit_price_id = "unit_price_"+config_id;
-						group_price_id = "group_price_"+config_id;
-						inventory_id = "inventory_"+config_id;
-
-						if(is_pintuan == 1){
-							var pintuan_str = '<label style="margin-left: 1%;" class="">成团价:</label><input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8" value="'+group_price+'" placeholder="" id="'+group_price_id+'" name="group_price[]">';
-						}else{
-							var pintuan_str = '';
-						}
-
-						var str = '<div class="row cl aaaa" >'+
-								'<label class="form-label col-xs-4 col-sm-2"></label>'+
-								'<div class="formControls col-xs-8 col-sm-9 ">'+
-								'<label style="margin-left: 1%;" class="">规格:</label>'+
-								'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+content1_name+'" placeholder="如颜色等" id="'+content1_name_id+'" name="content1_name[]"> ->'+
-								'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+con_content1+'" placeholder="" id="'+con_content1_id+'" name="con_content1[]">'+
-								'<label style="margin-left: 1%;" class="">会员价:</label>'+
-								'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+unit_price+'" placeholder="" id="'+unit_price_id+'" name="unit_price[]">元'+pintuan_str+
-								'<label style="margin-left: 1%;" class="">库存量:</label>'+
-								'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="'+inventory+'" placeholder="" id="'+inventory_id+'" name="inventory[]">'+
-								'<button class="btn btn-secondary-outline radius" onclick="remove1('+pro_id+','+config_id+');"  type="button" style="margin-left: 2%;">-</button>'+
-								'<button class="btn btn-secondary-outline radius add" type="button" style="margin-left: 0.5%;">+</button>'+
-								'<button class="btn btn-secondary-outline radius update" id="update_" onclick="update('+pro_id+','+config_id+');" type="button" style="margin-left: 0.5%;">修改</button>'+
-								'</div>'+
-								'</div>';
-						$('.guige_div').append(str);
-					}
-				}else{
-					alert('操作失败!');
+					var str = '<div class="row cl aaaa" >'+
+							'<label class="form-label col-xs-4 col-sm-2"></label>'+
+							'<div class="formControls col-xs-8 col-sm-9 " style="transition:none;">'+
+							'<label style="margin-left: 1%;" class="">规格:</label>'+
+							'<input type="text" style="margin-left: 0.5%;transition:none" class="input-text1 input-text1-8"  value="'+content1_name+'" placeholder="如颜色等" id="'+content1_name_id+'" name="content1_name[]"> ->'+
+							'<input type="text" style="margin-left: 0.5%;transition:none" class="input-text1 input-text1-8"  value="'+con_content1+'" placeholder="" id="'+con_content1_id+'" name="con_content1[]">'+
+							'<label style="margin-left: 1%;" class="">会员价:</label>'+
+							'<input type="text" style="margin-left: 0.5%;transition:none" class="input-text1 input-text1-8"  value="'+unit_price+'" placeholder="" id="'+unit_price_id+'" name="unit_price[]">元'+pintuan_str+
+							'<label style="margin-left: 1%;" class="">库存量:</label>'+
+							'<input type="text" style="margin-left: 0.5%;transition:none" class="input-text1 input-text1-8"  value="'+inventory+'" placeholder="" id="'+inventory_id+'" name="inventory[]">'+
+							'<button class="btn btn-secondary-outline radius remove"  type="button" style="margin-left: 2%;transition:none">-</button>'+
+							'<button class="btn btn-secondary-outline radius add" type="button" style="margin-left: 0.5%;transition:none">+</button>'+
+							'</div>'+
+							'</div>';
+					$('.guige_div').append(str);
 				}
-			});
+			}
 			$('#showguige').text('隐藏规格');
+			$('.guige_div').css({"min-height":"15px","height":"auto","visibility":'visible'});
+
 		}else{
-			$('.aaaa').css('display','none');
+			$('.guige_div').css({"height":0,"min-height":0,"visibility":'hidden',"overflow":"hidden"});
 			$('#showguige').text('显示规格');
 
 		}
@@ -480,31 +479,9 @@
 		$(this).parent().parent().remove();
 	});
 
-
-	function remove1(pro_id,config_id){
-
-		url = "{:url('product/removeConfigInfo1')}";
-		postData = {
-			'pro_id' : pro_id,
-			'config_id' : config_id
-		};
-
-		$.post(url,postData,function(result){
-			if(result.status == 1){
-				location.href = result.data;
-			}else{
-				alert('操作失败!');
-			}
-		});
-	}
-
 	$('.guige_div').on('click','.add',function(){
-		var is_pintuan = {$is_pintuan};
-		if(is_pintuan == 1){
-			var pintuan_str = '<label style="margin-left: 1%;" class="">成团价:</label><input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8" value="" placeholder="" id="group_price" name="group_price[]">';
-		}else{
-			var pintuan_str = '';
-		}
+		var pintuan_str = '<label style="margin-left: 1%;" class="">成团价:</label><input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8" value="" placeholder="" id="group_price" name="group_price[]">';
+
 		var str = '<div class="row cl aaaa" >'+
 				'<label class="form-label col-xs-4 col-sm-2"></label>'+
 				'<div class="formControls col-xs-8 col-sm-9 ">'+
@@ -516,145 +493,17 @@
 				'<label style="margin-left: 1%;" class="">库存量:</label>'+
 				'<input type="text" style="margin-left: 0.5%;" class="input-text1 input-text1-8"  value="" placeholder="" id="inventory" name="inventory[]">'+
 				'<button class="btn btn-secondary-outline radius remove"  type="button" style="margin-left: 2%;">-</button>'+
-				'<button class="btn btn-secondary-outline radius update" id="update_" onclick="add({$pro_id});" type="button" style="margin-left: 0.5%;">添加</button>'+
+				'<button class="btn btn-secondary-outline radius add" id="update_" type="button" style="margin-left: 0.5%;">+</button>'+
 				'</div>'+
 				'</div>';
 		$('.guige_div').append(str);
 	});
-
-
-	function update(pro_id,config_id){
-		var is_pintuan = {$is_pintuan};
-		if(is_pintuan == 1){
-			content1_name = $('#content1_name_'+config_id).val();
-			con_content1 = $('#con_content1_'+config_id).val();
-			unit_price = $('#unit_price_'+config_id).val();
-			inventory = $('#inventory_'+config_id).val();
-			group_price = $('#group_price_'+config_id).val();
-
-			postData = {
-				'pro_id' : pro_id,
-				'config_id' : config_id,
-				'content1_name' : content1_name,
-				'con_content1' : con_content1,
-				'unit_price' : unit_price,
-				'inventory' : inventory,
-				'group_price' : group_price,
-			};
-			console.log(postData)
-		}else{
-			content1_name = $('#content1_name_'+config_id).val();
-			con_content1 = $('#con_content1_'+config_id).val();
-			unit_price = $('#unit_price_'+config_id).val();
-			inventory = $('#inventory_'+config_id).val();
-
-			postData = {
-				'pro_id' : pro_id,
-				'config_id' : config_id,
-				'content1_name' : content1_name,
-				'con_content1' : con_content1,
-				'unit_price' : unit_price,
-				'inventory' : inventory,
-			};
-			console.log(postData)
-		}
-
-
-		url = "{:url('product/updateConfigInfo1')}";
-
-		$.post(url,postData,function(result){
-			if(result.status == 1){
-				location.href = result.data;
-			}else{
-				alert('操作失败!');
-			}
-		});
-	}
-
-	function add(pro_id){
-		var is_pintuan = {$is_pintuan};
-		if(is_pintuan == 1){
-			content1_name = $('#content1_name').val();
-			con_content1 = $('#con_content1').val();
-			unit_price = $('#unit_price').val();
-			inventory = $('#inventory').val();
-			group_price = $('#group_price').val();
-
-			postData = {
-				'pro_id' : pro_id,
-				'content1_name' : content1_name,
-				'con_content1' : con_content1,
-				'unit_price' : unit_price,
-				'inventory' : inventory,
-				'group_price' : group_price,
-			};
-			console.log(postData)
-		}else{
-			content1_name = $('#content1_name').val();
-			con_content1 = $('#con_content1').val();
-			unit_price = $('#unit_price').val();
-			inventory = $('#inventory').val();
-
-			postData = {
-				'pro_id' : pro_id,
-				'content1_name' : content1_name,
-				'con_content1' : con_content1,
-				'unit_price' : unit_price,
-				'inventory' : inventory,
-			};
-		}
-
-		url = "{:url('product/addConfigInfo1')}";
-
-
-
-		$.post(url,postData,function(result){
-			if(result.status == 1){
-				location.href = result.data;
-			}else{
-				alert('操作失败!');
-			}
-		});
-	}
 
 	//总分类相关二级内容
 	$(".cat1").change(function(){
 		var cat1_id = $(this).val();
 		getCat2Info(cat1_id);
 
-	});
-
-	//总分类相关三级内容
-	$(".cat2").change(function(){
-		var cat2_id = $(this).val();
-		getCat3Info(cat2_id);
-
-	});
-
-	//自定义分类相关二级内容
-	$(".d_cat1").change(function(){
-		var cat1_id = $(this).val();
-		//抛送请求
-		url = SCOPE.d_category_url;
-		postData = {
-			'category_id'  : cat1_id
-		};
-
-		$.post(url,postData,function(result){
-			if(result.status == 1){
-				//将信息填充到html
-				data = result.data;
-				category_html = '';
-				$(data).each(function(i){
-					category_html += "<option value='"+this.id+"'>"+this.cat_name+"</option>";
-
-				});
-				$('.d_cat2').html(category_html);
-				$(".d_cat2").find("option[value='"+{$pro_res.defined_cat2_id}+"']").attr("selected",true);
-			}else{
-				$('.d_cat2').html('');
-			}
-		},'json');
 	});
 
 	//获取总分类的二级分类下内容
@@ -677,30 +526,6 @@
 
 			}else{
 				$('.cat2').html('');
-			}
-		},'json');
-	}
-
-	//获取自定义分类的二级分类下内容
-	function getDefinedCat2Info(cat1_id){
-		url = SCOPE.d_category_url;
-		postData = {
-			'category_id'  : cat1_id
-		};
-
-		$.post(url,postData,function(result){
-			if(result.status == 1){
-				//将信息填充到html
-				data = result.data;
-				category_html = '';
-				$(data).each(function(i){
-					category_html += "<option value='"+this.id+"'>"+this.cat_name+"</option>";
-
-				});
-				$('.d_cat2').html(category_html);
-				$(".d_cat2").find("option[value='"+{$pro_res.defined_cat2_id}+"']").attr("selected",true);
-			}else{
-				$('.d_cat2').html('');
 			}
 		},'json');
 	}
@@ -729,9 +554,7 @@
 <script>
 	var SCOPE = {
 		'first_category_url' : "{:url('api/category/getNormalFirstCategory')}",
-		'category_url' : "{:url('api/category/getCategoryByParentId')}",
-		'df_category_url' : "{:url('bis/Category/getNormalFirstCategory')}",
-		'd_category_url' : "{:url('bis/Category/getCategoryByParentId')}",
+		'category_url' : "{:url('api/category/getCategoryByParentId')}"
 	}
 </script>
 </body>

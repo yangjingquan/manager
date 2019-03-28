@@ -1,0 +1,97 @@
+﻿<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<LINK rel="Bookmark" href="/favicon.ico" >
+	<LINK rel="Shortcut Icon" href="/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui/css/H-ui.min.css" />
+	<link rel="stylesheet" type="text/css" href="__STATIC__/admin/h_ui/static/h-ui.admin/css/H-ui.admin.css" />
+
+
+	<style>
+		#provice{
+			border: 5px;
+			color: #00a0e9;
+		}
+
+		.days{
+			font-size: 20px;
+			color: red;
+			margin-bottom: 5px;
+		}
+	</style>
+
+	<script>
+        function checkParams(){
+            var title = document.getElementById('title');
+            var content = document.getElementById('content');
+
+            if(!title.value || title.value == ''){
+                alert('请填写公告标题!');
+                return false;
+            }
+
+            if(!content.value || content.value == ''){
+                alert('请填写公告详情!');
+                return false;
+            }
+
+            return true;
+
+        }
+	</script>
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+<div class="page-container">
+
+
+
+	<div class="box">
+		<form action="{:url('statistic/index_tongji')}" method="get" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
+
+			<div class="days"> 请先选择日期范围：
+				<p>
+					<input type="date" name="date_from" value="" id="logmin" class="input-text" style="width:170px;">
+					-
+					<input type="date" name="date_to" value="" id="logmax" class="input-text" style="width:170px;">
+				</p>
+				<div>
+					<button name="" id="" class="btn btn-success radius" type="submit">
+						查询</button>
+
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="text/javascript" src="http://lib.h-ui.net/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/jquery.provincesCity.js"></script>
+<script type="text/javascript" src="__STATIC__/bis/js/provincesData.js"></script>
+<script type="text/javascript" src="__STATIC__/dist/cj-pcd-1.0.1.min.js"></script>
+
+<script type="text/javascript">
+    /*调用插件*/
+    $(function(){
+        $("#province").ProvinceCity();
+    });
+
+</script>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/admin/h_ui/lib/layer/2.1/layer.js"></script>
+</body>
+</html>
