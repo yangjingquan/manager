@@ -14,9 +14,9 @@ class Products extends Model{
     //查询商品
     public function getAllProducts($bis_id,$limit, $offset, $date_from, $date_to,$pro_name){
         if($bis_id != 0){
-            $where = " pro.status <> -1 and pro.bis_id = ".$bis_id;
+            $where = " pro.status <> -1 and pro.is_jf_product = 0 and pro.bis_id = ".$bis_id;
         }else{
-            $where = " pro.status <> -1";
+            $where = " pro.status <> -1 and pro.is_jf_product = 0";
         }
 
         if($date_from){
@@ -34,7 +34,7 @@ class Products extends Model{
         $listorder = [
             'pro.id'  => 'desc'
         ];
-        $res = Db::table('store_products')->alias('pro')->field('pro.id,pro.p_name,pro.original_price,pro.associator_price,pro.rec_rate,pro.on_sale,pro.status,pro.is_recommend,bis.bis_name,bis.config_type,pro.sold')
+        $res = Db::table('store_products')->alias('pro')->field('pro.id,pro.p_name,pro.original_price,pro.associator_price,pro.rec_rate,pro.on_sale,pro.status,pro.is_recommend,bis.bis_name,bis.config_type,pro.sold,pro.supply_pro_id')
             ->join('store_bis bis','pro.bis_id = bis.id','LEFT')
             ->where($where)
             ->order($listorder)
@@ -57,6 +57,7 @@ class Products extends Model{
             $result[$index]['bis_name'] = $item['bis_name'];
             $result[$index]['config_type'] = $item['config_type'];
             $result[$index]['sold'] = $item['sold'];
+            $result[$index]['is_copied'] = empty($item['supply_pro_id']) ? '0' : 1;
 
             $index ++;
         }
@@ -117,9 +118,9 @@ class Products extends Model{
     //查询商品数量
     public function getAllProductCount($bis_id,$date_from = '',$date_to = '',$pro_name = ''){
         if($bis_id != 0){
-            $where = " status <> -1 and bis_id = ".$bis_id;
+            $where = " status <> -1 and is_jf_product = 0 and bis_id = ".$bis_id;
         }else{
-            $where = " status <> -1";
+            $where = " status <> -1 and is_jf_product = 0";
         }
 
 
@@ -250,6 +251,7 @@ class Products extends Model{
             $result[$index]['on_sale'] = $item['on_sale'];
             $result[$index]['status'] = $item['status'];
             $result[$index]['is_recommend'] = $item['is_recommend'];
+            $result[$index]['is_copied'] = empty($item['supply_pro_id']) ? '0' : 1;
 
             $index ++;
         }

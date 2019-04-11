@@ -109,7 +109,7 @@ class SupplyProducts extends Model{
             $proData = array(
                 'bis_id'  => $bis_id,
                 'p_name'  => $proRes['p_name'],
-                'on_sale'  => $proRes['on_sale'],
+                'on_sale'  => 0,
                 'cat1_id'  => $proRes['cat1_id'],
                 'cat2_id'  => $proRes['cat2_id'],
                 'defined_cat1_id'  => $oneLevelCategoryId,
@@ -132,6 +132,7 @@ class SupplyProducts extends Model{
                 'rec_rate'  => $proRes['rec_rate'] / 100,
                 'pintuan_count'  => $proRes['pintuan_count'],
                 'pintuan_price'  => $proRes['pintuan_price'],
+                'jifen'  => $proRes['jifen'],
                 'is_jf_product'  => $pro_type == 'ori' ? 0 : 1,
                 'inventory'  => $proRes['is_recommend'],
                 'supply_pro_id'  => $pro_id,

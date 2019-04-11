@@ -19,10 +19,11 @@ class Deduct extends Model{
         return $res;
     }
 
-    //获取充值记录
+    //获取扣款记录
     public function getDeductInfo($bis_id,$limit,$offset){
         $where = [
-            'bis_id' => $bis_id
+            'bis_id' => $bis_id,
+            'bis_type'  => 1  //1是商城类型
         ];
 
         $order = [
@@ -32,10 +33,11 @@ class Deduct extends Model{
         return Db::table('store_deduct_records')->where($where)->limit($offset,$limit)->order($order)->select();
     }
 
-    //获取充值记录数量
+    //获取扣款记录数量
     public function getDeductCount($bis_id){
         $where = [
-            'bis_id' => $bis_id
+            'bis_id' => $bis_id,
+            'bis_type'  => 1  //1是商城类型
         ];
 
         return Db::table('store_deduct_records')->where($where)->count();

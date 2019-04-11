@@ -59,6 +59,7 @@ class Bis extends Base {
         $secret = input('post.secret');
         $mchid = input('post.mchid');
         $key = input('post.key');
+        $notify_url = input('post.notify_url');
         $fahuo_template_id = input('post.fahuo_template_id');
 
         //获取当前地址
@@ -95,6 +96,7 @@ class Bis extends Base {
             'secret'  => $secret,
             'mchid'  => $mchid,
             'key'  => $key,
+            'notify_url'  => $notify_url,
             'fahuo_template_id'  => $fahuo_template_id,
         ];
 
@@ -103,22 +105,7 @@ class Bis extends Base {
         if($_FILES['thumb']['error'] == 0){
             $thumb_url = $image->uploadS('thumb','bis');
             $thumb_url = str_replace("\\", "/", $thumb_url);
-            $data = [
-                'bis_name'  => $bis_name,
-                'jifen'  => $jifen,
-                'brand'  => $brand,
-                'leader'  => $leader,
-                'link_tel'  => $link_tel,
-                'config_type'  => $config_type,
-                'cat_id'  => $category,
-                'is_pintuan'  => $group_type,
-                'logistics_status'  => $logistics_status,
-                'appid'  => $appid,
-                'mchid'  => $mchid,
-                'thumb'  => $thumb_url,
-                'key'  => $key,
-                'fahuo_template_id'  => $fahuo_template_id,
-            ];
+            $data['thumb'] = $thumb_url;
         }
 
         $res = Db::table('store_bis')->where('id = '.$bis_id)->update($data);

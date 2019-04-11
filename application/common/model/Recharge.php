@@ -68,7 +68,7 @@ class Recharge extends Model{
 
     //获取当前店铺余额
     public function getBalanceByBisId($bis_id,$bis_type){
-        $res = Db::table('store_recharge_records')->where('bis_id = '.$bis_id.' and recharge_status = 2 and bis_type = '.$bis_type)->order('updated_at desc')->find();
+        $res = Db::table('store_recharge_records')->where('bis_id = '.$bis_id.' and recharge_status = 2 and bis_type = '.$bis_type)->order('created_at desc')->find();
         if(empty($res)){
             return array();
         }else{

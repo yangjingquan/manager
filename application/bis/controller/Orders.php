@@ -8,10 +8,15 @@ use think\Exception;
 
 class Orders extends Base
 {
-    const STORE_TYPE = 1;
-    const CATERING_TYPE = 2;
+    const STORE_TYPE = 1;//店铺类型，商城
+    const CATERING_TYPE = 2;//商城类型，餐饮
+    const ORI_ORDER_TYPE = 1;//普通订单类型
+    const JF_ORDER_TYPE = 2;//积分订单类型
+    const NOT_SUPPLY_ORDER = 0;
+    const IS_SUPPLY_ORDER = 1;
+    const PAGE_SIZE = 20;
 
-    //订单列表
+    //普通订单列表
     public function index()
     {
         //获取参数
@@ -21,14 +26,44 @@ class Orders extends Base
         $order_status = input('get.order_status', '0', 'intval');
         $order_from = input('get.order_from', 0, 'intval');
 
-        $limit = 20;
+        $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         //总数量
-        $count = model('Orders')->getAllOrdersCount($date_from, $date_to, $order_status, $order_from);
+        $count = model('Orders')->getAllOrdersCount($date_from, $date_to, $order_status, $order_from,self::NOT_SUPPLY_ORDER);
         //总页码
         $pages = ceil($count / $limit);
         //结果集
-        $res = model('Orders')->getAllOrders($limit, $offset, $date_from, $date_to, $order_status, $order_from);
+        $res = model('Orders')->getAllOrders($limit, $offset, $date_from, $date_to, $order_status, $order_from,self::NOT_SUPPLY_ORDER);
+        return $this->fetch('', [
+            'res' => $res,
+            'pages' => $pages,
+            'count' => $count,
+            'current_page' => $current_page,
+            'date_from' => $date_from,
+            'date_to' => $date_to,
+            'order_status' => $order_status,
+            'order_from' => $order_from,
+        ]);
+    }
+
+    //供货订单列表
+    public function supply_index()
+    {
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page', 1, 'intval');
+        $order_status = input('get.order_status', '0', 'intval');
+        $order_from = input('get.order_from', 0, 'intval');
+
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getAllOrdersCount($date_from, $date_to, $order_status, $order_from,self::IS_SUPPLY_ORDER);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getAllOrders($limit, $offset, $date_from, $date_to, $order_status, $order_from,self::IS_SUPPLY_ORDER);
         return $this->fetch('', [
             'res' => $res,
             'pages' => $pages,
@@ -152,76 +187,41 @@ class Orders extends Base
             $this->error($validate->getError());
         }
 
-        //开启事务
-        Db::startTrans();
-        try{
-            //判断物流状态
-            $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
-            if ($param['order_status'] != '4') {
+        //判断物流状态
+        $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
+        if ($param['order_status'] != '4') {
+            $data = [
+                'order_status' => $param['order_status'],
+                'update_time' => date('Y-m-d H:i:s')
+            ];
+        } else {
+            if ($logistics_info == 1) {
+                //验证数据
+                $validate = validate('Orders');
+                if (!$validate->scene('status2')->check($param)) {
+                    $this->error($validate->getError());
+                }
+
+                $data = [
+                    'order_status' => $param['order_status'],
+                    'mode' => $param['post_mode'],
+                    'express_no' => $param['express_no'],
+                    'update_time' => date('Y-m-d H:i:s')
+                ];
+            } else {
+                //验证数据
+                $validate = validate('Orders');
+                if (!$validate->scene('status3')->check($param)) {
+                    $this->error($validate->getError());
+                }
                 $data = [
                     'order_status' => $param['order_status'],
                     'update_time' => date('Y-m-d H:i:s')
                 ];
-            } else {
-                if ($logistics_info == 1) {
-                    //验证数据
-                    $validate = validate('Orders');
-                    if (!$validate->scene('status2')->check($param)) {
-                        $this->error($validate->getError());
-                    }
-                    //获取订单内商品供货总价格
-                    $supplyProTotalAmount = Model('Orders')->getSupplyProductTotalAmount($param['order_id']);
-
-                    //获取店铺的充值剩余金额
-                    $balanceInfo = Model('Recharge')->getBalanceByBisId($bis_id);
-                    //如果有订单商品中有供货商品
-                    if($supplyProTotalAmount > '0.00'){
-                        if(!empty($balanceInfo)){
-                            if(floatval($supplyProTotalAmount) > floatval($balanceInfo['balance'])){
-                                throw new Exception('充值余额不足，请立即充值!',-1);
-                            }else{
-                                $balance = floatval($balanceInfo['balance']) - floatval($supplyProTotalAmount);
-                                //更新余额
-                                $balanceRes = Model('Recharge')->updateBalance($balanceInfo['id'],$balance);
-                                if($balanceRes != 1){
-                                    throw new Exception('修改订单状态失败!',-1);
-                                }
-                                //生成扣款记录
-                                $deductRes = Model('Deduct')->createDeductRecords($bis_id,$supplyProTotalAmount,$balance,self::STORE_TYPE);
-                                if($deductRes != 1){
-                                    throw new Exception('扣款记录创建失败!',-1);
-                                }
-                            }
-                        }
-                    }
-
-                    $data = [
-                        'order_status' => $param['order_status'],
-                        'mode' => $param['post_mode'],
-                        'express_no' => $param['express_no'],
-                        'update_time' => date('Y-m-d H:i:s')
-                    ];
-                } else {
-                    //验证数据
-                    $validate = validate('Orders');
-                    if (!$validate->scene('status3')->check($param)) {
-                        $this->error($validate->getError());
-                    }
-                    $data = [
-                        'order_status' => $param['order_status'],
-                        'update_time' => date('Y-m-d H:i:s')
-                    ];
-                }
-
             }
-
-            $res = Db::table('store_main_orders')->where('id = ' . $param['order_id'])->update($data);
-            Db::commit();
-        }catch (Exception $e){
-            Db::rollback();
-            $this->error($e->getMessage());
         }
 
+        $res = Db::table('store_main_orders')->where('id = ' . $param['order_id'])->update($data);
 
         if ($param['order_status'] == '4' && $res == 1) {
             $this->setTemMessage($param['order_id'], 'org');

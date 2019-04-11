@@ -5,11 +5,11 @@ use think\Db;
 class Orders extends Model{
 
     //获取所有订单信息
-    public function getAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from){
+    public function getAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from,$is_supply_order){
         if($bis_id != 0){
-            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
         }else{
-            $where = "mo.status = 1 and pay.status = 1";
+            $where = "mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
         }
 
         if($order_from != 0){
@@ -44,11 +44,11 @@ class Orders extends Model{
     }
 
     //获取所有订单数量
-    public function getAllOrdersCount($bis_id,$date_from,$date_to,$order_status,$order_from){
+    public function getAllOrdersCount($bis_id,$date_from,$date_to,$order_status,$order_from,$is_supply_order){
         if($bis_id != 0){
-            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1";
+            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
         }else{
-            $where = "mo.status = 1 and pay.status = 1";
+            $where = "mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
         }
 
         if($order_from != 0){
@@ -683,6 +683,161 @@ class Orders extends Model{
         return $data;
     }
 
+    //普通商城-根据订单id获取订单下供货商品金额
+    public function getSupplyProductTotalAmount($id)
+    {
+        //设置查询条件
+        $where = "so.main_id = '$id' and so.status = 1 and (p.supply_pro_id != '' or p.supply_pro_id != null or p.supply_pro_id != 0)";
+
+        //查询结果
+        $res = Db::table('store_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount,p.id as ori_pro_id,p.supply_pro_id')
+            ->join('store_pro_config con', 'so.pro_id = con.id', 'LEFT')
+            ->join('store_products p', 'con.pro_id = p.id', 'LEFT')
+            ->where($where)
+            ->sum('p.supply_price');
+        if(empty($res)){
+            return '0.00';
+        }
+        return $res;
+    }
+
+    //餐饮商城-根据订单id获取订单下供货商品金额
+    public function getCatSupplyProductTotalAmount($id)
+    {
+        //设置查询条件
+        $where = "so.main_id = '$id' and so.status = 1 and (p.supply_pro_id != '' or p.supply_pro_id != null or p.supply_pro_id != 0)";
+
+        //查询结果
+        $res = Db::table('cy_mall_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,p.rate,so.rate_amount,so.amount,p.id as ori_pro_id,p.supply_pro_id')
+            ->join('cy_mall_pro_config con', 'so.pro_id = con.id', 'LEFT')
+            ->join('cy_mall_products p', 'con.pro_id = p.id', 'LEFT')
+            ->where($where)
+            ->sum('p.supply_price');
+        if(empty($res)){
+            return '0.00';
+        }
+        return $res;
+    }
+
+    //获取餐饮供货所有订单信息
+    public function getAllCatSupplyOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from,$is_supply_order){
+        if($bis_id != 0){
+            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
+        }else{
+            $where = "mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
+        }
+
+        if($order_from != 0){
+            $where .= " and mo.order_from = $order_from ";
+        }
+
+        if($date_from){
+            $new_date_from = $date_from.' 00:00:00';
+            $where .= " and mo.create_time >= '$new_date_from'";
+        }
+        if($date_to){
+            $new_date_to = $date_to.' 23:59:59';
+            $where .= " and mo.create_time < '$new_date_to'";
+        }
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+        $listorder = [
+            'mo.create_time'  => 'desc'
+        ];
+
+        $res = Db::table('cy_mall_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mode.post_mode,mem.nickname,mo.rec_name,pay.payment,mo.express_no,mo.order_status,bis.bis_name,mo.order_from')
+            ->join('store_payment pay','mo.payment = pay.id','LEFT')
+            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->join('cy_bis bis','mo.bis_id = bis.id','LEFT')
+            ->where($where)
+            ->order($listorder)
+            ->limit($offset, $limit)
+            ->select();
+        return $res;
+    }
+
+    //获取所有订单数量
+    public function getAllCatSupplyOrdersCount($bis_id,$date_from,$date_to,$order_status,$order_from,$is_supply_order){
+        if($bis_id != 0){
+            $where = "mo.bis_id = ".$bis_id." and mem.bis_id = ".$bis_id." and  mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
+        }else{
+            $where = "mo.status = 1 and pay.status = 1 and mo.is_supply_order = ".$is_supply_order;
+        }
+
+        if($order_from != 0){
+            $where .= " and mo.order_from = $order_from ";
+        }
+
+        if($date_from){
+            $where .= " and mo.create_time >= '$date_from'";
+        }
+
+        if($date_to){
+            $where .= " and mo.create_time < '$date_to'";
+        }
+
+        if($order_status){
+            $where .= " and mo.order_status = '$order_status'";
+        }
+
+        $res = Db::table('cy_mall_main_orders')->alias('mo')
+            ->join('store_payment pay','mo.payment = pay.id','LEFT')
+            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
+            ->join('cy_members mem','mo.mem_id = mem.mem_id','LEFT')
+            ->where($where)
+            ->count();
+        return $res;
+    }
+
+    //根据id获取餐饮供货订单详情
+    public function getCatSupplyOrderInfoById($id){
+        //设置查询条件
+        $where = [
+            'mo.id'  => $id
+        ];
+
+        //查询结果
+        $res = Db::table('cy_mall_main_orders')->alias('mo')->field('mo.id as order_id,mo.order_no,mo.mode,mode.post_mode,mo.rec_name,mo.address,mo.mobile,pay.payment,mo.express_no,mo.order_status,mo.create_time,mo.delivery_cost,mo.remark,mo.total_amount,SUM(sub.amount) as amount,sub.pro_id')
+            ->join('cy_mall_sub_orders sub','sub.main_id = mo.id','LEFT')
+            ->join('store_payment pay','mo.payment = pay.id','LEFT')
+            ->join('store_post_mode mode','mo.mode = mode.id','LEFT')
+            ->join('cy_members mem','mo.mem_id = mem.id','LEFT')
+            ->where($where)
+            ->find();
+
+        return $res;
+    }
+
+    //根据订单id获取餐饮供货订单下商品信息
+    public function getCatSupplyProductInfoById($id){
+        //设置查询条件
+        $where = [
+            'so.main_id'  => $id,
+            'so.status' => 1
+        ];
+
+        $order = [
+            'so.id'   => 'asc'
+        ];
+
+        //查询结果
+        $res = Db::table('cy_mall_sub_orders')->alias('so')->field('so.pro_id,p.p_name,so.count,so.unit_price,so.amount')
+            ->join('cy_mall_pro_config con','so.pro_id = con.id','LEFT')
+            ->join('cy_mall_products p','con.pro_id = p.id','LEFT')
+            ->where($where)
+            ->order($order)
+            ->select();
+        return $res;
+    }
+
+    //判断物流状态
+    public function getCatLogisticsStatus($bis_id){
+        $res = Db::table('cy_bis')->field('logistics_status')->where('id = '.$bis_id)->find();
+        $logistics_status = $res['logistics_status'];
+        return $logistics_status;
+    }
 }
 
 ?>

@@ -313,20 +313,15 @@ class Product extends Base {
             'associator_discount' => $param['associator_discount'],
             'associator_price' => $param['associator_price'],
             'pintuan_price' => !empty($param['pintuan_price']) ? $param['pintuan_price'] : $param['associator_price'],
-//            'vip_discount' => $param['vip_discount'],
-//            'vip_price' => $param['vip_price'],
-//            'vvip_discount' => $param['vvip_discount'],
-//            'vvip_price' => $param['vvip_price'],
             'listorder' => $param['listorder'],
             'weight' => $param['weight'],
             'huohao' => $param['huohao'],
             'rate' => $param['rate'],
-            'jifen' => $param['jifen'],
+            'jifen' => !empty($param['jifen']) ? $param['jifen'] : '' ,
             'rec_rate' => $param['rec_rate'] / 100,
             'pintuan_count' => $param['pintuan_count'] ? $param['pintuan_count'] : 2,
             'keywords' => $param['keywords'],
             'wx_introduce' => $param['wx_description'],
-//            'nature' => $param['nature'],
             'update_time' => date('Y-m-d H:i:s')
         ];
 

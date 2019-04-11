@@ -2,9 +2,13 @@
 namespace app\admin\controller;
 use think\Controller;
 use think\Db;
+use think\Exception;
+use think\Log;
 
 class Orders extends Base {
     const PAGE_SIZE = 20;
+    const STORE_TYPE = 1;
+    const CATERING_TYPE = 2;
 
     //订单列表
     public function index(){
@@ -15,15 +19,16 @@ class Orders extends Base {
         $order_status = input('get.order_status','0','intval');
         $bis_id = input('get.bis_id',0,'intval');
         $order_from = input('get.order_from',0,'intval');
+        $is_supply_order = 0;
 
         $limit = self::PAGE_SIZE;
         $offset = ($current_page - 1) * $limit;
         //总数量
-        $count = model('Orders')->getAllOrdersCount($bis_id,$date_from, $date_to, $order_status,$order_from);
+        $count = model('Orders')->getAllOrdersCount($bis_id,$date_from, $date_to, $order_status,$order_from,$is_supply_order);
         //总页码
         $pages = ceil($count / $limit);
         //结果集
-        $res = model('Orders')->getAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from);
+        $res = model('Orders')->getAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from,$is_supply_order);
         //获取店铺信息
         $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
         return $this->fetch('',[
@@ -627,7 +632,305 @@ class Orders extends Base {
         return $this->success('取消订单成功!','Orders/yd_index');
     }
 
+    //商城供货订单列表
+    public function mall_supply_index(){
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page',1,'intval');
+        $order_status = input('get.order_status','0','intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $order_from = input('get.order_from',0,'intval');
+        $is_supply_order = 1;
 
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getAllOrdersCount($bis_id,$date_from, $date_to, $order_status,$order_from,$is_supply_order);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getAllOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from,$is_supply_order);
+        //获取店铺信息
+        $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+
+        return $this->fetch('',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'count'  => $count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'order_status'  => $order_status,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res,
+            'order_from'  => $order_from,
+        ]);
+    }
+
+    //商城供货订单详情
+    public function mall_supply_detail(){
+        //获取参数
+        $id = input('get.id');
+        //获取店铺id
+        $bis_res = Db::table('store_main_orders')->field('bis_id')->where('id = '.$id)->find();
+        $bis_id = $bis_res['bis_id'];
+        //获取运货方式
+        $post_res = Db::table('store_post_mode')->where('status = 1')->select();
+        //获取订单详情
+        $order_info = Model('Orders')->getOrderInfoById($id);
+        //获取订单内商品信息
+        $sub_order_info = Model('Orders')->getProductInfoById($id);
+        //判断物流状态
+        $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
+        return $this->fetch('',[
+            'post_res'  => $post_res,
+            'order_info'   => $order_info,
+            'sub_order_info'   => $sub_order_info,
+            'logistics_info'   => $logistics_info,
+        ]);
+    }
+
+    //商城修改供货订单状态
+    public function changeSupplyOrderStatus(){
+        //获取参数
+        $param = input('post.');
+        //获取店铺id
+        $bis_res = Db::table('store_main_orders')->field('bis_id')->where('id = '.$param['order_id'])->find();
+        $bis_id = $bis_res['bis_id'];
+        //验证数据
+        $validate = validate('Orders');
+        if(!$validate->scene('status1')->check($param)){
+            $this->error($validate->getError());
+        }
+        //开启事务
+        Db::startTrans();
+        try{
+            //判断物流状态
+            $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
+            if($param['order_status'] != '4'){
+                $data = [
+                    'order_status' => $param['order_status'],
+                    'update_time'  => date('Y-m-d H:i:s')
+                ];
+            }else{
+                if($logistics_info == 1){
+                    //验证数据
+                    $validate = validate('Orders');
+                    if(!$validate->scene('status2')->check($param)){
+                        $this->error($validate->getError());
+                    }
+                    //获取订单内商品供货总价格
+                    $supplyProTotalAmount = Model('Orders')->getSupplyProductTotalAmount($param['order_id']);
+                    //获取店铺的充值剩余金额
+                    $bisInfo = Model('Bis')->getBisInfo($bis_id);
+                    $bisBalance = $bisInfo['balance'];
+
+                    //如果有订单商品中有供货商品
+                    if($supplyProTotalAmount > '0.00'){
+                        if(floatval($bisBalance) > '0.00'){
+                            if(floatval($supplyProTotalAmount) > floatval($bisBalance)){
+                                throw new Exception('充值余额不足，请立即充值!',-1);
+                            }else{
+                                $balance = floatval($bisBalance) - floatval($supplyProTotalAmount);
+                                //更新余额
+                                $bisRes = Model('Bis')->updateBalance($bis_id,$balance);
+                                if($bisRes != 1){
+                                    throw new Exception('余额更新失败!',-1);
+                                }
+                                //生成扣款记录
+                                $deductRes = Model('Deduct')->createDeductRecords($bis_id,$supplyProTotalAmount,$balance,self::STORE_TYPE);
+                                if($deductRes != 1){
+                                    throw new Exception('扣款记录创建失败!',-1);
+                                }
+                            }
+                        }else{
+                            throw new Exception('充值余额不足，请立即充值!',-1);
+                        }
+                    }
+                    $data = [
+                        'order_status' => $param['order_status'],
+                        'mode' => $param['post_mode'],
+                        'express_no' => $param['express_no'],
+                        'update_time'  => date('Y-m-d H:i:s')
+                    ];
+                }else{
+                    //验证数据
+                    $validate = validate('Orders');
+                    if(!$validate->scene('status3')->check($param)){
+                        $this->error($validate->getError());
+                    }
+                    $data = [
+                        'order_status' => $param['order_status'],
+                        'update_time'  => date('Y-m-d H:i:s')
+                    ];
+                }
+
+            }
+            $res = Db::table('store_main_orders')->where('id = '.$param['order_id'])->update($data);
+            Db::commit();
+        }catch (Exception $e){
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+
+//        if($param['order_status'] == '4' && $res == 1){
+//            $this->setTemMessage($param['order_id'],'org');
+//        }
+
+        return $this->success('修改订单状态成功!');
+    }
+
+    //餐饮供货订单列表
+    public function cat_supply_index(){
+        //获取参数
+        $date_from = input('get.date_from');
+        $date_to = input('get.date_to');
+        $current_page = input('get.current_page',1,'intval');
+        $order_status = input('get.order_status','0','intval');
+        $bis_id = input('get.bis_id',0,'intval');
+        $order_from = input('get.order_from',0,'intval');
+        $is_supply_order = 1;
+
+        $limit = self::PAGE_SIZE;
+        $offset = ($current_page - 1) * $limit;
+        //总数量
+        $count = model('Orders')->getAllCatSupplyOrdersCount($bis_id,$date_from, $date_to, $order_status,$order_from,$is_supply_order);
+        //总页码
+        $pages = ceil($count / $limit);
+        //结果集
+        $res = model('Orders')->getAllCatSupplyOrders($bis_id,$limit, $offset, $date_from, $date_to,$order_status,$order_from,$is_supply_order);
+        //获取店铺信息
+        $bis_res = Db::table('cy_bis')->field('id as bis_id,bis_name')->where('status = 1')->select();
+        return $this->fetch('catering/orders/cat_supply_index',[
+            'res'  => $res,
+            'pages'  => $pages,
+            'count'  => $count,
+            'current_page'  => $current_page,
+            'date_from'  => $date_from,
+            'date_to'  => $date_to,
+            'order_status'  => $order_status,
+            'bis_id'  => $bis_id,
+            'bis_res'  => $bis_res,
+            'order_from'  => $order_from,
+        ]);
+    }
+
+    //餐饮供货订单详情
+    public function cat_supply_detail(){
+        //获取参数
+        $id = input('get.id');
+        //获取店铺id
+        $bis_res = Db::table('cy_mall_main_orders')->field('bis_id')->where('id = '.$id)->find();
+        $bis_id = $bis_res['bis_id'];
+        //获取运货方式
+        $post_res = Db::table('store_post_mode')->where('status = 1')->select();
+        //获取订单详情
+        $order_info = Model('Orders')->getCatSupplyOrderInfoById($id);
+        //获取订单内商品信息
+        $sub_order_info = Model('Orders')->getCatSupplyProductInfoById($id);
+        //判断物流状态
+        $logistics_info = Model('Orders')->getCatLogisticsStatus($bis_id);
+
+        return $this->fetch('catering/orders/cat_supply_detail',[
+            'post_res'  => $post_res,
+            'order_info'   => $order_info,
+            'sub_order_info'   => $sub_order_info,
+            'logistics_info'   => $logistics_info,
+        ]);
+    }
+
+    //餐饮修改供货订单状态
+    public function changeCatSupplyOrderStatus(){
+        //获取参数
+        $param = input('post.');
+        //获取店铺id
+        $bis_res = Db::table('cy_mall_main_orders')->field('bis_id')->where('id = '.$param['order_id'])->find();
+        $bis_id = $bis_res['bis_id'];
+        //验证数据
+        $validate = validate('Orders');
+        if(!$validate->scene('status1')->check($param)){
+            $this->error($validate->getError());
+        }
+
+        //开启事务
+        Db::startTrans();
+        try{
+            //判断物流状态
+            $logistics_info = Model('Orders')->getCatLogisticsStatus($bis_id);
+            if($param['order_status'] != '4'){
+                $data = [
+                    'order_status' => $param['order_status'],
+                    'update_time'  => date('Y-m-d H:i:s')
+                ];
+            }else{
+                if($logistics_info == 1){
+                    //验证数据
+                    $validate = validate('Orders');
+                    if(!$validate->scene('status2')->check($param)){
+                        $this->error($validate->getError());
+                    }
+                    //获取订单内商品供货总价格
+                    $supplyProTotalAmount = Model('Orders')->getCatSupplyProductTotalAmount($param['order_id']);
+                    //获取店铺的充值剩余金额
+                    $bisInfo = Model('Bis')->getCatBisInfo($bis_id);
+                    $bisBalance = $bisInfo['balance'];
+
+                    //如果有订单商品中有供货商品
+                    if($supplyProTotalAmount > '0.00'){
+                        if(floatval($bisBalance) > '0.00'){
+                            if(floatval($supplyProTotalAmount) > floatval($bisBalance)){
+                                throw new Exception('充值余额不足，请立即充值!',-1);
+                            }else{
+                                $balance = floatval($bisBalance) - floatval($supplyProTotalAmount);
+                                //更新余额
+                                $bisRes = Model('Bis')->updateCatBalance($bis_id,$balance);
+                                if($bisRes != 1){
+                                    throw new Exception('余额更新失败!',-1);
+                                }
+                                //生成扣款记录
+                                $deductRes = Model('Deduct')->createDeductRecords($bis_id,$supplyProTotalAmount,$balance,self::CATERING_TYPE);
+                                if($deductRes != 1){
+                                    throw new Exception('扣款记录创建失败!',-1);
+                                }
+
+                            }
+                        }else{
+                            throw new Exception('充值余额不足，请立即充值!',-1);
+                        }
+                    }
+                    $data = [
+                        'order_status' => $param['order_status'],
+                        'mode' => $param['post_mode'],
+                        'express_no' => $param['express_no'],
+                        'update_time'  => date('Y-m-d H:i:s')
+                    ];
+                }else{
+                    //验证数据
+                    $validate = validate('Orders');
+                    if(!$validate->scene('status3')->check($param)){
+                        $this->error($validate->getError());
+                    }
+                    $data = [
+                        'order_status' => $param['order_status'],
+                        'update_time'  => date('Y-m-d H:i:s')
+                    ];
+                }
+
+            }
+            $res = Db::table('cy_mall_main_orders')->where('id = '.$param['order_id'])->update($data);
+            Db::commit();
+        }catch (Exception $e){
+            Db::rollback();
+            $this->error($e->getMessage());
+        }
+
+//        if($param['order_status'] == '4' && $res == 1){
+//            $this->setTemMessage($param['order_id'],'org');
+//        }
+
+        return $this->success('修改订单状态成功!');
+    }
 
 
 }

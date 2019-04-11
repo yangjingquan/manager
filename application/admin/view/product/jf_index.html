@@ -54,6 +54,7 @@
 						<th width="40">零售价</th>
 						<th width="40">所需积分</th>
 						<th width="40">加价换购</th>
+						<th width="40">供货商品</th>
 						<th width="60">上架状态</th>
 						<th width="60">状态</th>
 						<th width="60">设置推荐</th>
@@ -70,6 +71,7 @@
 							<td>{$vo.original_price}元</td>
 							<td>{$vo.ex_jifen}</td>
 							<td>{$vo.associator_price}</td>
+							<td>{$vo.is_copied == 1 ? '是' : '否'}</td>
 							<td class="td-status"><a href="{:url('product/updateSaleStatus',['id'=>$vo.id,'on_sale'=>$vo.on_sale == 1 ? 0 : 1])}" title="点击修改上架状态">{$vo.on_sale|p_status}</a></td>
 							<td class="td-status">{$vo.status|status}</td>
 							<td class="td-status"><a href="{:url('product/updateRecommendStatus',['id'=>$vo.id,'is_recommend'=>$vo.is_recommend == 1 ? 0 : 1])}" title="点击修改推荐状态">{$vo.is_recommend|pro_recommend}</a></td>

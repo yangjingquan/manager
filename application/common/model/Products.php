@@ -45,6 +45,7 @@ class Products extends Model{
             $result[$index]['on_sale'] = $item['on_sale'];
             $result[$index]['status'] = $item['status'];
             $result[$index]['is_recommend'] = $item['is_recommend'];
+            $result[$index]['is_copied'] = empty($item['supply_pro_id']) ? '0' : 1;
 
             $index ++;
         }

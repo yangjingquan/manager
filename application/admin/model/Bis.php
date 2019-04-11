@@ -107,6 +107,32 @@ class Bis extends Model{
         return $res['c_name'];
     }
 
+    //获取商城店铺信息
+    public function getBisInfo($bis_id){
+        $res = Db::table('store_bis')->where('id = '.$bis_id)->find();
+        return $res;
+    }
+
+    //获取餐饮店铺信息
+    public function getCatBisInfo($bis_id){
+        $res = Db::table('cy_bis')->where('id = '.$bis_id)->find();
+        return $res;
+    }
+
+    //餐饮店铺更新余额
+    public function updateBalance($bis_id,$balance){
+        $data['balance'] = $balance;
+        $res = Db::table('store_bis')->where('id = '.$bis_id)->update($data);
+        return $res;
+    }
+
+    //餐饮店铺更新余额
+    public function updateCatBalance($bis_id,$balance){
+        $data['balance'] = $balance;
+        $res = Db::table('cy_bis')->where('id = '.$bis_id)->update($data);
+        return $res;
+    }
+
 
 }
 

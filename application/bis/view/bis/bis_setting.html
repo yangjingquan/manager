@@ -32,6 +32,7 @@
 			var appid = document.getElementById('appid');
 			var mchid = document.getElementById('mchid');
 			var key = document.getElementById('key');
+			var notify_url = document.getElementById('notify_url');
 			if(is_ind_version == 1){
 				if(!appid.value || appid.value == '' || appid.value == 0){
 					alert('请填写小程序id(appid)!');
@@ -44,6 +45,10 @@
 
 				if(!key.value || key.value == '' || key.value == 0){
 					alert('请填写支付密钥!');
+					return false;
+				}
+				if(!notify_url.value || notify_url.value == '' || notify_url.value == 0){
+					alert('请填写回调地址!');
 					return false;
 				}
 			}
@@ -215,6 +220,13 @@
 			<label class="form-label col-xs-4 col-sm-2">支付密钥：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.key}" id="key" name="key">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">回调地址：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.notify_url}" id="notify_url" name="notify_url">
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>

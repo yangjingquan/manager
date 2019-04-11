@@ -82,10 +82,10 @@
                     <td class="td-manage"><a style="text-decoration:none;" class="ml-5"
                                              onClick="product_copy('{:url('product/copy',['pro_id'=>$vo.id,'pro_type' => 'ori'])}')"
                                              href="javascript:;" title="复制"><i class="Hui-iconfont">{$vo.is_copied == 1
-                        ? '已复制' : '复制 &#xe6ea;'} </i></a> <a style="text-decoration:none;" class="ml-5"
+                        ? '普通商品已复制' : '普通商品复制 &#xe6ea;'} </i></a> <a style="text-decoration:none;" class="ml-5"
                                                              onClick="product_copy('{:url('product/copy',['pro_id'=>$vo.id,'pro_type' => 'jifen'])}')"
                                                              href="javascript:;" title="复制"><i class="Hui-iconfont">{$vo.is_jf_copied
-                        == 1 ? '已复制' : '复制 &#xe6ea;'} </i></a></td>
+                        == 1 ? '积分商品已复制' : '积分商品复制 &#xe6ea;'} </i></a></td>
                 </tr>
                 {/volist}
                 </tbody>
