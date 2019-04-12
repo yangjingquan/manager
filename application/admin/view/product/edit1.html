@@ -209,14 +209,21 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">推荐比例：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.rec_rate}" placeholder="" id="rec_rate" name="rec_rate">%
+				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.rec_rate}" placeholder="" id="rec_rate" name="rec_rate"> %
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">可获积分：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.jifen}" placeholder="" id="jifen" name="jifen"> 积分
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
 		<div class="row cl {$is_pintuan == 1 ? '' : 'pintuan_display'}">
 			<label class="form-label col-xs-4 col-sm-2">成团人数：</label>
 			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.pintuan_count}" placeholder="" id="pintuan_count" name="pintuan_count">人
+				<input type="text" class="input-text1" style="width:8%;" value="{$pro_res.pintuan_count}" placeholder="" id="pintuan_count" name="pintuan_count"> 人
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>

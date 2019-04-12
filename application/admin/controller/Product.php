@@ -317,7 +317,7 @@ class Product extends Base {
             'weight' => $param['weight'],
             'huohao' => $param['huohao'],
             'rate' => $param['rate'],
-            'jifen' => !empty($param['jifen']) ? $param['jifen'] : '' ,
+            'jifen' => $param['jifen'],
             'rec_rate' => $param['rec_rate'] / 100,
             'pintuan_count' => $param['pintuan_count'] ? $param['pintuan_count'] : 2,
             'keywords' => $param['keywords'],
