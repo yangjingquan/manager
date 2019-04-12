@@ -132,7 +132,7 @@ class SupplyProducts extends Model{
                 'rec_rate'  => $proRes['rec_rate'] / 100,
                 'pintuan_count'  => $proRes['pintuan_count'],
                 'pintuan_price'  => $proRes['pintuan_price'],
-                'jifen'  => $proRes['jifen'],
+                'jifen'  => !empty($proRes['jifen']) ? $proRes['jifen'] : 0,
                 'is_jf_product'  => $pro_type == 'ori' ? 0 : 1,
                 'inventory'  => $proRes['is_recommend'],
                 'supply_pro_id'  => $pro_id,
