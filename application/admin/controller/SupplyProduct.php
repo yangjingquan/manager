@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use think\Controller;
 use app\api\controller\Image;
 use think\Db;
+use think\Exception;
 
 class SupplyProduct extends Base {
 
@@ -218,7 +219,20 @@ class SupplyProduct extends Base {
         $id = input('get.id');
         $status = input('get.status');
         $data['status'] = $status;
-        $res = Db::table('store_supply_products')->where('id = '.$id)->update($data);
+
+        Db::startTrans();
+        try{
+            //更改供货商品状态
+            $res = Db::table('store_supply_products')->where('id = '.$id)->update($data);
+            if($status == -1){
+                //更改普通商品状态
+                $oriRes = Db::table('store_products')->where('supply_pro_id = '.$id)->update($data);
+            }
+            Db::commit();
+            //更改普通商品表信息
+        }catch (Exception $e){
+            Db::rollback();
+        }
 
         if($res){
             $this->success('更新状态成功!');
@@ -233,7 +247,20 @@ class SupplyProduct extends Base {
         $id = input('get.id');
         $on_sale = input('get.on_sale');
         $data['on_sale'] = $on_sale;
-        $res = Db::table('store_supply_products')->where('id = '.$id)->update($data);
+
+        Db::startTrans();
+        try{
+            //更改供货商品上下架状态
+            $res = Db::table('store_supply_products')->where('id = '.$id)->update($data);
+            if($on_sale == 0){
+                //更改普通商品状态为下架
+                $oriRes = Db::table('store_products')->where('supply_pro_id = '.$id)->update($data);
+            }
+            Db::commit();
+            //更改普通商品表信息
+        }catch (Exception $e){
+            Db::rollback();
+        }
 
         if($res){
             if($on_sale == 1){

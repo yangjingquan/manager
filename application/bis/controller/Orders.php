@@ -179,47 +179,20 @@ class Orders extends Base
     {
         //获取参数
         $param = input('post.');
-        $bis_id = session('bis_id', '', 'bis');
 
-        //验证数据
-        $validate = validate('Orders');
-        if (!$validate->scene('status1')->check($param)) {
-            $this->error($validate->getError());
+        //获取当前订单信息
+        $orderRes = Db::table('store_main_orders')->where('id = '.$param['order_id'])->find();
+        $orderStatus = $orderRes['order_status'];
+        if(empty($param['order_status'])){
+            $param['order_status'] = $orderStatus;
         }
 
-        //判断物流状态
-        $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
-        if ($param['order_status'] != '4') {
-            $data = [
-                'order_status' => $param['order_status'],
-                'update_time' => date('Y-m-d H:i:s')
-            ];
-        } else {
-            if ($logistics_info == 1) {
-                //验证数据
-                $validate = validate('Orders');
-                if (!$validate->scene('status2')->check($param)) {
-                    $this->error($validate->getError());
-                }
-
-                $data = [
-                    'order_status' => $param['order_status'],
-                    'mode' => $param['post_mode'],
-                    'express_no' => $param['express_no'],
-                    'update_time' => date('Y-m-d H:i:s')
-                ];
-            } else {
-                //验证数据
-                $validate = validate('Orders');
-                if (!$validate->scene('status3')->check($param)) {
-                    $this->error($validate->getError());
-                }
-                $data = [
-                    'order_status' => $param['order_status'],
-                    'update_time' => date('Y-m-d H:i:s')
-                ];
-            }
-        }
+        $data = [
+            'order_status' => $param['order_status'],
+            'mode' => $param['post_mode'],
+            'express_no' => $param['express_no'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
 
         $res = Db::table('store_main_orders')->where('id = ' . $param['order_id'])->update($data);
 
@@ -235,46 +208,20 @@ class Orders extends Base
     {
         //获取参数
         $param = input('post.');
-        $bis_id = session('bis_id', '', 'bis');
-        //验证数据
-        $validate = validate('Orders');
-        if (!$validate->scene('status1')->check($param)) {
-            $this->error($validate->getError());
-        }
-        //判断物流状态
-        $logistics_info = Model('Orders')->getLogisticsStatus($bis_id);
-        if ($param['order_status'] != '4') {
-            $data = [
-                'order_status' => $param['order_status'],
-                'update_time' => date('Y-m-d H:i:s')
-            ];
-        } else {
-            if ($logistics_info == 1) {
-                //验证数据
-                $validate = validate('Orders');
-                if (!$validate->scene('status2')->check($param)) {
-                    $this->error($validate->getError());
-                }
-                $data = [
-                    'order_status' => $param['order_status'],
-                    'mode' => $param['post_mode'],
-                    'express_no' => $param['express_no'],
-                    'update_time' => date('Y-m-d H:i:s')
-                ];
-            } else {
-                //验证数据
-                $validate = validate('Orders');
-                if (!$validate->scene('status3')->check($param)) {
-                    $this->error($validate->getError());
-                }
-                $data = [
-                    'order_status' => $param['order_status'],
-                    'update_time' => date('Y-m-d H:i:s')
-                ];
-            }
 
+        //获取当前订单信息
+        $orderRes = Db::table('store_group_main_orders')->where('id = '.$param['order_id'])->find();
+        $orderStatus = $orderRes['order_status'];
+        if(empty($param['order_status'])){
+            $param['order_status'] = $orderStatus;
         }
 
+        $data = [
+            'order_status' => $param['order_status'],
+            'mode' => $param['post_mode'],
+            'express_no' => $param['express_no'],
+            'update_time' => date('Y-m-d H:i:s')
+        ];
         $res = Db::table('store_group_main_orders')->where('id = ' . $param['order_id'])->update($data);
 
         if ($param['order_status'] == '4' && $res == 1) {
