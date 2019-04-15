@@ -838,6 +838,12 @@ class Orders extends Model{
         $logistics_status = $res['logistics_status'];
         return $logistics_status;
     }
+
+    //根据id获取点餐/外卖主订单信息
+    public function getMainOrderOnly($orderId){
+        $res = Db::table('cy_main_orders')->where('id = '.$orderId)->find();
+        return $res;
+    }
 }
 
 ?>

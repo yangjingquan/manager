@@ -224,9 +224,11 @@
 
     //设置点餐订单状态
     function dc_order_status($status){
-        if($status == 1){
+        if ($status == 1) {
             $str = "<span class='label label-success radius'>已点餐</span>";
-        }else{
+        }elseif ($status == 2) {
+            $str = "<span class='label label-success radius'>已付款</span>";
+        }else {
             $str = "<span style='color: red' class='label label-success radius'>完成</span>";
         }
 

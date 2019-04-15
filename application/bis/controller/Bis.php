@@ -151,4 +151,14 @@ class Bis extends Base {
         $res = Db::table('store_city')->where("id = '$cityId'")->find();
         return $res['c_name'];
     }
+
+    //店铺余额
+    public function my_balance(){
+        $bis_id = session('bis_id','','bis');
+        $res = Db::table('store_bis')->where('id = '.$bis_id)->find();
+
+        return $this->fetch('',[
+            'bis_res'  => $res
+        ]);
+    }
 }
