@@ -60,6 +60,8 @@ class Bis extends Base {
         $mchid = input('post.mchid');
         $key = input('post.key');
         $notify_url = input('post.notify_url');
+        $recharge_notify_url = input('post.recharge_notify_url');
+        $mem_jifen_ratio = input('post.mem_jifen_ratio');
         $fahuo_template_id = input('post.fahuo_template_id');
 
         //获取当前地址
@@ -97,6 +99,8 @@ class Bis extends Base {
             'mchid'  => $mchid,
             'key'  => $key,
             'notify_url'  => $notify_url,
+            'recharge_notify_url'  => $recharge_notify_url,
+            'mem_jifen_ratio'  => $mem_jifen_ratio,
             'fahuo_template_id'  => $fahuo_template_id,
         ];
 

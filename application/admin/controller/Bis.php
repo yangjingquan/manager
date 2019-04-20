@@ -17,7 +17,7 @@ class Bis extends Base {
         //账号信息
         $res = Db::table('store_bis_admin_users')->field('id as u_id,username,password')->where('bis_id = '.$bis_id.' and status = 1')->find();
         //店铺信息
-        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,bis.is_pay,cat.id as cat_id,cat.cat_name')
+        $bis_res = Db::table('store_bis')->alias('bis')->field('bis.id,bis.bis_name,bis.brand,bis.jifen,bis.leader,bis.thumb,bis.link_tel,bis.config_type,bis.is_pintuan,bis.logistics_status,bis.appid,bis.secret,bis.mchid,bis.key,bis.fahuo_template_id,bis.acode,bis.is_ind_version,bis.citys,bis.address,bis.is_pay,bis.notify_url,bis.balance,cat.id as cat_id,cat.cat_name')
             ->join('store_category cat','bis.cat_id = cat.id','LEFT')
             ->where('bis.id = '.$bis_id)
             ->find();
@@ -98,6 +98,7 @@ class Bis extends Base {
         $mchid = input('post.mchid');
         $key = input('post.key');
         $notify_url = input('post.notify_url');
+        $balance = input('post.balance');
         $fahuo_template_id = input('post.fahuo_template_id');
 
         //获取当前地址
@@ -136,6 +137,7 @@ class Bis extends Base {
             'mchid'  => $mchid,
             'key'  => $key,
             'notify_url'  => $notify_url,
+            'balance'  => $balance,
             'fahuo_template_id'  => $fahuo_template_id,
         ];
 
@@ -212,7 +214,7 @@ class Bis extends Base {
         $offset = ($current_page - 1) * $limit;
         $count = Db::table('store_bis')->where('status >= 0')->count();
         $pages = ceil($count / $limit);
-        $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status,listorder,is_recommend')
+        $bis_res = Db::table('store_bis')->field('id as bis_id,bis_name,citys,address,is_pintuan,status,listorder,is_recommend,balance')
             ->where('status >= 0')
             ->limit($offset,$limit)
             ->order('listorder desc,id desc')

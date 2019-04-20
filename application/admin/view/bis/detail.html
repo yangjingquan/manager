@@ -67,16 +67,6 @@
 <div class="page-container">
 	<form action="{:url('bis/save')}" method="post" enctype="multipart/form-data" class="form form-horizontal" id="form-article-add" onsubmit="return checkParams();">
 		<input type="hidden" name="id" value="{$bis_res.id}">
-		<!--<div class="row cl">-->
-			<!--<label class="form-label col-xs-4 col-sm-2">商户账号：</label>-->
-			<!--<div class="formControls col-xs-8 col-sm-9">-->
-				<!--{volist name="user_res" id="vo"}-->
-					<!--<input type="text" style="margin-bottom:1%;width: 20%;" class="input-text1" value="{$vo.username}" disabled>&nbsp;&nbsp;&nbsp;-->
-					<!--密码:<input type="password" style="margin-bottom:1%;width: 20%;" class="input-text1 pwd" id="pwd_{$vo.u_id}" value="{$vo.password}">-->
-					<!--<button class="btn radius editPwd" type="button"  style="margin-top: -1%;" id="editPwd_{$vo.u_id}" onclick="editPwd({$vo.u_id})">修改密码</button><br>-->
-				<!--{/volist}-->
-			<!--</div>-->
-		<!--</div>-->
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">商户名称：</label>
 			<div class="formControls col-xs-8 col-sm-9">
@@ -144,6 +134,12 @@
 			<div class="formControls col-xs-8 col-sm-3">
 				<input type="text" class="input-text1" value="{$bis_res.address}" placeholder="" id="address" name="address">
 				<label class="star_label">**</label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">商户余额：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.balance}" id="balance" name="balance">
 			</div>
 		</div>
 		<div class="row cl">

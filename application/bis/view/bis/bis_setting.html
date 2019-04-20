@@ -33,6 +33,7 @@
 			var mchid = document.getElementById('mchid');
 			var key = document.getElementById('key');
 			var notify_url = document.getElementById('notify_url');
+			var recharge_notify_url = document.getElementById('recharge_notify_url');
 			if(is_ind_version == 1){
 				if(!appid.value || appid.value == '' || appid.value == 0){
 					alert('请填写小程序id(appid)!');
@@ -48,7 +49,11 @@
 					return false;
 				}
 				if(!notify_url.value || notify_url.value == '' || notify_url.value == 0){
-					alert('请填写回调地址!');
+					alert('请填写商城支付回调地址!');
+					return false;
+				}
+				if(!recharge_notify_url.value || recharge_notify_url.value == '' || recharge_notify_url.value == 0){
+					alert('请填写充值回调地址!');
 					return false;
 				}
 			}
@@ -186,6 +191,12 @@
 			</div>
 		</div>
 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">充值积分比例：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				每充值 <input type="text" class="input-text1" style="width: 5%;" value="{$bis_res.mem_jifen_ratio}" id="mem_jifen_ratio"  name="mem_jifen_ratio"> 元可获得1积分
+			</div>
+		</div>
+		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-2">小程序支付：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="radio" value="1" {if condition="$bis_res.is_pay eq 1"} checked {/if} id="is_pay" name="is_pay">
@@ -224,9 +235,16 @@
 			</div>
 		</div>
 		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-2">回调地址：</label>
+			<label class="form-label col-xs-4 col-sm-2">商城支付回调地址：</label>
 			<div class="formControls col-xs-8 col-sm-9">
 				<input type="text" class="input-text1" value="{$bis_res.notify_url}" id="notify_url" name="notify_url">
+				<label style="margin-left: 1%;" class="intro">* </label>
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-2">充值回调地址：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text1" value="{$bis_res.recharge_notify_url}" id="recharge_notify_url" name="recharge_notify_url">
 				<label style="margin-left: 1%;" class="intro">* </label>
 			</div>
 		</div>
